@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "hardcraft",
+  "name": "HardCraft",
+  "description": "TODO",
+  "version": "${version}",
+  "license": "MIT",
+  "contact": {
+    "issues": "https://github.com/natanfudge/HardCraft/issues",
+    "sources": "https://github.com/natanfudge/HardCraft",
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/hardcraft"
+  },
+  "icon": "icon.png",
+  "mixins": [
+    "hardcraft.mixins.json",
+    "hardcraft.fabric.mixins.json"
+  ],
+  "entrypoints": {
+    "main": [
+      "fudge.hardcraft.fabric.HardCraftFabric"
+    ]
+  },
+  "depends": {
+    "minecraft": ">=1.17",
+    "fabricloader": ">=0.12.0"
+  },
+  "authors": [
+    "Fudge",
+    "Runemoro"
+  ],
+  "contributors": [
+    "Liach",
+    "Siuolplex",
+    "the456gamer",
+    "WuzgXY",
+    "Madis0",
+    "Fourmisain",
+    "wafflecoffee"
+  ]
+}

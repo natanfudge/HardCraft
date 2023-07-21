@@ -1,0 +1,29 @@
+modLoader = "javafml"
+loaderVersion = "[35,)"
+issueTrackerURL = "https://github.com/natanfudge/HardCraft/issues"
+license = "MIT"
+
+[[mods]]
+modId = "hardcraft"
+version = "${version}"
+displayName = "HardCraft"
+authors = "Fudge"
+description = '''
+TODO
+'''
+logoFile = "icon.png"
+displayTest="IGNORE_ALL_VERSION"   # IGNORE_ALL_VERSION means that your mod will not cause a red X if it's present on the client or the server. This is a special case and should only be used if your mod has no server component.
+
+[[dependencies.hardcraft]]
+modId = "forge"
+mandatory = true
+versionRange = "[37.0.59,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.hardcraft]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.19.2,)"
+ordering = "NONE"
+side = "BOTH"
