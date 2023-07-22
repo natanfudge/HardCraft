@@ -1,3 +1,5 @@
+import java.net.URI
+
 plugins {
     alias(libs.plugins.shadow)
 }
@@ -22,11 +24,14 @@ configurations {
     developmentFabric.extendsFrom(common)
 }
 
+
+
 dependencies {
     modImplementation(libs.fabric.loader)
     modImplementation(libs.fabric.api)
     modImplementation(libs.architectury.fabric)
     modImplementation(libs.fabric.language.kotlin)
+    modRuntimeOnly(libs.wthit.fabric)
 
     common(project(":common", "namedElements")) { isTransitive = false }
     shadowCommon(project(":common", "transformProductionFabric")) { isTransitive = false }

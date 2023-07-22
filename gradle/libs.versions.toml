@@ -24,6 +24,9 @@ task_tree = "2.1.1"
 kotlin = "1.9.0"
 fabric_language_kotlin = "1.10.0+kotlin.1.9.0"
 kotlin_serialization_minecraft = "1.0.2+1.19.2"
+wthit_fabric="fabric-5.17.0"
+wthit_forge="forge-5.17.0"
+#badpackets="0.3.3"
 
 # Minecraft
 minecraft = "1.19.2"
@@ -48,3 +51,7 @@ architectury_fabric = { module = "dev.architectury:architectury-fabric", version
 architectury_forge = { module = "dev.architectury:architectury-forge", version.ref = "architectury_api" }
 forge = { module = "net.minecraftforge:forge", version.ref = "forge" }
 kotlin_serialization_minecraft = {module = "io.github.natanfudge:kotlinx-serialization-minecraft", version.ref = "kotlin_serialization_minecraft"}
+wthit-api={module = "mcp.mobius.waila:wthit-api", version.ref = "wthit_fabric"}
+wthit-fabric={module = "mcp.mobius.waila:wthit", version.ref = "wthit_fabric"}
+wthit-forge={module = "mcp.mobius.waila:wthit", version.ref = "wthit_forge"}
+wthit-forge-api={module = "mcp.mobius.waila:wthit-api", version.ref = "wthit_forge"}

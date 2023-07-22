@@ -1,0 +1,6 @@
+{
+  "hardcraft:plugin": {
+    "initializer": "io.github.natanfudge.hardcraft.waila.HardCraftWailaPlugin",
+    "side": "*"
+  }
+}

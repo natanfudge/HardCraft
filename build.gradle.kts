@@ -1,4 +1,5 @@
 import java.io.FileInputStream
+import java.net.URI
 import java.util.*
 
 plugins {
@@ -26,8 +27,15 @@ subprojects {
 
     repositories {
         mavenLocal()
+        maven {
+            name = "wthit"
+            url = URI("https://maven2.bai.lol")
+            content {
+                includeGroup ("lol.bai")
+                includeGroup ("mcp.mobius.waila")
+            }
+        }
     }
-
 
     dependencies {
         "minecraft"(minecraftLib)

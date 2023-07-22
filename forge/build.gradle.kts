@@ -32,6 +32,8 @@ dependencies {
     forge(libs.forge)
     // Remove the next line if you don't want to depend on the API
     modApi(libs.architectury.forge)
+    modRuntimeOnly(libs.wthit.forge)
+    modCompileOnly(libs.wthit.forge.api)
 
     common(project(":common", "namedElements")) { isTransitive = false }
     shadowCommon(project(":common", "transformProductionForge")) { isTransitive = false }

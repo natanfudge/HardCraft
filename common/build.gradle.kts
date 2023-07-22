@@ -11,5 +11,6 @@ dependencies {
     // Do NOT use other classes from fabric loader
     modImplementation(libs.fabric.loader)
     modApi(libs.architectury.api)
+    modCompileOnly (libs.wthit.api)
 }
 
