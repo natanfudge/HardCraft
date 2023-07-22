@@ -1,5 +1,9 @@
-package io.github.natanfudge.hardcraft
+package io.github.natanfudge.hardcraft.health
 
+import io.github.natanfudge.genericutils.client.getClient
+import io.github.natanfudge.genericutils.destroyBlock
+import io.github.natanfudge.genericutils.isServer
+import io.github.natanfudge.hardcraft.Packets
 import io.github.natanfudge.hardcraft.utils.asMutableMap
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
@@ -11,16 +15,27 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.PersistentState
 import net.minecraft.world.World
-import java.io.File
 
 private val clientStorage = mutableMapOf<World, CurrentHealthStorage>()
 private val serializer = MapSerializer(BlockPosSerializer, Int.serializer())
 
 //TODO: generify PersistentState using serialization. I think I'll wait unti I implement client syncing as well so my generic impl will have that as an option too.
 class CurrentHealthStorage(private val world: World, private val map: MutableMap<BlockPos, Int> = mutableMapOf()) : PersistentState() {
+    // In order to set the breaking animation of a block, we use setBlockBreakingInfo which requires a seperate ID for each block.
+    private var usedIds = 10_000
 
-    fun set(blockPos: BlockPos, value: Int) {
-        map[blockPos] = value.coerceIn(0, world.getExistingMaxBlockHealth(blockPos))
+    fun set(blockPos: BlockPos, value: Int): Boolean {
+        if (value <= 0 && world.isServer) world.destroyBlock(blockPos)
+        val maxHealth = world.getMaxBlockHealth(blockPos) ?: return false
+        val newValue = value.coerceIn(0, maxHealth)
+        if (world.isClient) {
+            // Higher stage - more broken
+            val stage = 10 - (newValue.toFloat() / maxHealth) * 10
+            getClient().worldRenderer.setBlockBreakingInfo(usedIds++, blockPos, stage.toInt())
+        }
+        map[blockPos] = newValue
+        println("Health at $blockPos set to $newValue")
+        return true
     }
 
     fun get(blockPos: BlockPos) = map[blockPos] ?: world.getMaxBlockHealth(blockPos)
@@ -30,8 +45,8 @@ class CurrentHealthStorage(private val world: World, private val map: MutableMap
         private const val PersistentId = "hardcraft.CurrentHealthStorage"
 
         @JvmStatic
-        fun set(world: World, pos: BlockPos, value: Int) {
-            getStorage(world).set(pos, value)
+        fun set(world: World, pos: BlockPos, value: Int): Boolean {
+            return getStorage(world).set(pos, value)
         }
 
         @JvmStatic
@@ -52,24 +67,29 @@ class CurrentHealthStorage(private val world: World, private val map: MutableMap
             }
         }
     }
+    //TODO: test saving blocks
 
+    //TODO: client should recieve currentHealthStorage upon loading world/dimension
     override fun writeNbt(nbt: NbtCompound): NbtCompound {
         serializer.put(map, nbt)
         return nbt
     }
 
-    override fun save(file: File?) {
-        super.save(file)
-    }
 }
 
 fun World.getBlockCurrentHealth(pos: BlockPos): Int? = CurrentHealthStorage.get(this, pos)
-fun World.getExistingBlockCurrentHealth(pos: BlockPos): Int = getBlockCurrentHealth(pos)
-    ?: error("Expected block to exist in pos $pos for the purpose of getting current health, but none existed there!")
 
-//TODO:
-// 1. Add an easy debug mechanism for damaging a block.
-//  - When debug is enabled - holding down shift + click will slowly damage a block.
-//  - Implementation - mixin into onUse, then modify the world's CurrentHealthStorage.
-//  - Since onUse is called on both client and server we don't need to sync anything.
-// 2. Show block data by accessing world's CurrentHealthStorage and adding the damage value in waila.
+/**
+ * These methods are ServerWorld because they should only be called on the server, and they will automatically send a packet to the client to update it.
+ */
+fun ServerWorld.setBlockCurrentHealth(pos: BlockPos, amount: Int): Boolean {
+    Packets.updateBlockHealth.sendToWorld(Packets.UpdateBlockHealth(pos,amount), this)
+    return CurrentHealthStorage.set(this, pos, amount)
+}
+fun ServerWorld.repairBlock(pos: BlockPos, amount: Int): Boolean {
+    val old = getBlockCurrentHealth(pos) ?: return false
+    return setBlockCurrentHealth(pos, old + amount)
+}
+
+fun ServerWorld.damageBlock(pos: BlockPos, amount: Int): Boolean = repairBlock(pos, -amount)
+

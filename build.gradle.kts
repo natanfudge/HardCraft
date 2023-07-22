@@ -91,6 +91,9 @@ allprojects {
 
     kotlin {
         jvmToolchain(17)
+        compilerOptions {
+            freeCompilerArgs.add("-Xcontext-receivers")
+        }
     }
 
     java {

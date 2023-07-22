@@ -1,5 +1,6 @@
 package io.github.natanfudge.hardcraft
 
+import io.github.natanfudge.genericutils.client.ClientInit
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.minecraft.Nbt
 import kotlinx.serialization.minecraft.encodeToNbt
@@ -16,5 +17,11 @@ object HardCraft {
     fun init() {
         val toNbt = Nbt.encodeToNbt(Amar(1,"Asdf"))
         println("Halo Hardcraft! my nbt is ${toNbt}")
+    }
+}
+
+object HardCraftClient {
+    fun init()  = with(ClientInit){
+        Packets.initClient()
     }
 }

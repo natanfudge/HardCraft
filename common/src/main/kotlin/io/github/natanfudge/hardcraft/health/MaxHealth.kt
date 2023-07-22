@@ -1,4 +1,4 @@
-package io.github.natanfudge.hardcraft
+package io.github.natanfudge.hardcraft.health
 
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -11,5 +11,5 @@ fun World.getMaxBlockHealth(pos: BlockPos): Int? {
     return (state.block.hardness * 1000).roundToInt()
 }
 
-fun World.getExistingMaxBlockHealth(pos: BlockPos) =
-    getMaxBlockHealth(pos) ?: error("Expected block to exist in pos $pos for the purpose of getting max health, but none existed there!")
+//fun World.getExistingMaxBlockHealth(pos: BlockPos) =
+//    getMaxBlockHealth(pos) ?: error("Expected block to exist in pos $pos for the purpose of getting max health, but none existed there!")

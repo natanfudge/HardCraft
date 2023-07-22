@@ -1,6 +1,7 @@
 package io.github.natanfudge.hardcraft.mixin;
 
-import io.github.natanfudge.hardcraft.CurrentHealthStorage;
+import io.github.natanfudge.hardcraft.health.CurrentHealthStorage;
+import io.github.natanfudge.hardcraft.ai.BreakBlockGoal;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,17 +13,18 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractBlock.class)
 public class AbstractBlockMixin {
-    @Inject(method = "Lnet/minecraft/block/AbstractBlock;onUse(" +
+    @Inject(method = "onUse(" +
             "Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;" +
             "Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/util/hit/BlockHitResult;" +
             ")Lnet/minecraft/util/ActionResult;", at = @At("HEAD"))
     public void onUseHook(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> info) {
-        CurrentHealthStorage.set(world, pos, 50);
+        var currentHealth = CurrentHealthStorage.get(world, pos);
+        CurrentHealthStorage.set(world, pos, currentHealth - 50);
+        BreakBlockGoal.setTargetPos(pos);
         System.out.println("Setting health value in world " + world);
     }
 }

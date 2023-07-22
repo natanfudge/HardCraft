@@ -19,6 +19,12 @@
         "adapter": "kotlin",
         "value": "io.github.natanfudge.hardcraft.HardCraftFabric"
       }
+    ],
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value" : "io.github.natanfudge.hardcraft.HardCraftFabricClient"
+      }
     ]
   },
   "mixins": [
@@ -31,5 +37,10 @@
     "minecraft": ">=${minecraft_version}",
     "architectury": ">=${architectury_version}",
     "fabric-language-kotlin": ">=${fabric_kotlin_version}"
+  },
+  "custom": {
+    "loom:injected_interfaces": {
+      "net/minecraft/class_1799": ["io/github/natanfudge/genericutils/injection/ImmutableItemStack"]
+    }
   }
 }
