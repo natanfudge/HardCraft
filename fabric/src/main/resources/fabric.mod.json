@@ -1,40 +1,35 @@
 {
   "schemaVersion": 1,
-  "id": "hardcraft",
-  "name": "HardCraft",
-  "description": "TODO",
+  "id": "${mod_id}",
   "version": "${version}",
-  "license": "MIT",
-  "contact": {
-    "issues": "https://github.com/natanfudge/HardCraft/issues",
-    "sources": "https://github.com/natanfudge/HardCraft",
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/hardcraft"
-  },
-  "icon": "icon.png",
-  "mixins": [
-    "hardcraft.mixins.json",
-    "hardcraft.fabric.mixins.json"
+  "name": "${display_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "${authors}"
   ],
+  "contact": {
+    "homepage": "${github_repo}",
+    "sources": "${github_repo}"
+  },
+  "license": "${license}",
+  "icon": "assets/${mod_id}/icon.png",
   "entrypoints": {
     "main": [
-      "fudge.hardcraft.fabric.HardCraftFabric"
+      {
+        "adapter": "kotlin",
+        "value": "io.github.natanfudge.hardcraft.HardCraftFabric"
+      }
     ]
   },
-  "depends": {
-    "minecraft": ">=1.17",
-    "fabricloader": ">=0.12.0"
-  },
-  "authors": [
-    "Fudge",
-    "Runemoro"
+  "mixins": [
+    "${mod_id}.mixins.json",
+    "${mod_id}-common.mixins.json"
   ],
-  "contributors": [
-    "Liach",
-    "Siuolplex",
-    "the456gamer",
-    "WuzgXY",
-    "Madis0",
-    "Fourmisain",
-    "wafflecoffee"
-  ]
+  "environment": "*",
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=${minecraft_version}",
+    "architectury": ">=${architectury_version}",
+    "fabric-language-kotlin": ">=${fabric_kotlin_version}"
+  }
 }

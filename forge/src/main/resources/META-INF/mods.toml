@@ -1,29 +1,35 @@
 modLoader = "javafml"
 loaderVersion = "[35,)"
-issueTrackerURL = "https://github.com/natanfudge/HardCraft/issues"
-license = "MIT"
+issueTrackerURL = "${github_repo}/issues"
+license = "${license}"
 
 [[mods]]
-modId = "hardcraft"
+modId = "${mod_id}"
 version = "${version}"
-displayName = "HardCraft"
-authors = "Fudge"
+displayName = "${display_name}"
+authors = "${authors}"
 description = '''
-TODO
+${mod_description}
 '''
 logoFile = "icon.png"
-displayTest="IGNORE_ALL_VERSION"   # IGNORE_ALL_VERSION means that your mod will not cause a red X if it's present on the client or the server. This is a special case and should only be used if your mod has no server component.
 
-[[dependencies.hardcraft]]
+[[dependencies.${mod_id}]]
 modId = "forge"
 mandatory = true
-versionRange = "[37.0.59,)"
+versionRange = "[43,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.hardcraft]]
+[[dependencies.${mod_id}]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.19.2,)"
+versionRange = "[${minecraft_version},)"
 ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "architectury"
+mandatory = true
+versionRange = "[${architectury_version},)"
+ordering = "AFTER"
 side = "BOTH"
