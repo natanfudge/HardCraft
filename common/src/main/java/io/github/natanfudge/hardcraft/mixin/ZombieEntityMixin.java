@@ -1,6 +1,7 @@
 package io.github.natanfudge.hardcraft.mixin;
 
 import io.github.natanfudge.hardcraft.ai.BreakBlockGoal;
+import io.github.natanfudge.hardcraft.ai.ControlZombieGoal;
 import net.minecraft.entity.mob.ZombieEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,6 +15,7 @@ public class ZombieEntityMixin {
         ci.cancel();
         @SuppressWarnings("DataFlowIssue")
         var thisValue = ((ZombieEntity)(Object)this);
+        thisValue.goalSelector.add(0, new ControlZombieGoal(thisValue));
         thisValue.goalSelector.add(0, new BreakBlockGoal(thisValue));
     }
 }

@@ -24,6 +24,9 @@ class CurrentHealthStorage(private val world: World, private val map: MutableMap
     // In order to set the breaking animation of a block, we use setBlockBreakingInfo which requires a seperate ID for each block.
     private var usedIds = 10_000
 
+    fun delete(blockPos: BlockPos) {
+        map.remove(blockPos)
+    }
     fun set(blockPos: BlockPos, value: Int): Boolean {
         if (value <= 0 && world.isServer) world.destroyBlock(blockPos)
         val maxHealth = world.getMaxBlockHealth(blockPos) ?: return false
@@ -34,7 +37,7 @@ class CurrentHealthStorage(private val world: World, private val map: MutableMap
             getClient().worldRenderer.setBlockBreakingInfo(usedIds++, blockPos, stage.toInt())
         }
         map[blockPos] = newValue
-        println("Health at $blockPos set to $newValue")
+//        println("Health at $blockPos set to $newValue")
         return true
     }
 
@@ -47,6 +50,10 @@ class CurrentHealthStorage(private val world: World, private val map: MutableMap
         @JvmStatic
         fun set(world: World, pos: BlockPos, value: Int): Boolean {
             return getStorage(world).set(pos, value)
+        }
+        @JvmStatic
+        fun delete(world: World, pos: BlockPos) {
+             getStorage(world).delete(pos)
         }
 
         @JvmStatic
@@ -83,9 +90,10 @@ fun World.getBlockCurrentHealth(pos: BlockPos): Int? = CurrentHealthStorage.get(
  * These methods are ServerWorld because they should only be called on the server, and they will automatically send a packet to the client to update it.
  */
 fun ServerWorld.setBlockCurrentHealth(pos: BlockPos, amount: Int): Boolean {
-    Packets.updateBlockHealth.sendToWorld(Packets.UpdateBlockHealth(pos,amount), this)
+    Packets.updateBlockHealth.sendToWorld(Packets.UpdateBlockHealth(pos, amount), this)
     return CurrentHealthStorage.set(this, pos, amount)
 }
+
 fun ServerWorld.repairBlock(pos: BlockPos, amount: Int): Boolean {
     val old = getBlockCurrentHealth(pos) ?: return false
     return setBlockCurrentHealth(pos, old + amount)

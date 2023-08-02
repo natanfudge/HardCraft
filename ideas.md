@@ -21,11 +21,23 @@
   - This means that there are no restrictions to *placing* blocks, but *breaking or destroying* blocks can have serious consequences. 
   - When a block is broken, blocks (efficiently) check if they lost their support. If so, they will fall down like gravel. 
 
+## New Itemstack mechanics
+- When blocks are broken, they retain their health value as an ItemStack.
+- Health value is shown as damage on the item
+- When blocks are placed they have the item's damage value
+
 ## New items
   ### Repair kit.
   - May be used on a damaged block to repair it.
   - Repairing is done by holding down right click on an item and healing it over time.
   - Repairing is done on a health-per-second basis, meaning high health blocks take longer to repair and take more durability. 
+  ### Force Field.
+  - May be used to protect against foes.
+  - Could be powered and regenerate slowly. 
+  ### Confusion bomb
+  - Causes mobs to attack each other
+  ### Blinding bomb
+  - Causes mobs to not be effective at getting to you
 
 ## New mob mechanics
   - All mobs actively try to fuck up the player at all times. 

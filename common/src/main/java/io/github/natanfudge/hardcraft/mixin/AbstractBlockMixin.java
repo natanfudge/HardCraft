@@ -1,7 +1,7 @@
 package io.github.natanfudge.hardcraft.mixin;
 
 import io.github.natanfudge.hardcraft.health.CurrentHealthStorage;
-import io.github.natanfudge.hardcraft.ai.BreakBlockGoal;
+import io.github.natanfudge.hardcraft.ai.ControlZombieGoal;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,8 +23,10 @@ public class AbstractBlockMixin {
             ")Lnet/minecraft/util/ActionResult;", at = @At("HEAD"))
     public void onUseHook(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> info) {
         var currentHealth = CurrentHealthStorage.get(world, pos);
-        CurrentHealthStorage.set(world, pos, currentHealth - 50);
-        BreakBlockGoal.setTargetPos(pos);
+//        CurrentHealthStorage.set(world, pos, currentHealth - 50);
+        if(hand == Hand.MAIN_HAND && player.isSneaking()) ControlZombieGoal.setTargetPos(pos);
         System.out.println("Setting health value in world " + world);
     }
+
+
 }

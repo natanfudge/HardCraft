@@ -12,5 +12,6 @@ dependencies {
     modImplementation(libs.fabric.loader)
     modApi(libs.architectury.api)
     modCompileOnly (libs.wthit.api)
+    compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 }
 

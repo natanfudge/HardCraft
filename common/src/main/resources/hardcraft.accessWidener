@@ -9,3 +9,5 @@ accessible field net/minecraft/client/gui/screen/ingame/HandledScreen background
 accessible field net/minecraft/client/gui/DrawableHelper zOffset I
 # Used for modifying entity goals
 accessible field net/minecraft/entity/mob/MobEntity goalSelector Lnet/minecraft/entity/ai/goal/GoalSelector;
+# Used for modifying pathing
+accessible method net/minecraft/entity/ai/pathing/LandPathNodeMaker getCommonNodeType (Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/entity/ai/pathing/PathNodeType;

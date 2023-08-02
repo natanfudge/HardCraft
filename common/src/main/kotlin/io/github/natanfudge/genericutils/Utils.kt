@@ -8,6 +8,7 @@ import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.block.entity.HopperBlockEntity
 import net.minecraft.entity.Entity
+import net.minecraft.entity.ai.pathing.PathNode
 import net.minecraft.inventory.CraftingResultInventory
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
@@ -96,5 +97,8 @@ fun <T> buildHashset(size: Int, builder: (Int) -> T): HashSet<T> {
 }
 
 fun Entity.distanceTo(pos: BlockPos) = squaredDistanceTo(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
+fun Entity.distanceTo(pos: PathNode) = squaredDistanceTo(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
+fun PathNode.toBlockPos() = BlockPos(x,y,z)
+//fun Entity.flatDistanceTo(pos: BlockPos) = squaredDistanceTo(pos.x.toDouble(), this.y, pos.z.toDouble())
 
 fun createBytebuf() = PacketByteBuf(Unpooled.buffer())
