@@ -17,6 +17,7 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
 import net.minecraft.util.ItemScatterer
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Vec3d
 import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.World
 import net.minecraft.world.WorldEvents
@@ -99,6 +100,7 @@ fun <T> buildHashset(size: Int, builder: (Int) -> T): HashSet<T> {
 fun Entity.distanceTo(pos: BlockPos) = squaredDistanceTo(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
 fun Entity.distanceTo(pos: PathNode) = squaredDistanceTo(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
 fun PathNode.toBlockPos() = BlockPos(x,y,z)
+fun Vec3d.distanceTo(pos: BlockPos) = squaredDistanceTo(pos.x.toDouble(),pos.y.toDouble(),pos.z.toDouble())
 //fun Entity.flatDistanceTo(pos: BlockPos) = squaredDistanceTo(pos.x.toDouble(), this.y, pos.z.toDouble())
 
 fun createBytebuf() = PacketByteBuf(Unpooled.buffer())

@@ -8,7 +8,9 @@
   "mixins": [
     "AbstractBlockMixin",
     "BlockMixin",
+    "EntityNavigationMixin",
     "LandPathNodeMakerMixin",
+    "MobVisibilityCacheMixin",
     "ZombieEntityMixin"
   ],
   "injectors": {

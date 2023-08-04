@@ -7,8 +7,10 @@ import kotlin.math.roundToInt
 fun World.getMaxBlockHealth(pos: BlockPos): Int? {
     val state = getBlockState(pos)
     if (state.isAir) return null
+    val hardness = state.block.hardness
+    if (hardness <= 0) return null
     //TODO: custom health
-    return (state.block.hardness * 1000).roundToInt()
+    return (hardness * 1000).roundToInt()
 }
 
 //fun World.getExistingMaxBlockHealth(pos: BlockPos) =

@@ -13,6 +13,8 @@
   - Every block has a current health value that is initialized as the max health value. 
   - When a damaged block is harvested by a player, it retains its current health value and will stay damaged when it is placed again.
   - When the current health of a block reaches 0, it is destroyed. 
+    - Easy mode - a destroyed block is dropped with 0 current health
+    - Hard mode - a destroyed block is gone forever
   - The % of max health remaining is displayed as durability on the block. 
   - Blocks will appear cracked when they have taken damage. The more damage - the more cracked
   - WAILA displays the exact amount of currentHealth/maxHealth. 
@@ -48,4 +50,10 @@
   - If no path exists, and a tunnel may be made to reach the player, mobs will break blocks along the way to get to the player. 
   - If no path exists and no tunnel may be made, mobs will break blocks that support the player - destroying sky bases. 
   - Mobs may be dumb - and destroy anything no matter how strong the block is - or be smart and find the weakest blocks to destroy to get to the player. 
+  - Mobs may have a bigger step height. 
 
+## Push balance
+- Since mobs don't break blocks from far away, pushing them would be too strong. So everything that involves pushing is nerfed.
+- Liquids have only a small effect on mobs and they can all swim.
+- Pistons have a limited amount of uses 
+- 

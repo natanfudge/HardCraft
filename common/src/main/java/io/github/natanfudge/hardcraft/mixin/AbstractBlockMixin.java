@@ -25,7 +25,7 @@ public class AbstractBlockMixin {
         var currentHealth = CurrentHealthStorage.get(world, pos);
 //        CurrentHealthStorage.set(world, pos, currentHealth - 50);
         if(hand == Hand.MAIN_HAND && player.isSneaking()) ControlZombieGoal.setTargetPos(pos);
-        System.out.println("Setting health value in world " + world);
+//        System.out.println("Setting health value in world " + world);
     }
 
 

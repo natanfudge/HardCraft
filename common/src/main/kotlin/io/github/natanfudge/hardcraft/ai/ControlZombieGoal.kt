@@ -1,10 +1,6 @@
 package io.github.natanfudge.hardcraft.ai
 
-import io.github.natanfudge.genericutils.distanceTo
-import io.github.natanfudge.hardcraft.health.damageBlock
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import net.minecraft.entity.ai.goal.Goal
 import net.minecraft.entity.mob.MobEntity
 import net.minecraft.server.world.ServerWorld
@@ -32,12 +28,25 @@ class ControlZombieGoal(private val mob: MobEntity) : Goal() {
     override fun shouldContinue(): Boolean {
         return !this.mob.navigation.isIdle
     }
-//TODO: figure out why zombies can't go over on block in a straight line.
+
+    var job: Job? = null
+
+    val scope = CoroutineScope(Dispatchers.IO)
     override fun start() {
         this.activeTarget = _targetPos
         val pos = this.activeTarget!!
         println("Starting movement")
-        this.mob.navigation.startMovingTo(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), 1.0)
+//        println("Halo")
+        mob.navigation.startMovingTo(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), 1.0)
+
+//        job?.cancel()
+//        job = scope.launch {
+//            while (true){
+//                println("Rerunning movement")
+//                delay(2000)
+//            }
+//
+//        }
 //        GlobalScope.launch {
 //            delay(20_000)
 //            mob.navigation.stop()

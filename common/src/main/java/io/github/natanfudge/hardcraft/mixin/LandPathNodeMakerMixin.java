@@ -16,9 +16,9 @@ public class LandPathNodeMakerMixin {
     private static void getLandTypeHook(BlockView world, BlockPos.Mutable pos, CallbackInfoReturnable<PathNodeType> cir) {
         var type = cir.getReturnValue();
 //        var type = LandPathNodeMaker.getCommonNodeType(world, pos);
-        if(type.getDefaultPenalty() < 0) {
-            type = PathNodeType.DANGER_FIRE;
-        }
+//        if(type.getDefaultPenalty() < 0) {
+//            type = PathNodeType.WATER;
+//        }
         cir.setReturnValue(type);
         //TODO: make this more specific and less intrusive
         //TODO: see how this works with stairs
