@@ -13,5 +13,7 @@ fun World.getMaxBlockHealth(pos: BlockPos): Int? {
     return (hardness * 1000).roundToInt()
 }
 
+fun World.isDestroyable(pos:BlockPos) = getMaxBlockHealth(pos) != null
+
 //fun World.getExistingMaxBlockHealth(pos: BlockPos) =
 //    getMaxBlockHealth(pos) ?: error("Expected block to exist in pos $pos for the purpose of getting max health, but none existed there!")

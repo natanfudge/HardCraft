@@ -10,24 +10,52 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.minecraft.BlockPosSerializer
 import kotlinx.serialization.minecraft.getFrom
 import kotlinx.serialization.minecraft.put
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
+import net.minecraft.client.world.ClientWorld
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.PersistentState
 import net.minecraft.world.World
 
+/**
+ * Minecraft doesn't provide a mechanism for loading PersistentStorage for clients,
+ * so we keep a map ourselves so a client can still reach for the data. We sync the data ourselves.
+ */
 private val clientStorage = mutableMapOf<World, CurrentHealthStorage>()
 private val serializer = MapSerializer(BlockPosSerializer, Int.serializer())
 
 //TODO: generify PersistentState using serialization. I think I'll wait unti I implement client syncing as well so my generic impl will have that as an option too.
+// Worth noting there's no point in having a map of World,CurrentHealthStorage since clients only have one world loaded at a time. Better to just have some lateinit var World.
 class CurrentHealthStorage(private val world: World, private val map: MutableMap<BlockPos, Int> = mutableMapOf()) : PersistentState() {
     // In order to set the breaking animation of a block, we use setBlockBreakingInfo which requires a seperate ID for each block.
     private var usedIds = 10_000
 
+    /**
+     * Sends health info from the server to a player
+     */
+    fun sendAll(toPlayer: ServerPlayerEntity) {
+        Packets.loadBlockHealth.send(Packets.LoadBlockHealth(map), toPlayer)
+    }
+
+    /**
+     * Receives health info on the client on a player
+     */
+    fun load(values: Map<BlockPos, Int>) {
+        // Don't need to markDirty() because client values don't need to be saved
+        map.clear()
+        map.putAll(values)
+    }
+
     fun delete(blockPos: BlockPos) {
+        markDirty()
         map.remove(blockPos)
     }
+
     fun set(blockPos: BlockPos, value: Int): Boolean {
+        markDirty()
         if (value <= 0 && world.isServer) world.destroyBlock(blockPos)
         val maxHealth = world.getMaxBlockHealth(blockPos) ?: return false
         val newValue = value.coerceIn(0, maxHealth)
@@ -46,6 +74,20 @@ class CurrentHealthStorage(private val world: World, private val map: MutableMap
 
     companion object {
         private const val PersistentId = "hardcraft.CurrentHealthStorage"
+        /**
+         * Sends health info from the server to a player
+         */
+        fun sendWorldData(toPlayer: ServerPlayerEntity) {
+            getStorage(toPlayer.world).sendAll(toPlayer)
+        }
+
+        /**
+         * Receives health info on the client on a player
+         */
+        @Environment(EnvType.CLIENT)
+        fun load(world: ClientWorld, values: Map<BlockPos, Int>) {
+            getStorage(world).load(values)
+        }
 
         @JvmStatic
         fun set(world: World, pos: BlockPos, value: Int): Boolean {
@@ -76,11 +118,11 @@ class CurrentHealthStorage(private val world: World, private val map: MutableMap
     }
     //TODO: test saving blocks
 
-    //TODO: client should recieve currentHealthStorage upon loading world/dimension
     override fun writeNbt(nbt: NbtCompound): NbtCompound {
         serializer.put(map, nbt)
         return nbt
     }
+
 
 }
 

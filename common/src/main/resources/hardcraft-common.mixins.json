@@ -9,9 +9,9 @@
     "AbstractBlockMixin",
     "BlockMixin",
     "EntityNavigationMixin",
-    "LandPathNodeMakerMixin",
     "MobVisibilityCacheMixin",
-    "ZombieEntityMixin"
+    "ZombieEntityMixin",
+    "ThreadedAnvilChunkStorageMixin"
   ],
   "injectors": {
     "defaultRequire": 1
