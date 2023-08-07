@@ -20,6 +20,12 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.PersistentState
 import net.minecraft.world.World
 
+//TODO: break blog progress issues.
+// 1. It seems to randomly reset
+// 2. it's not retained when you log back in.
+// 3. Probably not retained when loading chunk.
+// 4. Doesn't get reset when block is re-placed
+
 /**
  * Minecraft doesn't provide a mechanism for loading PersistentStorage for clients,
  * so we keep a map ourselves so a client can still reach for the data. We sync the data ourselves.

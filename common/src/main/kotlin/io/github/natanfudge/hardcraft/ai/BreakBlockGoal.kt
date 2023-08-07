@@ -3,6 +3,7 @@ package io.github.natanfudge.hardcraft.ai
 import io.github.natanfudge.genericutils.distanceTo
 import io.github.natanfudge.hardcraft.health.damageBlock
 import io.github.natanfudge.hardcraft.health.isDestroyable
+import io.github.natanfudge.hardcraft.utils.TickThrottler
 import io.github.natanfudge.hardcraft.utils.directionTo
 import io.github.natanfudge.hardcraft.utils.roundUp
 import io.github.natanfudge.hardcraft.utils.valuesBetween
@@ -28,39 +29,25 @@ private class Accelerometer(private val mob: MobEntity) {
         }
         if (ticks % 5 == 0) {
             val slot = ticks / 5
-            val previousPos = positionMemory[slot]
-            if (previousPos != null) {
-                // TODO: experiment how this can be abused to prevent zombies from attacking
-                // I think the solution is to severely limit the ability to push things.
-                moving = mob.pos.distanceTo(previousPos) >= 0.1
-            }
+            // TODO: experiment how this can be abused to prevent zombies from attacking
+            // I think the solution is to severely limit the ability to push things.
+            moving = positionMemory.all { it == null || mob.pos.distanceTo(it) >= 0.1 }
             positionMemory[slot] = mob.pos
         }
     }
 }
 
-/**
- * Only 1 [runThrottled] should be used per [TickThrottler]
- */
-private class TickThrottler {
-    var ticksPassed = 0
-    inline fun runThrottled(ticksPerRun: Int, code: () -> Unit) {
-        require(ticksPerRun >= 1)
-        ticksPassed++
-        if (ticksPassed >= ticksPerRun) {
-            ticksPassed = 0
-        }
-        if (ticksPassed == 0) {
-            code()
-        }
-    }
-}
 
 //TODO: assign to all mobs
 class BreakBlockGoal(private val mob: MobEntity) : Goal() {
     private val world = mob.world as ServerWorld
     private val accelerometer = Accelerometer(mob)
     private val breakThrottler = TickThrottler()
+
+    /**
+     * Track how long the mob has been moving so we can know if it needs to break blocks
+     */
+    private var nonIdleTicks = 0
     override fun canStart(): Boolean {
         return true
     }
@@ -97,7 +84,8 @@ class BreakBlockGoal(private val mob: MobEntity) : Goal() {
 
     override fun tick() {
         accelerometer.tick()
-        if (!accelerometer.moving) {
+        nonIdleTicks = if (mob.navigation.isIdle) 0 else nonIdleTicks + 1
+        if (nonIdleTicks >= 20 && !accelerometer.moving) {
             breakThrottler.runThrottled(5) {
                 val path = mob.navigation.currentPath ?: return
                 if (path.isFinished) return

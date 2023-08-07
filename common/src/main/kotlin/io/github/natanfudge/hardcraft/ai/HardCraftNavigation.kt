@@ -2,15 +2,29 @@ package io.github.natanfudge.hardcraft.ai
 
 import io.github.natanfudge.hardcraft.utils.valuesBetween
 import net.minecraft.entity.ai.pathing.*
+import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.mob.MobEntity
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 import net.minecraft.world.chunk.ChunkCache
+import kotlin.properties.Delegates
 
-class HardCraftNavigation(entity: MobEntity, world: World) : MobNavigation(entity, world) {
+class HardCraftNavigation(entity: MobEntity, world: World?, existingNavigation: EntityNavigation) : MobNavigation(entity, world) {
+    private var navigator: HardCraftPathNodeNavigator? = null
+    private var range: Int? = null
+
+    init {
+        navigator?.wrappedNavigator = existingNavigation.createPathNodeNavigator(range!!)
+    }
+
     override fun createPathNodeNavigator(range: Int): PathNodeNavigator {
-        return HardCraftPathNodeNavigator(range, super.createPathNodeNavigator(range))
+        super.createPathNodeNavigator(range)
+        // This method gets called too early for us to use outside value, so we assign the wrapped navigator ourself in init{}.
+        this.navigator = HardCraftPathNodeNavigator(range)
+        this.range = range
+        return navigator!!
     }
 
     override fun getPos(): Vec3d {
@@ -18,12 +32,16 @@ class HardCraftNavigation(entity: MobEntity, world: World) : MobNavigation(entit
     }
 
     override fun isAtValidPosition(): Boolean {
+        // This may be incorrect, maybe I should use existingNavigation.isAtValidPosition()
         return true
     }
 }
+//TODO: test mobs like skeletons breaking blocks
 
 // These constructor parameters are meaningless
-class HardCraftPathNodeNavigator(range: Int, private val wrappedNavigator: PathNodeNavigator) : PathNodeNavigator(LandPathNodeMaker(), range) {
+class HardCraftPathNodeNavigator(range: Int) : PathNodeNavigator(LandPathNodeMaker(), range) {
+    // This is assigned outside because of Minecraft weirdness
+    var wrappedNavigator: PathNodeNavigator? = null
     override fun findPathToAny(
         world: ChunkCache,
         mob: MobEntity,
@@ -33,7 +51,7 @@ class HardCraftPathNodeNavigator(range: Int, private val wrappedNavigator: PathN
         rangeMultiplier: Float
     ): Path? {
         //TODO: test with normal mob ai
-        val normalPath = wrappedNavigator.findPathToAny(world, mob, positions, followRange, distance, rangeMultiplier)
+        val normalPath = wrappedNavigator?.findPathToAny(world, mob, positions, followRange, distance, rangeMultiplier)
         if (normalPath != null && normalPath.reachesTarget()) return normalPath
         // If normal means don't suffice, break right through
         if (positions.isEmpty()) return null

@@ -74,8 +74,6 @@ class S2CPacketType<T>(private val id: Identifier,private  val serializer: KSeri
     fun sendToWorld(value: T, world: ServerWorld) {
         send(value, world.players)
     }
-    //TODO:1. implement realtime chunk syncing by doing ThreadedAnvilChunkStorage.getPlayersWatchingChunk()
-    // 2. Implement retroactive chunk syncing by injecting into ThreadAnvilChunkStorage.handlePlayerAddedOrRemoved
 
 }
 

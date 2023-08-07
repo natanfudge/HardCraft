@@ -8,9 +8,12 @@
   "mixins": [
     "AbstractBlockMixin",
     "BlockMixin",
+    "BowAttackGoalMixin",
+    "DrownedEntityMixin",
     "EntityNavigationMixin",
+    "GoalSelectorMixin",
+    "HostileEntityMixin",
     "MobVisibilityCacheMixin",
-    "ZombieEntityMixin",
     "ThreadedAnvilChunkStorageMixin"
   ],
   "injectors": {

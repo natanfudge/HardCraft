@@ -6,12 +6,6 @@ import net.minecraft.inventory.CraftingInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.screen.ScreenHandler
 
-// TODO: test this mod in multiplayer:
-//  1. SyncRecipe packet
-//  2. Recipe updating when another player has station open
-//  3. Inventory updating when another player has station open
-//  4. Being able to switch between different adjacent inventories together with another player
-
 
 /**
  * Usually, CraftingInventory's only emulate an inventory for the purpose of GUIs. Here, we want the  CraftingInventory to store its stuff in a real Inventory.

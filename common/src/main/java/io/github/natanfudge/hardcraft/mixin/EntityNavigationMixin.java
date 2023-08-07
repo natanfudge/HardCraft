@@ -10,12 +10,14 @@ public class EntityNavigationMixin {
    //TODO: Get rid of these mixins because it's bad to not reset pathing
     @ModifyConstant(method = "checkTimeouts(Lnet/minecraft/util/math/Vec3d;)V", constant = @Constant(intValue = 100))
     public int changeTimeoutConstant(int constant){
+        return constant;
         // Make timeout be 1000 ticks (50s)
-        return 1000;
+//        return 1000;
     }
     @ModifyConstant(method = "checkTimeouts(Lnet/minecraft/util/math/Vec3d;)V", constant = @Constant(doubleValue = 3.0))
     public double changeTimeoutConstant2(double constant){
+        return constant;
         // Make sure it doesn't time out for other reasons
-        return 100.0;
+//        return 100.0;
     }
 }

@@ -5,11 +5,11 @@ import net.minecraft.server.network.ServerPlayerEntity
 
 object ServerEvents {
     /**
-     * Runs whenever a player loads a chunk, on the server only.
-     * Use this to update clients with server data specific to a chunk such as information of a block
+     * Runs whenever a player enters a world and is ready to receive chunk data
+     * Use this to update clients with server data specific to a world
      */
     @JvmStatic
-    fun onPlayerLoadChunks(player: ServerPlayerEntity) {
+    fun onPlayerInitialChunkLoad(player: ServerPlayerEntity) {
         CurrentHealthStorage.sendWorldData(player)
     }
 }
