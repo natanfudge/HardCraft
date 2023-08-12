@@ -56,4 +56,9 @@
 - Since mobs don't break blocks from far away, pushing them would be too strong. So everything that involves pushing is nerfed.
 - Liquids have only a small effect on mobs and they can all swim.
 - Pistons have a limited amount of uses 
-- 
+
+## Block break balance
+- Since blocks are really easy to create, it would be trivial to block out mobs forever. 
+- Solution - at first make mobs take a decent amount of time to break blocks. 
+  - Then, make the mob's breaking power exponentially stronger, to the point they quickly oneshot normal blocks.
+  - At that point the player will have to craft special blocks (walls / force fields) to efficiently keep mobs out since they will have much more protection. 

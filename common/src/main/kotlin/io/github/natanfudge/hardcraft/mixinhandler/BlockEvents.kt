@@ -4,7 +4,7 @@ import io.github.natanfudge.hardcraft.health.CurrentHealthStorage
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-object BlockMixinHandler {
+object BlockEvents {
     @JvmStatic
     fun onBlockPlaced(world: World, pos: BlockPos) {
         //TODO: If itemstack is damaged... set health accordingly...

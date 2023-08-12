@@ -1,11 +1,9 @@
 package io.github.natanfudge.hardcraft.health
 
-import io.github.natanfudge.genericutils.client.getClient
 import io.github.natanfudge.genericutils.destroyBlock
 import io.github.natanfudge.genericutils.isServer
 import io.github.natanfudge.hardcraft.Packets
 import it.unimi.dsi.fastutil.longs.Long2IntMap
-import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.world.ClientWorld
@@ -16,30 +14,20 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.PersistentState
 import net.minecraft.world.World
 
-//TODO: break blog progress issues.
-// 1. It seems to randomly reset
-// 2. it's not retained when you log back in.
-// 3. Probably not retained when loading chunk.
-// 4. Doesn't get reset when block is re-placed
-
 /**
  * Minecraft doesn't provide a mechanism for loading PersistentStorage for clients,
  * so we keep a map ourselves so a client can still reach for the data. We sync the data ourselves.
  */
-//TODO: make a single value and test
-//private var clientStorage = CurrentHealthStorage()
+
 private lateinit var clientStorage: CurrentHealthStorage
-//private val serializer = MapSerializer(Long.serializer(), Int.serializer())
 
 
 typealias CurrentHealthStorageDataImpl = Long2IntMap
 
-//TODO: generify PersistentState using serialization. I think I'll wait unti I implement client syncing as well so my generic impl will have that as an option too.
-// Worth noting there's no point in having a map of World,CurrentHealthStorage since clients only have one world loaded at a time. Better to just have some lateinit var World.
+/**
+ * Generifying this is not possible because it uses Long2IntMap for efficiency. If it was generic all the primitive values will be boxed. Where is Valhalla?
+ */
 class CurrentHealthStorage(private val world: World, private val map: CurrentHealthStorageDataImpl) : PersistentState() {
-    // In order to set the breaking animation of a block, we use setBlockBreakingInfo which requires a seperate ID for each block.
-    private var usedIds = 10_000
-
 
     val allValues: CurrentHealthStorageDataImpl = map
 
@@ -48,15 +36,6 @@ class CurrentHealthStorage(private val world: World, private val map: CurrentHea
      */
     fun sendAll(toPlayer: ServerPlayerEntity) {
         Packets.loadBlockHealth.send(Packets.LoadBlockHealth(map), toPlayer)
-    }
-
-    /**
-     * Receives health info on the client on a player
-     */
-    fun load(values: CurrentHealthStorageDataImpl) {
-        // Don't need to markDirty() because client values don't need to be saved
-        map.clear()
-        map.fastPutAll(values)
     }
 
     fun delete(blockPos: BlockPos) {
@@ -69,11 +48,6 @@ class CurrentHealthStorage(private val world: World, private val map: CurrentHea
         if (value <= 0 && world.isServer) world.destroyBlock(blockPos)
         val maxHealth = world.getMaxBlockHealth(blockPos) ?: return false
         val newValue = value.coerceIn(0, maxHealth)
-        if (world.isClient) {
-            // Higher stage - more broken
-            val stage = 10 - (newValue.toFloat() / maxHealth) * 10
-            getClient().worldRenderer.setBlockBreakingInfo(usedIds++, blockPos, stage.toInt())
-        }
         val key = blockPos.asLong()
         if (newValue == maxHealth) {
             // Having max health is same as not having a value
@@ -83,13 +57,10 @@ class CurrentHealthStorage(private val world: World, private val map: CurrentHea
         }
         return true
     }
-    //TODO: data was not loaded properly. Seems like the issue is syncing to client.
 
     fun get(blockPos: BlockPos): Int? {
         return map.getOrElse(blockPos.asLong()) { world.getMaxBlockHealth(blockPos) }
     }
-//    fun getIfDamaged(blockPos: BlockPos) = map.get(blockPos.asLong())
-
 
     companion object {
         private const val PersistentId = "hardcraft.CurrentHealthStorage"
@@ -107,7 +78,6 @@ class CurrentHealthStorage(private val world: World, private val map: CurrentHea
         @Environment(EnvType.CLIENT)
         fun load(world: ClientWorld, values: CurrentHealthStorageDataImpl) {
             clientStorage = CurrentHealthStorage(world, values)
-            clientStorage.load(values)
         }
 
         @JvmStatic
@@ -142,8 +112,6 @@ class CurrentHealthStorage(private val world: World, private val map: CurrentHea
             }
         }
     }
-    //TODO: test new storage format
-
     override fun writeNbt(nbt: NbtCompound): NbtCompound {
         map.writeToNbt(nbt)
         return nbt

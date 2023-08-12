@@ -1,6 +1,6 @@
 package io.github.natanfudge.hardcraft.mixin;
 
-import io.github.natanfudge.hardcraft.mixinhandler.BlockMixinHandler;
+import io.github.natanfudge.hardcraft.mixinhandler.BlockEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -17,7 +17,7 @@ public class BlockMixin {
 
     @Inject(method = "onPlaced(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;)V", at = @At("HEAD"))
     public void onPlacedHook(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
-        BlockMixinHandler.onBlockPlaced(world, pos);
+        BlockEvents.onBlockPlaced(world, pos);
     }
 
 
