@@ -4,12 +4,8 @@ import io.github.natanfudge.genericutils.client.getClient
 import io.github.natanfudge.genericutils.destroyBlock
 import io.github.natanfudge.genericutils.isServer
 import io.github.natanfudge.hardcraft.Packets
-import io.github.natanfudge.hardcraft.utils.asMutableMap
-import kotlinx.serialization.builtins.MapSerializer
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.minecraft.BlockPosSerializer
-import kotlinx.serialization.minecraft.getFrom
-import kotlinx.serialization.minecraft.put
+import it.unimi.dsi.fastutil.longs.Long2IntMap
+import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.world.ClientWorld
@@ -30,14 +26,22 @@ import net.minecraft.world.World
  * Minecraft doesn't provide a mechanism for loading PersistentStorage for clients,
  * so we keep a map ourselves so a client can still reach for the data. We sync the data ourselves.
  */
-private val clientStorage = mutableMapOf<World, CurrentHealthStorage>()
-private val serializer = MapSerializer(BlockPosSerializer, Int.serializer())
+//TODO: make a single value and test
+//private var clientStorage = CurrentHealthStorage()
+private lateinit var clientStorage: CurrentHealthStorage
+//private val serializer = MapSerializer(Long.serializer(), Int.serializer())
+
+
+typealias CurrentHealthStorageDataImpl = Long2IntMap
 
 //TODO: generify PersistentState using serialization. I think I'll wait unti I implement client syncing as well so my generic impl will have that as an option too.
 // Worth noting there's no point in having a map of World,CurrentHealthStorage since clients only have one world loaded at a time. Better to just have some lateinit var World.
-class CurrentHealthStorage(private val world: World, private val map: MutableMap<BlockPos, Int> = mutableMapOf()) : PersistentState() {
+class CurrentHealthStorage(private val world: World, private val map: CurrentHealthStorageDataImpl) : PersistentState() {
     // In order to set the breaking animation of a block, we use setBlockBreakingInfo which requires a seperate ID for each block.
     private var usedIds = 10_000
+
+
+    val allValues: CurrentHealthStorageDataImpl = map
 
     /**
      * Sends health info from the server to a player
@@ -49,15 +53,15 @@ class CurrentHealthStorage(private val world: World, private val map: MutableMap
     /**
      * Receives health info on the client on a player
      */
-    fun load(values: Map<BlockPos, Int>) {
+    fun load(values: CurrentHealthStorageDataImpl) {
         // Don't need to markDirty() because client values don't need to be saved
         map.clear()
-        map.putAll(values)
+        map.fastPutAll(values)
     }
 
     fun delete(blockPos: BlockPos) {
         markDirty()
-        map.remove(blockPos)
+        map.remove(blockPos.asLong())
     }
 
     fun set(blockPos: BlockPos, value: Int): Boolean {
@@ -70,16 +74,25 @@ class CurrentHealthStorage(private val world: World, private val map: MutableMap
             val stage = 10 - (newValue.toFloat() / maxHealth) * 10
             getClient().worldRenderer.setBlockBreakingInfo(usedIds++, blockPos, stage.toInt())
         }
-        map[blockPos] = newValue
-//        println("Health at $blockPos set to $newValue")
+        val key = blockPos.asLong()
+        if (newValue == maxHealth) {
+            // Having max health is same as not having a value
+            map.remove(key)
+        } else {
+            map.put(key, newValue)
+        }
         return true
     }
 
-    fun get(blockPos: BlockPos) = map[blockPos] ?: world.getMaxBlockHealth(blockPos)
+    fun get(blockPos: BlockPos): Int? {
+        return map.getOrElse(blockPos.asLong()) { world.getMaxBlockHealth(blockPos) }
+    }
+//    fun getIfDamaged(blockPos: BlockPos) = map.get(blockPos.asLong())
 
 
     companion object {
         private const val PersistentId = "hardcraft.CurrentHealthStorage"
+
         /**
          * Sends health info from the server to a player
          */
@@ -91,17 +104,19 @@ class CurrentHealthStorage(private val world: World, private val map: MutableMap
          * Receives health info on the client on a player
          */
         @Environment(EnvType.CLIENT)
-        fun load(world: ClientWorld, values: Map<BlockPos, Int>) {
-            getStorage(world).load(values)
+        fun load(world: ClientWorld, values: CurrentHealthStorageDataImpl) {
+            clientStorage = CurrentHealthStorage(world, values)
+            clientStorage.load(values)
         }
 
         @JvmStatic
         fun set(world: World, pos: BlockPos, value: Int): Boolean {
             return getStorage(world).set(pos, value)
         }
+
         @JvmStatic
         fun delete(world: World, pos: BlockPos) {
-             getStorage(world).delete(pos)
+            getStorage(world).delete(pos)
         }
 
         @JvmStatic
@@ -109,23 +124,27 @@ class CurrentHealthStorage(private val world: World, private val map: MutableMap
             return getStorage(world).get(pos)
         }
 
+        @JvmStatic
+        @Environment(EnvType.CLIENT)
+        fun getClientStorage() = clientStorage
+
 
         private fun getStorage(world: World): CurrentHealthStorage {
             if (world is ServerWorld) {
                 return world.persistentStateManager.getOrCreate(
-                    { CurrentHealthStorage(world, serializer.getFrom(it).asMutableMap()) },
-                    { CurrentHealthStorage(world) },
+                    { CurrentHealthStorage(world, currentHealthDataFromNbt(it)) },
+                    { CurrentHealthStorage(world, Long2IntOpenHashMap()) },
                     PersistentId
                 )
             } else {
-                return clientStorage.computeIfAbsent(world) { CurrentHealthStorage(world) }
+                return getClientStorage()
             }
         }
     }
-    //TODO: test saving blocks
+    //TODO: test new storage format
 
     override fun writeNbt(nbt: NbtCompound): NbtCompound {
-        serializer.put(map, nbt)
+        map.writeToNbt(nbt)
         return nbt
     }
 

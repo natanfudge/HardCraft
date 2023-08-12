@@ -17,12 +17,16 @@ import java.util.Set;
 
 @Mixin(GoalSelector.class)
 public class GoalSelectorMixin {
-    @Shadow
-    @Final
-    private Set<PrioritizedGoal> goals;
     @Unique
     TickThrottler hardcraft$tickThrottler = new TickThrottler();
 
+    //TODO: strafing fucks up the pathing of ranged mobs
+
+    /**
+     * @reason In other mixins, we change mob sight to always see everything around them.
+     * The problem is that then ranged mobs just try to shoot you through blocks instead of coming to get you.
+     * This changes their AI so that if they can't actually see you because there's a block in the way they will try to get to you instead.
+     */
     @Redirect(method = "tickGoals(Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ai/goal/PrioritizedGoal;tick()V"))
     public void redirectTickGoalsTick(PrioritizedGoal instance) {
         var goal = instance.getGoal();

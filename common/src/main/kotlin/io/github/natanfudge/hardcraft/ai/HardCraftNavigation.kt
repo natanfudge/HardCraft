@@ -36,7 +36,6 @@ class HardCraftNavigation(entity: MobEntity, world: World?, existingNavigation: 
         return true
     }
 }
-//TODO: test mobs like skeletons breaking blocks
 
 // These constructor parameters are meaningless
 class HardCraftPathNodeNavigator(range: Int) : PathNodeNavigator(LandPathNodeMaker(), range) {
@@ -50,7 +49,6 @@ class HardCraftPathNodeNavigator(range: Int) : PathNodeNavigator(LandPathNodeMak
         distance: Int,
         rangeMultiplier: Float
     ): Path? {
-        //TODO: test with normal mob ai
         val normalPath = wrappedNavigator?.findPathToAny(world, mob, positions, followRange, distance, rangeMultiplier)
         if (normalPath != null && normalPath.reachesTarget()) return normalPath
         // If normal means don't suffice, break right through
@@ -62,73 +60,68 @@ class HardCraftPathNodeNavigator(range: Int) : PathNodeNavigator(LandPathNodeMak
     }
 
 
-    //*
-    // \
-    //  \
-    //   *
-    private fun shortestLine(start: BlockPos, end: BlockPos): List<PathNode> {
-        val xValues = valuesBetween(start.x, end.x)
-        val zValues = valuesBetween(start.z, end.z)
-        // First, go diagonally from start to end
-        val diagonalStart = xValues.zip(zValues).map { (x, z) ->
-            PathNode(x, start.y, z)
-        }
-
-        val straightEnd = when {
-            // If the line is exactly diagonal then we can end
-            start.x - end.x == start.z - end.z -> listOf()
-            // If there's more z to go, go along the z axis
-            start.x - end.x < start.z - end.z -> {
-                valuesBetween(diagonalStart.last().z + 1, end.z)
-                    .map { PathNode(end.x, start.y, it) }
-            }
-
-            else -> {
-                // If there's more y to go, go along the y axis.
-                valuesBetween(diagonalStart.last().x + 1, end.x)
-                    .map { PathNode(it, start.y, end.z) }
-            }
-        }
-
-        return diagonalStart + straightEnd
-    }
-
-
-    private fun tunnelDown(start: BlockPos, end: BlockPos): List<PathNode> {
-        val xValues = valuesBetween(start.x, end.x)
-        val yValues = valuesBetween(start.y, end.y)
-        val zValues = valuesBetween(start.z, end.z)
-        // First, go diagonally from start to end
-        val diagonalStart = xValues.zip(zValues).map { (x, z) ->
-            PathNode(x, start.y, z)
-        }
-
-        val straightEnd = when {
-            // If the line is exactly diagonal then we can end
-            start.x - end.x == start.z - end.z -> listOf()
-            // If there's more z to go, go along the z axis
-            start.x - end.x < start.z - end.z -> {
-                valuesBetween(diagonalStart.last().z + 1, end.z)
-                    .map { PathNode(end.x, start.y, it) }
-            }
-
-            else -> {
-                // If there's more y to go, go along the y axis.
-                valuesBetween(diagonalStart.last().x + 1, end.x)
-                    .map { PathNode(it, start.y, end.z) }
-            }
-        }
-
-        return diagonalStart + straightEnd
-    }
-
-    private fun tunnel(start: BlockPos, end: BlockPos): List<PathNode> {
-        TODO()
-    }
-
-    private fun throughEmptySpace(start: BlockPos, end: BlockPos): List<PathNode> {
-        TODO("When there is a clear path without blockages, use the vanilla algorithm.")
-    }
+//    //*
+//    // \
+//    //  \
+//    //   *
+//    private fun shortestLine(start: BlockPos, end: BlockPos): List<PathNode> {
+//        val xValues = valuesBetween(start.x, end.x)
+//        val zValues = valuesBetween(start.z, end.z)
+//        // First, go diagonally from start to end
+//        val diagonalStart = xValues.zip(zValues).map { (x, z) ->
+//            PathNode(x, start.y, z)
+//        }
+//
+//        val straightEnd = when {
+//            // If the line is exactly diagonal then we can end
+//            start.x - end.x == start.z - end.z -> listOf()
+//            // If there's more z to go, go along the z axis
+//            start.x - end.x < start.z - end.z -> {
+//                valuesBetween(diagonalStart.last().z + 1, end.z)
+//                    .map { PathNode(end.x, start.y, it) }
+//            }
+//
+//            else -> {
+//                // If there's more y to go, go along the y axis.
+//                valuesBetween(diagonalStart.last().x + 1, end.x)
+//                    .map { PathNode(it, start.y, end.z) }
+//            }
+//        }
+//
+//        return diagonalStart + straightEnd
+//    }
+//
+//
+//    private fun tunnelDown(start: BlockPos, end: BlockPos): List<PathNode> {
+//        val xValues = valuesBetween(start.x, end.x)
+//        val yValues = valuesBetween(start.y, end.y)
+//        val zValues = valuesBetween(start.z, end.z)
+//        // First, go diagonally from start to end
+//        val diagonalStart = xValues.zip(zValues).map { (x, z) ->
+//            PathNode(x, start.y, z)
+//        }
+//
+//        val straightEnd = when {
+//            // If the line is exactly diagonal then we can end
+//            start.x - end.x == start.z - end.z -> listOf()
+//            // If there's more z to go, go along the z axis
+//            start.x - end.x < start.z - end.z -> {
+//                valuesBetween(diagonalStart.last().z + 1, end.z)
+//                    .map { PathNode(end.x, start.y, it) }
+//            }
+//
+//            else -> {
+//                // If there's more y to go, go along the y axis.
+//                valuesBetween(diagonalStart.last().x + 1, end.x)
+//                    .map { PathNode(it, start.y, end.z) }
+//            }
+//        }
+//
+//        return diagonalStart + straightEnd
+//    }
+//
+//    private fun tunnel(start: BlockPos, end: BlockPos): List<PathNode> {
+//    }
 
     private fun breakFoundation(start: BlockPos, end: BlockPos): List<PathNode> {
         TODO("When foundation/support mechanics are implemented, implement this as well.")

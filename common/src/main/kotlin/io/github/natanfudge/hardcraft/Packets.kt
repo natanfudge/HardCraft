@@ -5,6 +5,7 @@ package io.github.natanfudge.hardcraft
 import io.github.natanfudge.genericutils.client.ClientInit
 import io.github.natanfudge.genericutils.network.s2cPacket
 import io.github.natanfudge.hardcraft.health.CurrentHealthStorage
+import io.github.natanfudge.hardcraft.health.CurrentHealthStorageData
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import kotlinx.serialization.minecraft.BlockPosSerializer
@@ -15,7 +16,7 @@ object Packets {
     @Serializable
     data class UpdateBlockHealth( val pos: BlockPos, val newHealth: Int)
     @Serializable
-    data class LoadBlockHealth( val healthValues: Map<BlockPos, Int>)
+    data class LoadBlockHealth( val healthValues: CurrentHealthStorageData)
 
     /** Updates the current health of a single block */
     val updateBlockHealth = s2cPacket<UpdateBlockHealth>("update_block_health")

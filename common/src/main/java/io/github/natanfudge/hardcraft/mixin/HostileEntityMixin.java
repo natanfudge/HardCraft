@@ -2,6 +2,7 @@ package io.github.natanfudge.hardcraft.mixin;
 
 import io.github.natanfudge.hardcraft.ai.BreakBlockGoal;
 import io.github.natanfudge.hardcraft.ai.HardCraftNavigation;
+import io.github.natanfudge.hardcraft.injection.HardCraftHostileEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.world.World;
@@ -12,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(HostileEntity.class)
-public class HostileEntityMixin {
+public class HostileEntityMixin implements HardCraftHostileEntity {
     @Unique
     HostileEntity hardCraft$self = (HostileEntity) ((Object) this);
 
@@ -25,5 +26,14 @@ public class HostileEntityMixin {
             hardCraft$self.goalSelector.add(0, new BreakBlockGoal(hardCraft$self));
         }
         hardCraft$self.navigation = new HardCraftNavigation(hardCraft$self, world, hardCraft$self.navigation);
+    }
+
+    /**
+     * Allow individual mobs to specify at what rate they destroy blocks
+     */
+    @Override
+    public int hardcraft_demolition() {
+        //TODO: custom demolition values
+        return 5;
     }
 }

@@ -9,7 +9,8 @@ object BlockMixinHandler {
     fun onBlockPlaced(world: World, pos: BlockPos) {
         //TODO: If itemstack is damaged... set health accordingly...
 
-        // Reset current health of block when it is placed
+        // Reset current health of block when it is placed so it doesn't retain the old value
+        // (we don't have an easy way of deleting the value when the block is destroyed)
         CurrentHealthStorage.delete(world, pos)
     }
 }

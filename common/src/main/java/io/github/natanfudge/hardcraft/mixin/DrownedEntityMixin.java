@@ -16,7 +16,7 @@ public class DrownedEntityMixin {
     DrownedEntity hardCraft$self = (DrownedEntity)((Object)this);
 
     /**
-     * Drowned decide to reassign their navigation dynamically to the land navigation so we need to fix the land navigation to conform with HostileEntityMixin
+     *@reason Drowned decide to reassign their navigation dynamically to the land navigation so we need to fix the land navigation to conform with HostileEntityMixin
      */
     @Inject(method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V", at = @At("TAIL"))
     public void constructorHook(EntityType<? extends DrownedEntity> entityType, World world, CallbackInfo ci) {

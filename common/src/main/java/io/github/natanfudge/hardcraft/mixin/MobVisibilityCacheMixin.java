@@ -37,6 +37,9 @@ public class MobVisibilityCacheMixin implements HardCraftMobVisibilityCache {
         }
     }
 
+    /**
+     * Used for GoalSelectorMixin
+     */
     @Override
     public boolean hardcraft$originalCanSee(Entity entity) {
         int i = entity.getId();

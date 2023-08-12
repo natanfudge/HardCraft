@@ -2,6 +2,7 @@
   "accessWidener": "hardcraft.accessWidener",
   "injected_interfaces" : {
     "net/minecraft/class_1799": ["io/github/natanfudge/genericutils/injection/ImmutableItemStack"],
-    "net/minecraft/class_1413": ["io/github/natanfudge/hardcraft/injection/HardCraftMobVisibilityCache"]
+    "net/minecraft/class_1413": ["io/github/natanfudge/hardcraft/injection/HardCraftMobVisibilityCache"],
+    "net/minecraft/class_1588": ["io/github/natanfudge/hardcraft/injection/HardCraftHostileEntity"]
   }
 }
