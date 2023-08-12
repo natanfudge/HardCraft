@@ -16,9 +16,15 @@ fun CurrentHealthStorageDataImpl.writeToBuf(buf: ByteBuf) {
     }
 }
 
+fun createCurrentHealthStorageDataImpl(size: Int?): Long2IntOpenHashMap {
+    val map = if(size == null) Long2IntOpenHashMap() else Long2IntOpenHashMap(size)
+    map.defaultReturnValue(CurrentHealthNullValue)
+    return map
+}
+
 fun currentHealthDataFromByteBuf(buf: ByteBuf): CurrentHealthStorageDataImpl {
     val size = buf.readInt()
-    val map = Long2IntOpenHashMap(size).apply {defaultReturnValue(NullValue)}
+    val map = createCurrentHealthStorageDataImpl(size)
     repeat(size) {
         map.put(buf.readLong(), buf.readInt())
     }
@@ -32,10 +38,10 @@ fun CurrentHealthStorageDataImpl.writeToNbt(nbt: NbtCompound): NbtCompound {
         }
     }
 }
- const val NullValue = -1
+@PublishedApi internal const val CurrentHealthNullValue = -1
 
 fun currentHealthDataFromNbt(nbt: NbtCompound): CurrentHealthStorageDataImpl {
-    val map = Long2IntOpenHashMap(nbt.size).apply { defaultReturnValue(NullValue) }
+    val map = createCurrentHealthStorageDataImpl(nbt.size)
     for (key in nbt.keys) {
         map.put(key.toLong(), nbt.getInt(key))
     }
@@ -49,5 +55,5 @@ fun Long2IntMap.fastPutAll(other: Long2IntMap) {
     }
 }
 
-fun Long2IntMap.getOrNull(key: Long) = get(key).let { if(it == NullValue) null else it }
-inline fun Long2IntMap.getOrElse(key: Long, other: () -> Int?) = get(key).let { if(it == NullValue) other() else it }
+fun Long2IntMap.getOrNull(key: Long) = get(key).let { if(it == CurrentHealthNullValue) null else it }
+inline fun Long2IntMap.getOrElse(key: Long, other: () -> Int?) = get(key).let { if(it == CurrentHealthNullValue) other() else it }

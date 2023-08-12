@@ -7,11 +7,9 @@
     "WorldRendererMixin"
   ],
   "mixins": [
-    "AbstractBlockMixin",
     "BlockMixin",
     "BowAttackGoalMixin",
     "DrownedEntityMixin",
-    "EntityNavigationMixin",
     "GoalSelectorMixin",
     "HostileEntityMixin",
     "MobVisibilityCacheMixin",

@@ -83,6 +83,7 @@ class CurrentHealthStorage(private val world: World, private val map: CurrentHea
         }
         return true
     }
+    //TODO: data was not loaded properly. Seems like the issue is syncing to client.
 
     fun get(blockPos: BlockPos): Int? {
         return map.getOrElse(blockPos.asLong()) { world.getMaxBlockHealth(blockPos) }
@@ -133,7 +134,7 @@ class CurrentHealthStorage(private val world: World, private val map: CurrentHea
             if (world is ServerWorld) {
                 return world.persistentStateManager.getOrCreate(
                     { CurrentHealthStorage(world, currentHealthDataFromNbt(it)) },
-                    { CurrentHealthStorage(world, Long2IntOpenHashMap()) },
+                    { CurrentHealthStorage(world, createCurrentHealthStorageDataImpl(size = null)) },
                     PersistentId
                 )
             } else {

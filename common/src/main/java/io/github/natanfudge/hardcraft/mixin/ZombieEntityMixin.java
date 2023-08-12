@@ -27,7 +27,6 @@
 ////        getThis().goalSelector.add(0, new ControlZombieGoal(getThis()));
 ////        getThis().goalSelector.add(0, new BreakBlockGoal(getThis()));
 //////       thisValue.getNavigation().time
-////        // TODO: should be applied on every entity if it can jump. The jump mechanics are just bad
 ////        getThis().stepHeight = 1.0f;
 //    }
 //
