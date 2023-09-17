@@ -4,7 +4,8 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
 
-class CombinedInventory(private val inv1: Inventory, private val inv2: Inventory) : Inventory {
+
+class ConcatenatedInventory(private val inv1: Inventory, private val inv2: Inventory) : Inventory {
     private val inv2Start = inv1.size()
     override fun clear() {
         inv1.clear()

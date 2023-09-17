@@ -10,6 +10,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ThreadedAnvilChunkStorage.class)
 public class ThreadedAnvilChunkStorageMixin {
+    /**
+     * Event handler for ServerEvents.onPlayerInitialChunkLoad(player)
+     */
     @Inject(method = "handlePlayerAddedOrRemoved(Lnet/minecraft/server/network/ServerPlayerEntity;Z)V", at = @At("HEAD"))
     public void handlePlayerAddedOrRemovedHook(ServerPlayerEntity player, boolean added, CallbackInfo ci) {
         if (added) {

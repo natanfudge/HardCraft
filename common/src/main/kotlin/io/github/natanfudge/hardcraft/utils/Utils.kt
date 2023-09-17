@@ -38,8 +38,19 @@ operator fun BlockPos.plus(direction: SpatialDirection): BlockPos {
     return BlockPos(this.x + direction.x, this.y + direction.y, this.z + direction.z)
 }
 
- fun valuesBetween(start: Int, end: Int): IntProgression {
+fun valuesBetween(start: Int, end: Int): IntProgression {
     return if (start <= end) start..end else start downTo end
 }
 
-//data class Direction()
+inline fun <T, R> cartesianProduct(list1: Iterable<T>, list2: Iterable<T>, list3: Iterable<T>, map: (T, T, T) -> R): List<R> {
+    return buildList {
+        for (item1 in list1) {
+            for (item2 in list2) {
+                for (item3 in list3) {
+                    add(map(item1, item2, item3))
+                }
+            }
+        }
+    }
+}
+inline fun Double.squared() = this * this

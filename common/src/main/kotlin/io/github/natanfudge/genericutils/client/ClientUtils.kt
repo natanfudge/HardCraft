@@ -18,15 +18,22 @@ inline fun <reified T : Screen> whenCurrentScreenIs(action: T.(ClientWorld?) -> 
 
 fun getClient(): MinecraftClient = MinecraftClient.getInstance()
 
+/**
+ * Utilities for creating a [TooltipSupplier] for screen [Widget]s
+ */
 object Tooltips {
-    fun ofItemStack( stack: ItemStack, screen: Screen): TooltipSupplier = TooltipSupplier { _, poseStack, x, y ->
+    fun ofItemStack(stack: ItemStack, screen: Screen): TooltipSupplier = TooltipSupplier { _, poseStack, x, y ->
         screen.renderTooltip(poseStack, stack, x, y)
     }
+
     fun ofText(text: Text, screen: Screen) = TooltipSupplier { _, matrices, mouseX, mouseY: Int ->
-        screen.renderTooltip(matrices,text,mouseX,mouseY)
+        screen.renderTooltip(matrices, text, mouseX, mouseY)
     }
 }
 
+/**
+ * Performs push before [usage] and pop after.
+ */
 inline fun MatrixStack.use(usage: MatrixStack.() -> Unit) {
     push()
     usage()

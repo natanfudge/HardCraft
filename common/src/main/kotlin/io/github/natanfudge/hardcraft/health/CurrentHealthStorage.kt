@@ -22,14 +22,17 @@ import net.minecraft.world.World
 private lateinit var clientStorage: CurrentHealthStorage
 
 
-typealias CurrentHealthStorageDataImpl = Long2IntMap
+/**
+ * CurrentHealthStorage data implementation
+ */
+typealias CHSData = Long2IntMap
 
 /**
  * Generifying this is not possible because it uses Long2IntMap for efficiency. If it was generic all the primitive values will be boxed. Where is Valhalla?
  */
-class CurrentHealthStorage(private val world: World, private val map: CurrentHealthStorageDataImpl) : PersistentState() {
+class CurrentHealthStorage(private val world: World, private val map: CHSData) : PersistentState() {
 
-    val allValues: CurrentHealthStorageDataImpl = map
+    val allValues: CHSData = map
 
     /**
      * Sends health info from the server to a player
@@ -38,6 +41,9 @@ class CurrentHealthStorage(private val world: World, private val map: CurrentHea
         Packets.loadBlockHealth.send(Packets.LoadBlockHealth(map), toPlayer)
     }
 
+    /**
+     * Forgets CH info about a specific position, essentially making it not be damaged.
+     */
     fun delete(blockPos: BlockPos) {
         markDirty()
         map.remove(blockPos.asLong())
@@ -76,7 +82,7 @@ class CurrentHealthStorage(private val world: World, private val map: CurrentHea
          * Receives health info on the client on a player
          */
         @Environment(EnvType.CLIENT)
-        fun load(world: ClientWorld, values: CurrentHealthStorageDataImpl) {
+        fun load(world: ClientWorld, values: CHSData) {
             clientStorage = CurrentHealthStorage(world, values)
         }
 
@@ -95,6 +101,9 @@ class CurrentHealthStorage(private val world: World, private val map: CurrentHea
             return getStorage(world).get(pos)
         }
 
+        /**
+         * Similarly to MinecraftClient.getInstance(), gets the singular instance in the client-only that stores CH data.
+         */
         @JvmStatic
         @Environment(EnvType.CLIENT)
         fun getClientStorage() = clientStorage
@@ -103,8 +112,8 @@ class CurrentHealthStorage(private val world: World, private val map: CurrentHea
         private fun getStorage(world: World): CurrentHealthStorage {
             if (world is ServerWorld) {
                 return world.persistentStateManager.getOrCreate(
-                    { CurrentHealthStorage(world, currentHealthDataFromNbt(it)) },
-                    { CurrentHealthStorage(world, createCurrentHealthStorageDataImpl(size = null)) },
+                    { CurrentHealthStorage(world, CHSDataFromNbt(it)) },
+                    { CurrentHealthStorage(world, createCHSData(size = null)) },
                     PersistentId
                 )
             } else {

@@ -12,12 +12,16 @@ class HardCraftWailaPlugin : IWailaPlugin {
     }
 }
 
+/**
+ * Shows "Health: " info of blocks in waila
+ */
 object HardcraftBlockComponentProvider : IBlockComponentProvider {
     override fun appendBody(tooltip: ITooltip, accessor: IBlockAccessor, config: IPluginConfig) {
         val world = accessor.world
         val pos = accessor.position
         val currentHealth = world.getBlockCurrentHealth(pos) ?: return
         val maxHealth = world.getMaxBlockHealth(pos) ?: return
+        println("According to waila, health at ${pos} is $currentHealth/$maxHealth")
         tooltip.addLine(Text.literal("Health: $currentHealth/$maxHealth"))
     }
 }

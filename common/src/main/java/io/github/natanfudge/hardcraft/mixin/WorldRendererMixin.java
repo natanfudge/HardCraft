@@ -24,6 +24,9 @@ public class WorldRendererMixin {
     @Final
     private MinecraftClient client;
 
+    /**
+     * Event handler for ClientEvents.onWorldRendererTick
+     */
     @Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V", at = @At(value = "HEAD"))
     public void tickHook(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, CallbackInfo ci) {
         ClientEvents.onWorldRendererTick(camera, world, matrices, bufferBuilders, client);

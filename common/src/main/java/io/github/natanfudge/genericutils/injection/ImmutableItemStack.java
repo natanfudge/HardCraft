@@ -5,7 +5,8 @@ import net.minecraft.nbt.NbtCompound;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * We use java because it's more predictable for injection
+ * Interface for using ItemStacks better - immutability.
+ * We use java because it's more predictable for injection - and we inject this interface as an interface of ItemStack.
  */
 public interface ImmutableItemStack {
     public default boolean isEmpty() {

@@ -9,12 +9,12 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.nbt.NbtList
 import net.minecraft.util.collection.DefaultedList
-/*
- * Easy Inventory implementation
- */
-class FixedSlotInventory(slots: Int): Inventory {
-    private val inventory = DefaultedList.ofSize(slots, ItemStack.EMPTY)
 
+/**
+ * Easy to use Inventory implementation of a fixed amount of slots
+ */
+class FixedSlotInventory(slots: Int) : Inventory {
+    private val inventory = DefaultedList.ofSize(slots, ItemStack.EMPTY)
 
     override fun clear() {
         inventory.clear()
@@ -62,28 +62,3 @@ class FixedSlotInventory(slots: Int): Inventory {
 
 }
 
-private const val ItemStackListSlotKey = "Slot"
-private const val ItemStackListKey = "Items"
-
-fun Inventory.writeItemsNbt(nbt: NbtCompound) {
-    val nbtList = NbtList()
-    forEachNonEmptyStackIndexed { i, stack ->
-        val compound = NbtCompound()
-        compound.putByte(ItemStackListSlotKey, i.toByte())
-        stack.writeNbt(compound)
-        nbtList.add(compound)
-    }
-    nbt.put(ItemStackListKey, nbtList)
-}
-
-fun Inventory.readItemsNbt(nbt: NbtCompound) {
-    val nbtList = nbt.getList(ItemStackListKey, NbtElement.COMPOUND_TYPE.toInt())
-
-    for (i in nbtList.indices) {
-        val nbtCompound = nbtList.getCompound(i)
-        val j = nbtCompound.getByte(ItemStackListSlotKey).toInt() and 255
-        if (j >= 0 && j < size()) {
-            setStack(j, ItemStack.fromNbt(nbtCompound))
-        }
-    }
-}

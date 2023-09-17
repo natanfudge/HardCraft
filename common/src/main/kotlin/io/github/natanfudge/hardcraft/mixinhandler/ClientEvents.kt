@@ -28,4 +28,3 @@ object ClientEvents {
     }
 }
 
-inline fun Double.squared() = this * this

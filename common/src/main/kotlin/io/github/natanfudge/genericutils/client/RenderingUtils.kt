@@ -21,6 +21,9 @@ fun Textures.vanillaBackgroundTexture(path: String) = vanillaTexturePart(path, w
 fun Textures.customTexture(path: String, width: Int, height: Int) =
     TexturePart(csId(path), u = 0, v = 0, width, height, textureWidth = width, textureHeight = height)
 
+/**
+ * Represents a static texture that can be drawn per client tick at a specified position with [draw]
+ */
 data class TexturePart(
     val texture: Identifier,
     val u: Int,

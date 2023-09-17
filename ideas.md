@@ -43,12 +43,10 @@
 
 ## New mob mechanics
   - All mobs actively try to fuck up the player at all times. 
-  - Mobs, unfairly, find the closest player, with no respect to distance or vision, and lock on to him. 
-  - They may break the lock with certain triggers e.g. time passed or damage taken and lock into a different player. 
-  - Once a player has been locked, the mob will do everything in its power to kill the player. 
+  - Mobs, unfairly, find the closest player, with no respect to distance or vision, and try to kill him.
   - If a reasonable path is found, the mob will use the path and attack the player as usual.
-  - If no path exists, and a tunnel may be made to reach the player, mobs will break blocks along the way to get to the player. 
-  - If no path exists and no tunnel may be made, mobs will break blocks that support the player - destroying sky bases. 
+  - If no path exists and the mob is on the same level or higher than the play - mobs will break blocks along the way to get to the player.
+  - If no path exists and the player is taller - need to think about this, what are the criteria for destroying Support?
   - Mobs may be dumb - and destroy anything no matter how strong the block is - or be smart and find the weakest blocks to destroy to get to the player. 
   - Mobs may have a bigger step height. 
 

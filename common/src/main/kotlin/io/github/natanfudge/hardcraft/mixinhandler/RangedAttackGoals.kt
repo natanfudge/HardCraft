@@ -7,6 +7,11 @@ import net.minecraft.entity.ai.goal.Goal
 import net.minecraft.entity.ai.goal.ProjectileAttackGoal
 import net.minecraft.entity.mob.MobEntity
 
+/**
+ * [BowAttackGoal], [CrossbowAttackGoal] and [ProjectileAttackGoal] are all goals that do pretty much the same -
+ * tell the mob to do a ranged attack. They have the exact same structure and logic, but are seperate in code (thanks mojang).
+ * Since we have special handling for ranged attacks we have these methods to make it easier to work with them.
+ */
 object RangedAttackGoals {
     @JvmStatic
     fun getRangedAttackGoalActor(goal: Goal): MobEntity?  = when(goal) {

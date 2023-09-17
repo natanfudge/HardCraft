@@ -20,7 +20,7 @@ public class GoalSelectorMixin {
     @Unique
     TickThrottler hardcraft$tickThrottler = new TickThrottler();
 
-    //TODO: strafing fucks up the pathing of ranged mobs
+    //Note: strafing fucks up the pathing of ranged mobs, but this happens in vanilla as well.
 
     /**
      * @reason In other mixins, we change mob sight to always see everything around them.

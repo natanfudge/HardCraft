@@ -6,8 +6,8 @@ import io.github.natanfudge.genericutils.client.ClientInit
 import io.github.natanfudge.genericutils.network.PacketSerializer
 import io.github.natanfudge.genericutils.network.s2cPacket
 import io.github.natanfudge.hardcraft.health.CurrentHealthStorage
-import io.github.natanfudge.hardcraft.health.CurrentHealthStorageDataImpl
-import io.github.natanfudge.hardcraft.health.currentHealthDataFromByteBuf
+import io.github.natanfudge.hardcraft.health.CHSData
+import io.github.natanfudge.hardcraft.health.CHSDataFromBuf
 import io.github.natanfudge.hardcraft.health.writeToBuf
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
@@ -20,7 +20,7 @@ object Packets {
     @Serializable
     data class UpdateBlockHealth( val pos: BlockPos, val newHealth: Int)
     @Serializable
-    data class LoadBlockHealth( val healthValues: CurrentHealthStorageDataImpl)
+    data class LoadBlockHealth( val healthValues: CHSData)
 
     /** Updates the current health of a single block */
     val updateBlockHealth = s2cPacket<UpdateBlockHealth>("update_block_health")
@@ -34,7 +34,7 @@ object Packets {
         }
 
         override fun read(buf: PacketByteBuf): LoadBlockHealth {
-            return LoadBlockHealth(currentHealthDataFromByteBuf(buf))
+            return LoadBlockHealth(CHSDataFromBuf(buf))
         }
 
     })

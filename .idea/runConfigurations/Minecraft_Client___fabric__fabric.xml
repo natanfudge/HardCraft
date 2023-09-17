@@ -1,0 +1,19 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Minecraft Client (:fabric)" type="Application" factoryName="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="jbr-17" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="MAIN_CLASS_NAME" value="dev.architectury.transformer.TransformerRuntime" />
+    <module name="HardCraft.fabric.main" />
+    <shortenClasspath name="ARGS_FILE" />
+    <option name="VM_PARAMETERS" value="-Dfabric.dli.config=C:\Users\natan\Desktop\HardCraft\fabric\.gradle\loom-cache\launch.cfg -Dfabric.dli.env=client -Dfabric.dli.main=net.fabricmc.loader.impl.launch.knot.KnotClient -Darchitectury.main.class=C:\Users\natan\Desktop\HardCraft\fabric\.gradle\architectury\.main_class -Darchitectury.runtime.transformer=C:\Users\natan\Desktop\HardCraft\fabric\.gradle\architectury\.transforms -Darchitectury.properties=C:\Users\natan\Desktop\HardCraft\fabric\.gradle\architectury\.properties -Djdk.attach.allowAttachSelf=true -javaagent:C:\Users\natan\Desktop\HardCraft\.gradle\architectury\architectury-transformer-agent.jar -XX:+AllowEnhancedClassRedefinition " />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/fabric/run/" />
+    <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
+      <option name="credential" />
+      <option name="region" />
+      <option name="useCurrentConnection" value="false" />
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
