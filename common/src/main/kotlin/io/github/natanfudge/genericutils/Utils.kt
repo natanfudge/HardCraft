@@ -1,7 +1,6 @@
 package io.github.natanfudge.genericutils
 
 import io.github.natanfudge.hardcraft.HardCraft
-import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
@@ -24,7 +23,6 @@ import net.minecraft.world.WorldEvents
 import net.minecraft.world.event.GameEvent
 
 
-fun csId(path: String) = Identifier(HardCraft.ModId, path)
 
 object Voxels {
     fun createBlockCuboid(minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int): VoxelShape {

@@ -1,4 +1,3 @@
-@file:UseSerializers(BlockPosSerializer::class)
 package io.github.natanfudge.hardcraft
 
 
@@ -9,6 +8,7 @@ import io.github.natanfudge.hardcraft.health.CurrentHealthStorage
 import io.github.natanfudge.hardcraft.health.CHSData
 import io.github.natanfudge.hardcraft.health.CHSDataFromBuf
 import io.github.natanfudge.hardcraft.health.writeToBuf
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import kotlinx.serialization.minecraft.BlockPosSerializer
@@ -16,9 +16,9 @@ import net.minecraft.network.PacketByteBuf
 import net.minecraft.util.math.BlockPos
 
 
-object Packets {
+object Packets: HardCraft.Context() {
     @Serializable
-    data class UpdateBlockHealth( val pos: BlockPos, val newHealth: Int)
+    data class UpdateBlockHealth(@Contextual val pos: BlockPos, val newHealth: Int)
     @Serializable
     data class LoadBlockHealth( val healthValues: CHSData)
 

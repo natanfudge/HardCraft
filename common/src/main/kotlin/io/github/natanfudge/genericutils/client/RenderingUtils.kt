@@ -1,7 +1,8 @@
 package io.github.natanfudge.genericutils.client
 
 import com.mojang.blaze3d.systems.RenderSystem
-import io.github.natanfudge.genericutils.csId
+import io.github.natanfudge.genericutils.ModContext
+import io.github.natanfudge.genericutils.modId
 import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.Identifier
@@ -18,8 +19,9 @@ fun Textures.vanillaTexturePart(path: String, u: Int = 0, v: Int = 0, width: Int
 
 fun Textures.vanillaBackgroundTexture(path: String) = vanillaTexturePart(path, width = 176, height = 166)
 
+context(ModContext)
 fun Textures.customTexture(path: String, width: Int, height: Int) =
-    TexturePart(csId(path), u = 0, v = 0, width, height, textureWidth = width, textureHeight = height)
+    TexturePart(modId(path), u = 0, v = 0, width, height, textureWidth = width, textureHeight = height)
 
 /**
  * Represents a static texture that can be drawn per client tick at a specified position with [draw]

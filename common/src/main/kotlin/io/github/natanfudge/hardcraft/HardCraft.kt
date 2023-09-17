@@ -1,33 +1,42 @@
 package io.github.natanfudge.hardcraft
 
+import io.github.natanfudge.genericutils.CommonInit
+import io.github.natanfudge.genericutils.ModContext
 import io.github.natanfudge.genericutils.client.ClientInit
+import io.github.natanfudge.genericutils.commonInit
+import io.github.natanfudge.genericutils.register
+import io.github.natanfudge.hardcraft.item.DebugCurrentHealthItem
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.minecraft.Nbt
 import kotlinx.serialization.minecraft.encodeToNbt
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+
 @Serializable
 data class Amar(val x: Int, val y: String)
 
 object HardCraft {
+    abstract class Context : ModContext.Superclass(ModId)
+
     const val Name = "HardCraft"
     const val ModId = "hardcraft"
     val Logger = LogManager.getLogger(Name)
 
-    fun init() {
-        val toNbt = Nbt.encodeToNbt(Amar(1,"Asdf"))
-        println("Halo Hardcraft! my nbt is ${toNbt}")
+    fun init() = commonInit(ModId) {
+        println("HardCraft initializing")
+        register(
+            DebugCurrentHealthItem.Damage, DebugCurrentHealthItem.Repair
+        )
     }
 }
 
 object HardCraftClient {
-    fun init()  = with(ClientInit){
+    fun init() = with(ClientInit) {
         Packets.initClient()
     }
 }
 
 //TODO: next steps.
-// 1. Solve bug: only one block renders damage at a time
 // 2. Implement debug items:
 //   a. Debug: repair block. Crouch+right click to cycle through 100 / 50% / 100%
 //   b. Debug: damage block. Crouch + rightclick to cycle through 100 / 50% / 100%

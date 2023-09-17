@@ -2,10 +2,11 @@ package io.github.natanfudge.genericutils.network
 
 import dev.architectury.networking.NetworkManager
 import io.github.natanfudge.genericutils.CommonInit
+import io.github.natanfudge.genericutils.ModContext
 import io.github.natanfudge.genericutils.client.ClientInit
 import io.github.natanfudge.genericutils.client.getClient
 import io.github.natanfudge.genericutils.createBytebuf
-import io.github.natanfudge.genericutils.csId
+import io.github.natanfudge.genericutils.modId
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.minecraft.Buf
 import kotlinx.serialization.serializer
@@ -25,12 +26,13 @@ sealed interface PacketContext<W : World?> {
     class Client(override val world: ClientWorld?) : PacketContext<ClientWorld?>
     class Server(override val world: ServerWorld) : PacketContext<ServerWorld>
 }
-
-inline fun <reified T> c2sPacket(path: String, format: Buf = Buf) = C2SPacketType<T>(csId(path), format.serializersModule.serializer(), format)
+context (ModContext)
+inline fun <reified T> c2sPacket(path: String, format: Buf = Buf) = C2SPacketType<T>(modId(path), format.serializersModule.serializer(), format)
+context (ModContext)
 inline fun <reified T> s2cPacket(path: String, format: Buf = Buf) =
     s2cPacket<T>(path, AutomaticPacketSerializer(format.serializersModule.serializer(), format))
-
-inline fun <reified T> s2cPacket(path: String, serializer: PacketSerializer<T>) = S2CPacketType(csId(path), serializer)
+context (ModContext)
+inline fun <reified T> s2cPacket(path: String, serializer: PacketSerializer<T>) = S2CPacketType(modId(path), serializer)
 
 class C2SPacketType<T>(private val id: Identifier, private val serializer: KSerializer<T>, private val format: Buf) {
     context(CommonInit)

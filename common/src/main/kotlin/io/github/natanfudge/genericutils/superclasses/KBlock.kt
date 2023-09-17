@@ -46,7 +46,7 @@ abstract class KBlock(
     /**
      * The same ID will be used for registering the block and potential items and block entities
      */
-    id: String,
+    override val idPath: String,
     blockSettings: Settings,
     /**
      * If specified, a BlockItem will be generated for the block
@@ -61,7 +61,7 @@ abstract class KBlock(
      * If true, the Inventory at the block's position will be scattered on the ground when the block is destroyed
      */
     private val dropInventoryOnDestroyed: Boolean = false
-) : Block(blockSettings) {
+) : Block(blockSettings), Registerable {
     init {
         // Validation
         if (this is BlockEntityProvider && this !is KBlockEntityProvider) {
@@ -69,7 +69,6 @@ abstract class KBlock(
         }
     }
 
-    val id = csId(id)
     val item = BlockItem(this, itemSettings)
 
     //////////// Inventory implementation /////////
