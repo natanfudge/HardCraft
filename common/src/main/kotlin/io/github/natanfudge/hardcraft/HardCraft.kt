@@ -35,14 +35,8 @@ object HardCraftClient {
         Packets.initClient()
     }
 }
-//TODO: grander scheme steps.
-// 1. Attempt to abstract all Minecraft calls.  Major issues:
-// - Avoid using Minecraft classes in API
-// - Avoid boxing instances on methods that run every tick
-// 2. Find the project that ran Minecraft as a unit test and revive it. This would be useful for testing mod changes across versions.
 
 //TODO: next steps.
-// 3. Implement config screen
 // 4. Add config values:
 //      a. Hard/Easy mode
 // 5. Implement Itemstack block-based damage
