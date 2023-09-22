@@ -129,19 +129,19 @@ class CurrentHealthStorage(private val world: World, private val map: CHSData) :
 
 }
 
-fun World.getBlockCurrentHealth(pos: BlockPos): Int? = CurrentHealthStorage.get(this, pos)
+fun World.getCurrentBlockHealth(pos: BlockPos): Int? = CurrentHealthStorage.get(this, pos)
 
 /**
  * These methods are ServerWorld because they should only be called on the server, and they will automatically send a packet to the client to update it.
  */
-fun ServerWorld.setBlockCurrentHealth(pos: BlockPos, amount: Int): Boolean {
+fun ServerWorld.setCurrentBlockHealth(pos: BlockPos, amount: Int): Boolean {
     Packets.updateBlockHealth.sendToWorld(Packets.UpdateBlockHealth(pos, amount), this)
     return CurrentHealthStorage.set(this, pos, amount)
 }
 
 fun ServerWorld.repairBlock(pos: BlockPos, amount: Int): Boolean {
-    val old = getBlockCurrentHealth(pos) ?: return false
-    return setBlockCurrentHealth(pos, old + amount)
+    val old = getCurrentBlockHealth(pos) ?: return false
+    return setCurrentBlockHealth(pos, old + amount)
 }
 
 fun ServerWorld.damageBlock(pos: BlockPos, amount: Int): Boolean = repairBlock(pos, -amount)

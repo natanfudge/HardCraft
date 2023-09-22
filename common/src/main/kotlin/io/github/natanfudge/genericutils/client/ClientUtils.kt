@@ -2,6 +2,7 @@ package io.github.natanfudge.genericutils.client
 
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.gui.widget.ButtonWidget.TooltipSupplier
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.world.ClientWorld
@@ -30,6 +31,13 @@ object Tooltips {
         screen.renderTooltip(matrices, text, mouseX, mouseY)
     }
 }
+
+object Buttons {
+    fun create(text: Text,x: Int, y: Int, width: Int, height: Int, onClick: (ButtonWidget) -> Unit): ButtonWidget {
+        return ButtonWidget(x,y,width,height,text,onClick)
+    }
+}
+
 
 /**
  * Performs push before [usage] and pop after.

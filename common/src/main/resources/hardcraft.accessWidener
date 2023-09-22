@@ -1,4 +1,6 @@
 accessWidener v1 named
+
+############ Utils
 # Used for Tooltips.ofItemStack
 accessible method net/minecraft/client/gui/screen/Screen renderTooltip (Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/item/ItemStack;II)V
 # Useful for rendering utils
@@ -7,6 +9,10 @@ accessible field net/minecraft/client/gui/screen/ingame/HandledScreen y I
 accessible field net/minecraft/client/gui/screen/ingame/HandledScreen backgroundWidth I
 accessible field net/minecraft/client/gui/screen/ingame/HandledScreen backgroundHeight I
 accessible field net/minecraft/client/gui/DrawableHelper zOffset I
+accessible field net/minecraft/client/gui/screen/Screen textRenderer Lnet/minecraft/client/font/TextRenderer;
+
+############### HardCraft
+
 # Used for modifying entity goals
 accessible field net/minecraft/entity/mob/MobEntity goalSelector Lnet/minecraft/entity/ai/goal/GoalSelector;
 # Used for modifying pathing
@@ -15,9 +21,6 @@ accessible field net/minecraft/entity/mob/MobEntity navigation Lnet/minecraft/en
 accessible method net/minecraft/entity/ai/pathing/EntityNavigation createPathNodeNavigator (I)Lnet/minecraft/entity/ai/pathing/PathNodeNavigator;
 accessible field net/minecraft/entity/mob/DrownedEntity landNavigation Lnet/minecraft/entity/ai/pathing/MobNavigation;
 mutable field net/minecraft/entity/mob/DrownedEntity landNavigation Lnet/minecraft/entity/ai/pathing/MobNavigation;
-#accessible field net/minecraft/entity/ai/pathing/EntityNavigation pathNodeNavigator Lnet/minecraft/entity/ai/pathing/PathNodeNavigator;
-#mutable field net/minecraft/entity/ai/pathing/EntityNavigation pathNodeNavigator Lnet/minecraft/entity/ai/pathing/PathNodeNavigator;
-#accessible field net/minecraft/entity/mob/MobVisibilityCache owner Lnet/minecraft/entity/mob/MobEntity;
 accessible field net/minecraft/entity/ai/goal/BowAttackGoal actor Lnet/minecraft/entity/mob/HostileEntity;
 accessible field net/minecraft/entity/ai/goal/CrossbowAttackGoal actor Lnet/minecraft/entity/mob/HostileEntity;
 accessible field net/minecraft/entity/ai/goal/ProjectileAttackGoal owner Lnet/minecraft/entity/ai/RangedAttackMob;
