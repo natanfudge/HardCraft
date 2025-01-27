@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "io.github.natanfudge.hardcraft.client.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "WorldRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

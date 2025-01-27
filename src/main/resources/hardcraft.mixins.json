@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "package": "io.github.natanfudge.hardcraft.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+
+  "mixins": [
+    "BlockMixin",
+    "DrownedEntityMixin",
+    "GoalSelectorMixin",
+    "HostileEntityMixin",
+    "MobVisibilityCacheMixin",
+    "ThreadedAnvilChunkStorageMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

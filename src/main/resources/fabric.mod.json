@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "hardcraft",
+  "version": "${version}",
+  "name": "HardCraft",
+  "description": "Makes Minecraft hard. Actually hard.",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/hardcraft/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.natanfudge.hardcraft.HardCraft"
+    ]
+  },
+  "mixins": [
+    "hardcraft.mixins.json",
+    {
+      "config": "hardcraft.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.10",
+    "fabric-language-kotlin": ">=1.13.0+kotlin.2.1.0",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  },
+  "custom": {
+    "loom:injected_interfaces": {
+      "net/minecraft/class_1413": ["io/github/natanfudge/hardcraft/injection/HardCraftMobVisibilityCache"],
+      "net/minecraft/class_1588": ["io/github/natanfudge/hardcraft/injection/HardCraftHostileEntity"]
+    }
+  }
+}

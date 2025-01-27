@@ -1,120 +1,116 @@
-import java.io.FileInputStream
-import java.net.URI
-import java.util.*
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    java
-    alias(libs.plugins.architectury.loom) apply false
-    alias(libs.plugins.loom.vineflower) apply false
-    alias(libs.plugins.architectury.plugin)
-    alias(libs.plugins.kotlin)
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.loom)
     alias(libs.plugins.kotlin.serialization)
     id("maven-publish")
 }
 
-architectury {
-    minecraft = libs.versions.minecraft.get()
-}
-val yarnVersion: String = libs.versions.yarn.mappings.get()
-val minecraftLib: Provider<MinimalExternalModuleDependency> = libs.minecraft
-val kotlinSerialization: Provider<MinimalExternalModuleDependency> = libs.kotlin.serialization.minecraft
-val kotlinTest: Provider<MinimalExternalModuleDependency> = libs.kotlin.test
-subprojects {
-    apply(plugin = "dev.architectury.loom")
-    apply(plugin = "maven-publish")
-    apply(plugin = "io.github.juuxel.loom-vineflower")
-    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
+version = project.property("mod_version") as String
+group = project.property("maven_group") as String
 
-    repositories {
-        mavenLocal()
-        maven {
-            name = "wthit"
-            url = URI("https://maven2.bai.lol")
-            content {
-                includeGroup ("lol.bai")
-                includeGroup ("mcp.mobius.waila")
-            }
+base {
+    archivesName.set(project.property("archives_base_name") as String)
+}
+
+val targetJavaVersion = 21
+java {
+    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+    // if it is present.
+    // If you remove this line, sources will not be generated.
+    withSourcesJar()
+}
+
+kotlin {
+    jvmToolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+        // Fixes Hidpi issues, has better hot reload support.
+        vendor = JvmVendorSpec.JETBRAINS
+    }
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-receivers")
+    }
+}
+
+loom {
+    splitEnvironmentSourceSets()
+    accessWidenerPath.set(file("src/main/resources/${rootProject.property("mod_id")}.accesswidener"))
+
+    mods {
+        register("hardcraft") {
+            sourceSet("main")
+            sourceSet("client")
+        }
+    }
+}
+
+repositories {
+    maven {
+        url  = uri("https://maven2.bai.lol")
+        content {
+            includeGroup ("lol.bai")
+            includeGroup ("mcp.mobius.waila")
+        }
+    }
+    mavenLocal() // For minecraft kotlin serialization
+}
+
+dependencies {
+    // To change the versions see the gradle.properties file
+    minecraft(libs.minecraft)
+    mappings("net.fabricmc:yarn:${libs.versions.yarn.mappings.get()}:v2")
+    modImplementation(libs.kotlin.serialization.minecraft)
+    modImplementation(libs.fabric.loader)
+    modImplementation(libs.fabric.language.kotlin)
+    modImplementation(libs.fabric.api)
+    modCompileOnly(libs.wthit.api)
+    modRuntimeOnly(libs.wthit.fabric)
+}
+
+tasks.processResources {
+    inputs.property("version", project.version)
+    inputs.property("minecraft_version", libs.versions.minecraft.get())
+    filteringCharset = "UTF-8"
+
+    filesMatching("fabric.mod.json") {
+        expand(
+            "version" to project.version,
+            "minecraft_version" to libs.versions.minecraft.get(),
+        )
+    }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+    options.release.set(targetJavaVersion)
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions.jvmTarget.set(JvmTarget.fromTarget(targetJavaVersion.toString()))
+}
+
+tasks.jar {
+    from("LICENSE") {
+        rename { "${it}_${project.base.archivesName}" }
+    }
+}
+
+// configure the maven publication
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            artifactId = project.property("archives_base_name") as String
+            from(components["java"])
         }
     }
 
-    dependencies {
-        "minecraft"(minecraftLib)
-        "mappings"("net.fabricmc:yarn:${yarnVersion}:v2")
-        "modImplementation"(kotlinSerialization)
-        testImplementation(kotlinTest)
-        testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.3")
-    }
-
-    tasks.test {
-        useJUnit()
-    }
-}
-
-extra["mod_properties"] = mapOf(
-    "mod_id" to property("mod_id"),
-    "display_name" to property("display_name"),
-    "group" to property("maven_group"),
-    "version" to libs.versions.mod.version.get(),
-    "minecraft_version" to libs.versions.minecraft.get(),
-    "architectury_version" to libs.versions.architectury.api.get(),
-    "mod_description" to file("description.md").readText(),
-    "license" to property("license_name"),
-    "github_repo" to property("github_repo"),
-    "authors" to property("authors")
-)
-
-
-val modVersion: String = libs.versions.mod.version.get()
-allprojects {
-    apply(plugin = "java")
-    apply(plugin = "kotlin")
-    apply(plugin = "architectury-plugin")
-
-    base.archivesName.set(rootProject.property("archives_base_name").toString())
-    version = modVersion
-    group = rootProject.property("maven_group").toString()
-
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
-    }
-
-    dependencies {
-        compileOnly("org.jetbrains.kotlin:kotlin-stdlib")
-    }
-
-    tasks.withType<JavaCompile> {
-        options.encoding = "UTF-8"
-        options.release.set(17)
-    }
-    kotlin.target.compilations.all {
-        kotlinOptions.jvmTarget = "17"
-    }
-
-    kotlin {
-        jvmToolchain(17)
-        compilerOptions {
-            freeCompilerArgs.add("-Xcontext-receivers")
-        }
-    }
-
-    java {
-        withSourcesJar()
+        // Add repositories to publish to here.
+        // Notice: This block does NOT have the same function as the block in the top level.
+        // The repositories here will be used for publishing your artifact, not for
+        // retrieving dependencies.
     }
 }
-
-
-fun getSecretProperty(path: String, key: String): String {
-    val rootPath = System.getenv("SECRETS_PATH")
-    val file = File("${rootPath}/${path}.properties")
-    if (!file.exists()) return ""
-    val properties = Properties()
-    FileInputStream(file).use { properties.load(it) }
-    return properties[key].toString()
-}
-
-fun getSecretFile(path: String): String {
-    val rootPath = System.getenv("SECRETS_PATH")
-    val file = File("${rootPath}/${path}")
-    if (!file.exists()) return ""
-    return String(file.readBytes())
-}
-

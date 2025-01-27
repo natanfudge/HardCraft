@@ -1,1 +1,0 @@
-Minecraft library mod for kotlin mods that allows you to easily save data to NBT and PacketByteBuf using kotlinx.serialization.
