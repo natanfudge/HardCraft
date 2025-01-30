@@ -1,4 +1,4 @@
-package io.github.natanfudge.hardcraft.client.mixin;
+package io.github.natanfudge.hardcraft.mixin.client;
 
 import io.github.natanfudge.hardcraft.client.mixinhandler.ClientEvents;
 import net.minecraft.client.MinecraftClient;

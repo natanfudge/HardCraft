@@ -35,13 +35,13 @@ kotlin {
 }
 
 loom {
-    splitEnvironmentSourceSets()
+//    splitEnvironmentSourceSets()
     accessWidenerPath.set(file("src/main/resources/${rootProject.property("mod_id")}.accesswidener"))
 
     mods {
         register("hardcraft") {
             sourceSet("main")
-            sourceSet("client")
+//            sourceSet("client")
         }
     }
 }

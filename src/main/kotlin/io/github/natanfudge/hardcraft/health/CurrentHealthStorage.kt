@@ -1,7 +1,9 @@
 package io.github.natanfudge.hardcraft.health
 
+import io.github.natanfudge.genericutils.client.getClient
 import io.github.natanfudge.genericutils.destroyBlock
 import io.github.natanfudge.genericutils.isServer
+import io.github.natanfudge.hardcraft.HardCraft
 import io.github.natanfudge.hardcraft.Packets
 import it.unimi.dsi.fastutil.longs.Long2IntMap
 import net.fabricmc.api.EnvType
@@ -17,8 +19,8 @@ import net.minecraft.world.World
  * Minecraft doesn't provide a mechanism for loading PersistentStorage for clients,
  * so we keep a map ourselves so a client can still reach for the data. We sync the data ourselves.
  */
-
- lateinit var _clientStorage: CurrentHealthStorage
+//TODO: code is not being updated...
+var clientStorage: CurrentHealthStorage? = null
 
 
 /**
@@ -98,7 +100,13 @@ class CurrentHealthStorage(private val world: World, private val map: CHSData) :
          */
         @JvmStatic
         @Environment(EnvType.CLIENT)
-        fun getClientStorage() = _clientStorage
+        fun getClientStorage(): CurrentHealthStorage {
+            if(clientStorage == null) {
+                HardCraft.Logger.error("Client storage not loaded...")
+                return CurrentHealthStorage(getClient().world!!, createCHSData(0))
+            }
+            return clientStorage ?: error("Client storage not loaded")
+        }
 
 
         private fun getStorage(world: World): CurrentHealthStorage {

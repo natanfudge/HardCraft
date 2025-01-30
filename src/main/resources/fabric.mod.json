@@ -12,14 +12,13 @@
   "entrypoints": {
     "main": [
       "io.github.natanfudge.hardcraft.HardCraft"
+    ],
+    "client": [
+      "io.github.natanfudge.hardcraft.client.HardCraftClient"
     ]
   },
   "mixins": [
-    "hardcraft.mixins.json",
-    {
-      "config": "hardcraft.client.mixins.json",
-      "environment": "client"
-    }
+    "hardcraft.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.16.10",

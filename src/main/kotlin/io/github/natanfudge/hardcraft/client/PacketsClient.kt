@@ -1,7 +1,6 @@
 package io.github.natanfudge.hardcraft.client
 
 import io.github.natanfudge.genericutils.client.ClientInit
-import io.github.natanfudge.genericutils.client.register
 import io.github.natanfudge.hardcraft.Packets.loadBlockHealth
 import io.github.natanfudge.hardcraft.Packets.updateBlockHealth
 import io.github.natanfudge.hardcraft.client.health.load

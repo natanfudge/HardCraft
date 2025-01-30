@@ -17,10 +17,10 @@ class HardCraft: ModInitializer {
 
         const val Name = "HardCraft"
         const val ModId = "hardcraft"
+        val Logger = LogManager.getLogger(Name)
     }
 
 
-    val Logger = LogManager.getLogger(Name)
 
     override fun onInitialize()  = commonInit(ModId) {
         println("HardCraft initializing")
@@ -30,14 +30,15 @@ class HardCraft: ModInitializer {
 
 
 //TODO: next steps.
-// 4. Add config values:
-//      a. Hard/Easy mode
-// 5. Implement Itemstack block-based damage
-//  a. On block destroyed by player / destroyed by mob in easy mode - set itemstack damage to block damage
+
+// 5. Implement Itemstack block-based damage (getDroppedStacks, need to make sure to use the correct one)
+//  a. On block destroyed by player - set itemstack damage to block damage
 //  b. On damage itemstack placed - set block damage to itemstack damage
 // 6. Implement Support physics (see ideas.md)
 // 7. Implement Support destruction by mobs (see ideas.md)
-// 8. Nerf pushes like pistons (see ideas.md)
-// 9. Balance health of blocks (see ideas.md)
+// 7.5. Water-resistant mobs
+// 8. Push-resistant mobs (see ideas.md)
 // 10. Implement new items (see ideas.md)
+// 10.5. Add config values:
+//      a. Hard/Easy mode
 // 11. Think what else I need, if nothing, start working on mob wave generation
