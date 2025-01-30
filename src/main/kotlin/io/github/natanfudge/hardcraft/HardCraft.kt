@@ -3,10 +3,15 @@ package io.github.natanfudge.hardcraft
 import io.github.natanfudge.genericutils.ModContext
 import io.github.natanfudge.genericutils.commonInit
 import io.github.natanfudge.genericutils.register
+import io.github.natanfudge.hardcraft.item.HardCraftItemGroup
 import io.github.natanfudge.hardcraft.item.HardCraftItems
 import kotlinx.serialization.Serializable
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.fabric.api.item.v1.ModifyItemAttributeModifiersCallback
+import net.minecraft.registry.Registries
+import net.minecraft.registry.Registry
 import org.apache.logging.log4j.LogManager
+
 
 @Serializable
 data class Amar(val x: Int, val y: String)
@@ -25,6 +30,7 @@ class HardCraft: ModInitializer {
     override fun onInitialize()  = commonInit(ModId) {
         println("HardCraft initializing")
         register(HardCraftItems.All)
+        register(HardCraftItemGroup.Instance)
     }
 }
 
@@ -32,7 +38,6 @@ class HardCraft: ModInitializer {
 //TODO: next steps.
 
 // 5. Implement Itemstack block-based damage (getDroppedStacks, need to make sure to use the correct one)
-//  a. On block destroyed by player - set itemstack damage to block damage
 //  b. On damage itemstack placed - set block damage to itemstack damage
 // 6. Implement Support physics (see ideas.md)
 // 7. Implement Support destruction by mobs (see ideas.md)

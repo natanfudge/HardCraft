@@ -11,6 +11,8 @@
     "DrownedEntityMixin",
     "GoalSelectorMixin",
     "HostileEntityMixin",
+    "BlockItemMixin",
+    "LootPoolMixin",
     "MobVisibilityCacheMixin",
     "ThreadedAnvilChunkStorageMixin"
   ],

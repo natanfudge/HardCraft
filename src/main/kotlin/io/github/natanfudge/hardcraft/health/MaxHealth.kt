@@ -1,5 +1,9 @@
 package io.github.natanfudge.hardcraft.health
 
+import net.minecraft.block.Block
+import net.minecraft.item.BlockItem
+import net.minecraft.item.Item
+import net.minecraft.item.ItemStack
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import kotlin.math.roundToInt
@@ -20,7 +24,21 @@ fun World.getMaxBlockHealth(pos: BlockPos): Int? {
 fun World.getMaxBlockHealthOrMinus1(pos: BlockPos): Int {
     val state = getBlockState(pos)
     if (state.isAir) return -1
-    val hardness = state.block.hardness
+    return state.block.getMaxHealthOrMinus1()
+}
+
+/**
+ * If this is an item of a block, returns its max health.
+ */
+fun ItemStack.getBlockMaxHealth(): Int? = item.getBlockMaxHealth()
+fun Item.getBlockMaxHealth(): Int? = (this as? BlockItem)?.block?.getMaxHealth()
+
+fun Block.getMaxHealth(): Int? {
+    val health = getMaxHealthOrMinus1()
+    return if (health == -1) null else health
+}
+
+fun Block.getMaxHealthOrMinus1(): Int {
     if (hardness <= 0) return -1
     //TODO: custom health
     return (hardness * 1000).roundToInt()

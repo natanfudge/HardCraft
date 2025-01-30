@@ -18,3 +18,10 @@ accessible field net/minecraft/entity/ai/goal/ProjectileAttackGoal owner Lnet/mi
 accessible field net/minecraft/entity/ai/goal/BowAttackGoal speed D
 accessible field net/minecraft/entity/ai/goal/CrossbowAttackGoal speed D
 accessible field net/minecraft/entity/ai/goal/ProjectileAttackGoal mobSpeed D
+
+# Used in LootPoolMixin
+accessible method net/minecraft/loot/LootPool supplyOnce (Ljava/util/function/Consumer;Lnet/minecraft/loot/context/LootContext;)V
+
+# Used in ItemStackMixin
+accessible field net/minecraft/item/Item maxDamage I
+mutable field net/minecraft/item/Item maxDamage I

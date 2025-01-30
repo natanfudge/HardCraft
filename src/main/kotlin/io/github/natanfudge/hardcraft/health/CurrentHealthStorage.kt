@@ -1,6 +1,5 @@
 package io.github.natanfudge.hardcraft.health
 
-import io.github.natanfudge.genericutils.client.getClient
 import io.github.natanfudge.genericutils.destroyBlock
 import io.github.natanfudge.genericutils.isServer
 import io.github.natanfudge.hardcraft.HardCraft
@@ -8,7 +7,9 @@ import io.github.natanfudge.hardcraft.Packets
 import it.unimi.dsi.fastutil.longs.Long2IntMap
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
+import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtInt
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
@@ -33,6 +34,7 @@ typealias CHSData = Long2IntMap
  */
 class CurrentHealthStorage(private val world: World, private val map: CHSData) : PersistentState() {
 
+
     val allValues: CHSData = map
 
     /**
@@ -50,6 +52,9 @@ class CurrentHealthStorage(private val world: World, private val map: CHSData) :
         map.remove(blockPos.asLong())
     }
 
+    /**
+     * Returns true if setting health was successful
+     */
     fun set(blockPos: BlockPos, value: Int): Boolean {
         markDirty()
         if (value <= 0 && world.isServer) world.destroyBlock(blockPos)
@@ -70,29 +75,44 @@ class CurrentHealthStorage(private val world: World, private val map: CHSData) :
     }
 
     companion object {
-        private const val PersistentId = "hardcraft.CurrentHealthStorage"
+        private const val PersistentId = "${HardCraft.ModId}.CurrentHealthStorage"
+        private const val ItemStackCurrentHealthNbt = "${HardCraft.ModId}.CurrentBlockHealth"
+//        private const val ItemStackMaxHealthNbt = "${HardCraft.ModId}.MaxBlockHealth"
+
+        fun ItemStack.setBlockCurrentHealth(health: Int) = setSubNbt(ItemStackCurrentHealthNbt, NbtInt.of(health))
+        fun ItemStack.getBlockCurrentHealth(): Int? = nbt?.getInt(ItemStackCurrentHealthNbt)
+//        fun ItemStack.setBlockMaxHealth(health: Int) = setSubNbt(ItemStackMaxHealthNbt, NbtInt.of(health))
+//        fun ItemStack.getBlockMaxHealth(): Int? = nbt?.getInt(ItemStackMaxHealthNbt)
+
 
         /**
          * Sends health info from the server to a player
          */
         fun sendWorldData(toPlayer: ServerPlayerEntity) {
-            getStorage(toPlayer.world).sendAll(toPlayer)
+            getStorage(toPlayer.world)?.sendAll(toPlayer)
         }
 
 
+        /**
+         * Returns true if setting health was successful
+         */
         @JvmStatic
         fun set(world: World, pos: BlockPos, value: Int): Boolean {
-            return getStorage(world).set(pos, value)
+            return getStorage(world)?.set(pos, value) == true
         }
 
         @JvmStatic
         fun delete(world: World, pos: BlockPos) {
-            getStorage(world).delete(pos)
+            getStorage(world)?.delete(pos)
         }
 
+        /**
+         * Note: will return null if the block is at full health OR if block health was not loaded yet.
+         * Perhaps we should allow differentiating between them.
+         */
         @JvmStatic
         fun get(world: World, pos: BlockPos): Int? {
-            return getStorage(world).get(pos)
+            return getStorage(world)?.get(pos)
         }
 
         /**
@@ -100,16 +120,12 @@ class CurrentHealthStorage(private val world: World, private val map: CHSData) :
          */
         @JvmStatic
         @Environment(EnvType.CLIENT)
-        fun getClientStorage(): CurrentHealthStorage {
-            if(clientStorage == null) {
-                HardCraft.Logger.error("Client storage not loaded...")
-                return CurrentHealthStorage(getClient().world!!, createCHSData(0))
-            }
-            return clientStorage ?: error("Client storage not loaded")
+        fun getClientStorage(): CurrentHealthStorage? {
+            return clientStorage
         }
 
 
-        private fun getStorage(world: World): CurrentHealthStorage {
+        private fun getStorage(world: World): CurrentHealthStorage? {
             if (world is ServerWorld) {
                 return world.persistentStateManager.getOrCreate(
                     { CurrentHealthStorage(world, CHSDataFromNbt(it)) },
@@ -133,16 +149,22 @@ fun World.getCurrentBlockHealth(pos: BlockPos): Int? = CurrentHealthStorage.get(
 
 /**
  * These methods are ServerWorld because they should only be called on the server, and they will automatically send a packet to the client to update it.
+ *  * Returns true if setting health was successful
  */
 fun ServerWorld.setCurrentBlockHealth(pos: BlockPos, amount: Int): Boolean {
     Packets.updateBlockHealth.sendToWorld(Packets.UpdateBlockHealth(pos, amount), this)
     return CurrentHealthStorage.set(this, pos, amount)
 }
-
+/**
+ * Returns true if repairing was successful
+ */
 fun ServerWorld.repairBlock(pos: BlockPos, amount: Int): Boolean {
     val old = getCurrentBlockHealth(pos) ?: return false
     return setCurrentBlockHealth(pos, old + amount)
 }
 
+/**
+ * Returns true if damaging was successful
+ */
 fun ServerWorld.damageBlock(pos: BlockPos, amount: Int): Boolean = repairBlock(pos, -amount)
 

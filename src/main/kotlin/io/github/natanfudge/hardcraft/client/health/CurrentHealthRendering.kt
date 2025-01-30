@@ -19,13 +19,14 @@ object CurrentHealthRendering {
      * Render block damage in the same way minecraft does it, but for the CurrentHealth system.
      */
     fun render(camera: Camera, world: World, matrices: MatrixStack, bufferBuilders: BufferBuilderStorage, client: MinecraftClient) {
+        val storage = CurrentHealthStorage.Companion.getClientStorage() ?: return
         // This is pretty much copy-pasted from Minecraft with slighty changes
         val cameraPos = camera.pos
         val cameraX = cameraPos.getX()
         val cameraY = cameraPos.getY()
         val cameraZ = cameraPos.getZ()
 
-        for (currentHealthEntry in CurrentHealthStorage.Companion.getClientStorage().allValues.long2IntEntrySet()) {
+        for (currentHealthEntry in storage.allValues.long2IntEntrySet()) {
             val blockPos = BlockPos.fromLong(currentHealthEntry.longKey)
 
             val xCameraDistance = blockPos.x - cameraX
