@@ -22,22 +22,28 @@
   - Mobs, unfairly, find the closest player, with no respect to distance or vision, and try to kill him.
   - If a reasonable path is found, the mob will use the path and attack the player as usual.
   - If no path exists and the mob is on the same level or higher than the play - mobs will break blocks along the way to get to the player.
-  
+
+## New Itemstack Mechanics
+
+- When blocks are broken, they retain their health value as an ItemStack.
+- Health value is shown as damage on the item
+
+
+
 # Investigate
 - How well do mobs pathfind to their target?
 
 # TODO:
 
-- In order to not make building in the sky overpowered, blocks must be supported by something. 
-   This means they must be *above* another block or *near* another block.
-  - Then, enemies will try to knock down foundations and bring down sky bases. 
-
 
 ## New block mechanics
-  ### Support 
+  ### Support / Climbing
+  -  **It might make sense to allow mobs to climb instead of having this support mechanism which could potentially lag on block breaks
+  - I think the most fun way would be to both have the support thing, and have climbing mobs that just say fuck you. 
   - Blocks (other than bedrock) must be supported by another block - it must have a support path to bedrock. 
   - This means that there are no restrictions to *placing* blocks, but *breaking or destroying* blocks can have serious consequences. 
   - When a block is broken, blocks (efficiently) check if they lost their support. If so, they will fall down like gravel. 
+  
 
 ## New Itemstack mechanics
 - When blocks are broken, they retain their health value as an ItemStack.
@@ -47,12 +53,14 @@
 
 ## New mob mechanics
   - Mobs may be dumb - and destroy anything no matter how strong the block is - or be smart and find the weakest blocks to destroy to get to the player. 
-  - Mobs may have a bigger step height. 
-
-## Push balance
-- Since mobs don't break blocks from far away, pushing them would be too strong. So everything that involves pushing is nerfed.
-- Liquids have only a small effect on mobs and they can all swim.
-- High-level Mobs cannot be pushed by contraptions 
+  - Mobs may have a bigger step height.
+  - It makes sense for mobs to have a set of capabilities, and then unlock them as the game progresses, for example:
+	  - Level 1: Vanilla Mobs
+	  - Level 2: Unlock breaking blocks
+	  - Level 3: Unlock Climbing
+	  - Level 4: Water resistance
+	  - Level 5: Lava Resistance
+	  - Level 6: Push resistance
 
 
 # Secondary TODO
@@ -68,3 +76,10 @@
   - Causes mobs to attack each other
   ### Blinding bomb
   - Causes mobs to not be effective at getting to you
+
+## Reworked objective (Defence of the Egg)
+- Instead of losing instantly when you die, a more reasonable way would be to allow dying and respawning as normal, but having a certain respawn timer as a penalty. 
+- The objective then becomes defending something ("The Ender Dragon Egg" maybe), and if you die it will hinder you instead of ending the game. 
+
+## Leaderboards Site (Defence of the Egg)
+- When you lose, you have the option of uploading your results to a site maintained by me. The results will include the amount of time you survived, as well as the modpack you used (or vanilla). Results will only count as "verified" if you have full recorded footage of your run, and 5 people confirmed the run. The main leaderboard will only show verified results. It's possible to report a run as not genuine to get it removed. 

@@ -7,9 +7,7 @@ import io.github.natanfudge.hardcraft.item.HardCraftItemGroup
 import io.github.natanfudge.hardcraft.item.HardCraftItems
 import kotlinx.serialization.Serializable
 import net.fabricmc.api.ModInitializer
-import net.fabricmc.fabric.api.item.v1.ModifyItemAttributeModifiersCallback
-import net.minecraft.registry.Registries
-import net.minecraft.registry.Registry
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents
 import org.apache.logging.log4j.LogManager
 
 
@@ -31,14 +29,14 @@ class HardCraft: ModInitializer {
         println("HardCraft initializing")
         register(HardCraftItems.All)
         register(HardCraftItemGroup.Instance)
+
+        PlayerBlockBreakEvents.AFTER
     }
 }
 
 
-//TODO: next steps.
 
-// 5. Implement Itemstack block-based damage (getDroppedStacks, need to make sure to use the correct one)
-//  b. On damage itemstack placed - set block damage to itemstack damage
+// 5. Investigate whether a 20mb save file is normal. We might be causing issues by applying damage NBT to all items.
 // 6. Implement Support physics (see ideas.md)
 // 7. Implement Support destruction by mobs (see ideas.md)
 // 7.5. Water-resistant mobs

@@ -7,14 +7,16 @@
     "client.WorldRendererMixin"
   ],
   "mixins": [
+    "BlockItemMixin",
     "BlockMixin",
     "DrownedEntityMixin",
     "GoalSelectorMixin",
     "HostileEntityMixin",
-    "BlockItemMixin",
     "LootPoolMixin",
     "MobVisibilityCacheMixin",
-    "ThreadedAnvilChunkStorageMixin"
+    "ServerPlayerInteractionManagerMixin",
+    "ThreadedAnvilChunkStorageMixin",
+    "WorldMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -10,7 +10,7 @@ object PacketsClient {
     context(ClientInit)
     fun init() {
         updateBlockHealth.register { content, context ->
-            CurrentHealthStorage.set(context.world!!, content.pos, content.newHealth)
+            CurrentHealthStorage.set(context.world!!, content.pos, content.newHealth){}
         }
 
         loadBlockHealth.register { content, context ->

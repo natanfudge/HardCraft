@@ -14,7 +14,7 @@ import net.minecraft.util.math.BlockPos
 
 object Packets: HardCraft.Context() {
     @Serializable
-    data class UpdateBlockHealth(@Contextual val pos: BlockPos, val newHealth: Int)
+    data class UpdateBlockHealth(@Contextual val pos: BlockPos, val newHealth: Int?)
     @Serializable
     data class LoadBlockHealth( val healthValues: CHSData)
 
