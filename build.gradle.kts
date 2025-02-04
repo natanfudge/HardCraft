@@ -31,6 +31,7 @@ kotlin {
     }
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-receivers")
+        freeCompilerArgs.add("-Xnon-local-break-continue")
     }
 }
 
@@ -65,6 +66,8 @@ dependencies {
     modImplementation(libs.fabric.loader)
     modImplementation(libs.fabric.language.kotlin)
     modImplementation(libs.fabric.api)
+    testImplementation("io.mockk:mockk:1.13.16")
+    testImplementation(kotlin("test"))
     modCompileOnly(libs.wthit.api)
     modRuntimeOnly(libs.wthit.fabric)
 }
@@ -114,3 +117,4 @@ publishing {
         // retrieving dependencies.
     }
 }
+

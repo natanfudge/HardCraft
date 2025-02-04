@@ -16,7 +16,7 @@
     "MobVisibilityCacheMixin",
     "ServerPlayerInteractionManagerMixin",
     "ThreadedAnvilChunkStorageMixin",
-    "WorldMixin"
+    "ServerWorldMixin"
   ],
   "injectors": {
     "defaultRequire": 1

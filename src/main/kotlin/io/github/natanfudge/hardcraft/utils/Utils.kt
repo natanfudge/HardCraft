@@ -1,7 +1,10 @@
 package io.github.natanfudge.hardcraft.utils
 
+import net.minecraft.block.Block
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
+import net.minecraft.world.World
+import net.minecraft.world.WorldAccess
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
@@ -23,6 +26,11 @@ fun Vec3d.toDirection(): SpatialDirection {
 
 fun Vec3d.directionTo(pos: BlockPos) = (pos - this).toDirection()
 
+fun WorldAccess.getBlock(pos: BlockPos): Block {
+    val bs = getBlockState(pos)
+    return bs.block
+}
+
 
 private inline fun directionAxis(num: Double) = when {
     num > 0 -> 1
@@ -42,7 +50,12 @@ fun valuesBetween(start: Int, end: Int): IntProgression {
     return if (start <= end) start..end else start downTo end
 }
 
-inline fun <T, R> cartesianProduct(list1: Iterable<T>, list2: Iterable<T>, list3: Iterable<T>, map: (T, T, T) -> R): List<R> {
+inline fun <T, R> cartesianProduct(
+    list1: Iterable<T>,
+    list2: Iterable<T>,
+    list3: Iterable<T>,
+    map: (T, T, T) -> R,
+): List<R> {
     return buildList {
         for (item1 in list1) {
             for (item2 in list2) {
@@ -53,4 +66,17 @@ inline fun <T, R> cartesianProduct(list1: Iterable<T>, list2: Iterable<T>, list3
         }
     }
 }
+
 inline fun Double.squared() = this * this
+
+
+inline fun <T> aggregate(root: T, children: (T) -> List<T>): List<T> {
+    val aggregated = mutableListOf<T>()
+    var index = 0
+    aggregated.addAll(children(root))
+    while (index < aggregated.size) {
+        aggregated.addAll(children(aggregated[index]))
+        index++
+    }
+    return aggregated
+}

@@ -30,13 +30,10 @@ class HardCraft: ModInitializer {
         register(HardCraftItems.All)
         register(HardCraftItemGroup.Instance)
 
-        PlayerBlockBreakEvents.AFTER
     }
 }
 
 
-
-// 5. Investigate whether a 20mb save file is normal. We might be causing issues by applying damage NBT to all items.
 // 6. Implement Support physics (see ideas.md)
 // 7. Implement Support destruction by mobs (see ideas.md)
 // 7.5. Water-resistant mobs

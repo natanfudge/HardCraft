@@ -1,0 +1,195 @@
+{
+  "main": {
+    "id": "3f55bb636ce8ccf0",
+    "type": "split",
+    "children": [
+      {
+        "id": "4f1519ccbb4ea71f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9d89829f324d6129",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Support.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Support"
+            }
+          },
+          {
+            "id": "c2d9536b2ed91615",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "GraphViz Code.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "GraphViz Code"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "a903b6e8cb66bdc6",
+    "type": "split",
+    "children": [
+      {
+        "id": "b1369ba506a14f12",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4eb53ab8bc25f107",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "036c44226bc49c84",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "d42d136085f427b4",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "8de53d684e43b7b7",
+    "type": "split",
+    "children": [
+      {
+        "id": "33aa7da255354ccb",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b15126fb0f9a2dbb",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Support.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Support"
+            }
+          },
+          {
+            "id": "efc32b7678d598bb",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Support.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Support"
+            }
+          },
+          {
+            "id": "00853d5dd1d5602d",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "ad95e85cd99cd7c9",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Support.md"
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Support"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "9d89829f324d6129",
+  "lastOpenFiles": [
+    "Pasted image 20250203001909.png",
+    "Pasted image 20250203001853.png",
+    "Pasted image 20250203001726.png",
+    "Pasted image 20250203001702.png",
+    "Pasted image 20250203001631.png",
+    "Pasted image 20250203000740.png",
+    "Pasted image 20250203000734.png",
+    "Pasted image 20250203000311.png",
+    "Pasted image 20250203000410.png",
+    "Support.md",
+    "Pasted image 20250202235921.png",
+    "Pasted image 20250202235747.png",
+    "GraphViz Code.md"
+  ]
+}
