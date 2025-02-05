@@ -40,7 +40,7 @@ class IndexedTree(rootValue: T) {
         var parent = attachmentNode
         for (item in chain) {
             val child = TreeNode(parent, item, mutableListOf())
-            attachmentNode.children.add(child)
+            parent.children.add(child)
             parent = child
             index[item.packedPos] = child
         }

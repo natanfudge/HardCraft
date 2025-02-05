@@ -1,6 +1,6 @@
 package io.github.natanfudge.hardcraft.mixin;
 
-import io.github.natanfudge.hardcraft.ai.BreakBlockGoal;
+import io.github.natanfudge.hardcraft.ai.ReachTargetGoal;
 import io.github.natanfudge.hardcraft.ai.HardCraftNavigation;
 import io.github.natanfudge.hardcraft.injection.HardCraftHostileEntity;
 import net.minecraft.entity.EntityType;
@@ -23,7 +23,7 @@ public class HostileEntityMixin implements HardCraftHostileEntity {
     @Inject(method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V", at = @At("TAIL"))
     public void constructorHookAfterGoalSelectorInitialized(EntityType<?> entityType, World world, CallbackInfo ci) {
         if (world != null && !world.isClient) {
-            hardCraft$self.goalSelector.add(0, new BreakBlockGoal(hardCraft$self));
+            hardCraft$self.goalSelector.add(0, new ReachTargetGoal(hardCraft$self));
         }
         hardCraft$self.navigation = new HardCraftNavigation(hardCraft$self, world, hardCraft$self.navigation);
     }

@@ -10,17 +10,13 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-//TODO: Okay, I know more or less what is happening.
-// - Chunk generation starts, locking chunk parts
-// - We attempt to access a chunk part, and we have to wait for it to complete ("chunk future")
-// - Chunk generation does not complete (because we are blocking it somehow, while waiting for chunk to unlock?)
-// - Deadlock
-// Next steps:
-// - Track the futures added in ServerChunkManager#getChunk, to try and see what the problematic future is.
-// - I'll probably find out why it waits there
+//TODO: next step: drop them blocks down!
+
+
 object Support {
     private val worldCaches = mutableMapOf<World, WorldSupportCache>()
-//    @Synchronized
+
+    //    @Synchronized
     fun floatingBlocksAfterRemoval(world: World, pos: BlockPos): List<BlockPos> {
         return worldCaches.computeIfAbsent(world) { WorldSupportCache(RealWorld(world)) }
             .getFloatingBlocksAfterRemovalAt(pos)
@@ -56,7 +52,7 @@ class WorldSupportCache(private val world: IWorld) {
             val compactNeighbor = neighbor.compact()
             if (tree.contains(compactNeighbor)) {
                 // If the neighbor has no parent its the root and we don't care
-                val neighborParent = tree.parentOf(compactNeighbor)  ?: return@forEachNeighbor
+                val neighborParent = tree.parentOf(compactNeighbor) ?: return@forEachNeighbor
                 if (neighborParent != compactToRemove) {
                     // If we know of a path for this neighbor that doesn't include toRemove, we can safely
                     // say this neighbor is not floating
@@ -70,7 +66,7 @@ class WorldSupportCache(private val world: IWorld) {
             }
 
             // Don't care about air
-            if (world.isAir(neighbor)) return@forEachNeighbor
+            if (!world.canSupportOtherBlocks(neighbor)) return@forEachNeighbor
             // No information about this neighbor, OR the neighbor has been orphaned now so we need to find it new footing
 
             when (val path = findPathToBedrock(neighbor, orphans)) {
@@ -88,7 +84,7 @@ class WorldSupportCache(private val world: IWorld) {
             }
         }
 
-        for(floatingBlock in floating) {
+        for (floatingBlock in floating) {
             tree.remove(floatingBlock.compact())
         }
 //        HardCraft.Logger.warn("Tree After: ${tree.toPrettyString()}")
@@ -114,7 +110,7 @@ class WorldSupportCache(private val world: IWorld) {
      */
     fun findPathToBedrock(start: BlockPos, orphanedBlocks: Set<BlockPos>): BedrockSearchResult {
         // Deal with the edge case of starting in bedrock
-        if (world.getBlock(start).isBedrock()) return BedrockSearchResult.IsBedrock
+        if (world.getBlock(start).isWorldBottom()) return BedrockSearchResult.IsBedrock
 
         val visited = mutableSetOf<BlockPos>(start)
         val path = Stack<BlockPos>()
@@ -122,6 +118,7 @@ class WorldSupportCache(private val world: IWorld) {
         loop@ while (path.isNotEmpty()) {
             val current = path.peek()
             forEachNeighbor(current) { neighbor ->
+                // Need to limit the distance so this won't loop infinitely
                 // Don't care about paths we tried already
                 if (neighbor !in visited) {
                     // We've reached an element in the tree, we will end the path with it
@@ -131,17 +128,24 @@ class WorldSupportCache(private val world: IWorld) {
                         return BedrockSearchResult.FoundFooting(path, neighbor.compact())
                     }
                     val block = world.getBlock(neighbor)
-                    if (!block.isAir()) {
-                        if (block.isBedrock()) {
-                            // We've reached bedrock, we will end with BEDROCK_ROOT
-                            println("Found bedrock footing after ${visited.size} steps")
-                            return BedrockSearchResult.FoundFooting(path, BEDROCK_ROOT)
-                        } else {
-                            path.push(neighbor)
-                            visited.add(neighbor)
-                            // Important - go further down, don't try the other directions if we managed to advance here
-                            continue@loop
-                        }
+                    if (block.isWorldBottom()) {
+                        // We've reached bedrock, we will end with BEDROCK_ROOT
+                        println("Found bedrock footing after ${visited.size} steps")
+                        return BedrockSearchResult.FoundFooting(path, BEDROCK_ROOT)
+                    }
+//                    if (path.size >= MaxPathLength) {
+//                        val x = 2
+//                    }
+                    // We're not gonna try searching paths that are too long
+                    if (block.canSupportOtherBlocks() && path.size < MaxPathLength) {
+//                        if (block.isWorldBottom()) {
+//
+//                        } else if(){
+                        path.push(neighbor)
+                        visited.add(neighbor)
+                        // Important - go further down, don't try the other directions if we managed to advance here
+                        continue@loop
+//                        }
                     } // Don't care about air
 
                 }
@@ -152,6 +156,11 @@ class WorldSupportCache(private val world: IWorld) {
         println("Found floating after ${visited.size} steps")
         return BedrockSearchResult.IsFloating(visited.toList())
     }
+
+//    private fun areFarAway(start: BlockPos, end: BlockPos): Boolean {
+//        // Don't need to check y because it's limited anyway
+//        return abs(end.x - start.x) > MaxSearchDistance || abs(end.z - start.z) > MaxSearchDistance
+//    }
 
     /**
      * Goes over every neighbor, ordered down-north-south-east-west-up
@@ -173,5 +182,7 @@ class WorldSupportCache(private val world: IWorld) {
 
 }
 
+private const val MaxSearchDistance = 128
+private const val MaxPathLength = 1024
 
 

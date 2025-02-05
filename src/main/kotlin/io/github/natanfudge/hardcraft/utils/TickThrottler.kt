@@ -10,14 +10,14 @@ class TickThrottler {
     /**
      * Must be called every tick to work
      */
-    inline fun runThrottled(ticksPerRun: Int, code: () -> Unit) {
+    inline fun runThrottled(ticksPerRun: Int, code: (delta: Int) -> Unit) {
         require(ticksPerRun >= 1)
         ticksPassed++
         if (ticksPassed >= ticksPerRun) {
             ticksPassed = 0
         }
         if (ticksPassed == 0) {
-            code()
+            code(ticksPerRun)
         }
     }
 }

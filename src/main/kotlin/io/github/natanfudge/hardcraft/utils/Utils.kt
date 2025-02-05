@@ -1,8 +1,10 @@
 package io.github.natanfudge.hardcraft.utils
 
 import net.minecraft.block.Block
+import net.minecraft.block.BlockState
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
+import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.World
 import net.minecraft.world.WorldAccess
 import kotlin.math.ceil
@@ -19,6 +21,7 @@ fun BlockPos.withZ(z: Int) = BlockPos(x, y, z)
 //operator fun Vec3d.plus(other: Vec3d)
 operator fun Vec3d.plus(other: BlockPos) = Vec3d(this.x + other.x, this.y + other.y, this.z + other.z)
 operator fun Vec3d.minus(other: BlockPos) = Vec3d(this.x - other.x, this.y - other.y, this.z - other.z)
+ fun Vec3d.minusY(y: Double) = Vec3d(this.x, this.y - y, this.z)
 operator fun BlockPos.minus(other: Vec3d) = Vec3d(this.x - other.x, this.y - other.y, this.z - other.z)
 fun Vec3d.toDirection(): SpatialDirection {
     return SpatialDirection(directionAxis(x), directionAxis(y), directionAxis(z))
@@ -26,9 +29,16 @@ fun Vec3d.toDirection(): SpatialDirection {
 
 fun Vec3d.directionTo(pos: BlockPos) = (pos - this).toDirection()
 
+fun BlockState.canSupportOtherBlocks(world: WorldAccess, pos: BlockPos) = getCollisionShape(world, pos) != VoxelShapes.empty()
+fun World.canSupportOtherBlocks(pos: BlockPos) = getBlockState(pos).canSupportOtherBlocks(this, pos)
+
 fun WorldAccess.getBlock(pos: BlockPos): Block {
     val bs = getBlockState(pos)
     return bs.block
+}
+
+fun WorldAccess.setBlock(pos: BlockPos, block: Block): Boolean {
+    return setBlockState(pos, block.defaultState, Block.NOTIFY_ALL)
 }
 
 

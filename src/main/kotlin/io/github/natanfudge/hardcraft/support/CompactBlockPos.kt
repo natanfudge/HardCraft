@@ -9,7 +9,8 @@ import net.minecraft.util.math.BlockPos
 
 @JvmInline value class CompactBlockPos( val packedPos: Long) {
     override fun toString(): String {
-        return toBlockPos().toString()
+        val pos = toBlockPos()
+        return "{x=${pos.x},y=${pos.y},z=${pos.z}}"
     }
 
     fun toBlockPos(): BlockPos {

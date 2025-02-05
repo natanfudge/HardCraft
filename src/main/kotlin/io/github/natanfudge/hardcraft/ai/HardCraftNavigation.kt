@@ -10,7 +10,7 @@ import net.minecraft.world.chunk.ChunkCache
 /**
  * HardCraft's replacement for vanilla's navigation for hostile mobs.
  * This navigation makes mob go in a straight line to their target when no other option exists.
- * When the mob will get inevitably blocked by blocks in that case, [BreakBlockGoal] exists to make him to try to break it and eventually reach his target.
+ * When the mob will get inevitably blocked by blocks in that case, [ReachTargetGoal] exists to make him to try to break it and eventually reach his target.
  */
 class HardCraftNavigation(entity: MobEntity, world: World?, existingNavigation: EntityNavigation) : MobNavigation(entity, world) {
     private var navigator: HardCraftPathNodeNavigator? = null

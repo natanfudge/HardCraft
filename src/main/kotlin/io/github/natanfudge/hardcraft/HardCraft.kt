@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager
 
 @Serializable
 data class Amar(val x: Int, val y: String)
+//TODO: fix stone -> cobblestone bug (it should remain the same pct)
 
 class HardCraft: ModInitializer {
     abstract class Context : ModContext.Superclass(ModId)

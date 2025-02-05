@@ -34,6 +34,8 @@
 - How well do mobs pathfind to their target?
 
 # TODO:
+Decided not to do support stuff, instead allow mobs to place blocks. 
+
 
 
 ## New block mechanics
@@ -83,3 +85,6 @@
 
 ## Leaderboards Site (Defence of the Egg)
 - When you lose, you have the option of uploading your results to a site maintained by me. The results will include the amount of time you survived, as well as the modpack you used (or vanilla). Results will only count as "verified" if you have full recorded footage of your run, and 5 people confirmed the run. The main leaderboard will only show verified results. It's possible to report a run as not genuine to get it removed. 
+
+## Mob placing improvements
+- Perhaps we can make the mobs gather blocks and only then they can place them.

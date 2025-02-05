@@ -3,6 +3,7 @@ package io.github.natanfudge.hardcraft.mixin;
 import io.github.natanfudge.hardcraft.injection.HardCraftMobVisibilityCache;
 import io.github.natanfudge.hardcraft.mixinhandler.RangedAttackGoals;
 import io.github.natanfudge.hardcraft.utils.TickThrottler;
+import kotlin.Unit;
 import net.minecraft.entity.ai.goal.GoalSelector;
 import net.minecraft.entity.ai.goal.PrioritizedGoal;
 import net.minecraft.entity.mob.MobEntity;
@@ -34,10 +35,11 @@ public class GoalSelectorMixin {
             if (target != null) {
                 var visibilityCache = (HardCraftMobVisibilityCache) rangedMob.getVisibilityCache();
                 if (!visibilityCache.hardcraft$originalCanSee(target)) {
-                    hardcraft$tickThrottler.runThrottled(20, () -> {
+                    hardcraft$tickThrottler.runThrottled(20, (delta) -> {
                         // Instead, try to walk up to the target.
                         rangedMob.navigation.startMovingTo(target, RangedAttackGoals.getRangedAttackGoalSpeed(goal));
-                        return null;
+                        return Unit.INSTANCE;
+//                        return ;
                     });
                     return;
                 }

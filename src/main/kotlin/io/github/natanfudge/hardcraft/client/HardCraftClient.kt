@@ -1,11 +1,13 @@
 package io.github.natanfudge.hardcraft.client
 
 import io.github.natanfudge.genericutils.client.ClientInit
+import io.github.natanfudge.hardcraft.client.debug.DebugRendering
 import io.github.natanfudge.hardcraft.health.CurrentHealthStorage.Companion.getBlockCurrentHealth
 import io.github.natanfudge.hardcraft.health.getBlockMaxHealth
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.minecraft.text.Text
+
 
 class HardCraftClient : ClientModInitializer {
     override fun onInitializeClient() = with(ClientInit) {
@@ -19,6 +21,12 @@ class HardCraftClient : ClientModInitializer {
             }
         }
 
+        DebugRendering.registerClient()
+
         PacketsClient.init()
     }
+
+
 }
+
+//BlockPos{x=-30, y=83, z=14}

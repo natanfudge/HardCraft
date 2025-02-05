@@ -118,6 +118,7 @@ class S2CPacketType<T>(val id: Identifier, val serializer: PacketSerializer<T>) 
         }
     }
 
+
     fun send(value: T, players: List<ServerPlayerEntity>) {
         for (player in players) {
             ServerPlayNetworking.send(player, id, encode(value))

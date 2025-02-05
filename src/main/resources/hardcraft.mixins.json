@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
+    "client.BlockColorsMixin",
     "client.WorldRendererMixin"
   ],
   "mixins": [
@@ -15,8 +16,8 @@
     "LootPoolMixin",
     "MobVisibilityCacheMixin",
     "ServerPlayerInteractionManagerMixin",
-    "ThreadedAnvilChunkStorageMixin",
-    "ServerWorldMixin"
+    "ServerWorldMixin",
+    "ThreadedAnvilChunkStorageMixin"
   ],
   "injectors": {
     "defaultRequire": 1
