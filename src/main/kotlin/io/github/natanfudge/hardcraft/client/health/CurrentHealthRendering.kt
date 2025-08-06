@@ -1,5 +1,6 @@
 package io.github.natanfudge.hardcraft.client.health
 
+import io.github.natanfudge.hardcraft.HardCraft
 import io.github.natanfudge.hardcraft.health.CurrentHealthStorage
 import io.github.natanfudge.hardcraft.health.getMaxBlockHealthOrMinus1
 import io.github.natanfudge.hardcraft.utils.squared
@@ -42,6 +43,10 @@ object CurrentHealthRendering {
 
 
             val stage = (10 - health.toFloat() / maxHealth * 10).toInt() /*6*/
+            if(stage == -1) {
+                HardCraft.Logger.error("Unexpected stage = -1, bad health value")
+                continue
+            }
             if (stage == 0 || stage >= 10) continue
             matrices.push()
             matrices.translate(blockPos.x.toDouble() - cameraX, blockPos.y.toDouble() - cameraY, blockPos.z.toDouble() - cameraZ)

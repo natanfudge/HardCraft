@@ -1,6 +1,7 @@
 package io.github.natanfudge.hardcraft.ai
 
 import net.minecraft.entity.ai.pathing.*
+import net.minecraft.entity.mob.HostileEntity
 import net.minecraft.entity.mob.MobEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
@@ -48,11 +49,19 @@ private class HardCraftPathNodeNavigator(range: Int) : PathNodeNavigator(LandPat
         positions: MutableSet<BlockPos>,
         followRange: Float,
         distance: Int,
-        rangeMultiplier: Float
+        rangeMultiplier: Float,
     ): Path? {
+        check(mob is HostileEntity)
         // First, try doing it the vanilla way
         val normalPath = wrappedNavigator?.findPathToAny(world, mob, positions, followRange, distance, rangeMultiplier)
-        if (normalPath != null && normalPath.reachesTarget()) return normalPath
+        if (normalPath != null && normalPath.reachesTarget()) {
+            mob.hardcraft_setCantReachTarget(false)
+            return normalPath
+        }
+        // Don't want to give the false impression the mob can't reach its target if it has no target, e.g. if its just moving around.
+        if (mob.target != null) {
+            mob.hardcraft_setCantReachTarget(true)
+        }
 
         // positions shouldn't be empty but check anyway
         if (positions.isEmpty()) return null

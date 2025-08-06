@@ -14,8 +14,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(HostileEntity.class)
 public class HostileEntityMixin implements HardCraftHostileEntity {
+
     @Unique
-    HostileEntity hardCraft$self = (HostileEntity) ((Object) this);
+    boolean cantReachTarget = false;
+
+    @Unique
+    HostileEntity hardCraft$self(){
+        return (HostileEntity) ((Object) this);
+    }
 
     /**
      * @reason Make mobs more threatening by allowing them to break blocks that block their way
@@ -23,9 +29,9 @@ public class HostileEntityMixin implements HardCraftHostileEntity {
     @Inject(method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V", at = @At("TAIL"))
     public void constructorHookAfterGoalSelectorInitialized(EntityType<?> entityType, World world, CallbackInfo ci) {
         if (world != null && !world.isClient) {
-            hardCraft$self.goalSelector.add(0, new ReachTargetGoal(hardCraft$self));
+            hardCraft$self().goalSelector.add(0, new ReachTargetGoal(hardCraft$self()));
         }
-        hardCraft$self.navigation = new HardCraftNavigation(hardCraft$self, world, hardCraft$self.navigation);
+        hardCraft$self().navigation = new HardCraftNavigation(hardCraft$self(), world, hardCraft$self().navigation);
     }
 
     /**
@@ -34,5 +40,15 @@ public class HostileEntityMixin implements HardCraftHostileEntity {
     @Override
     public int hardcraft_demolition() {
         return 5;
+    }
+
+    @Override
+    public void hardcraft_setCantReachTarget(boolean value) {
+        this.cantReachTarget = value;
+    }
+
+    @Override
+    public boolean hardcraft_getCantReachTarget() {
+        return cantReachTarget;
     }
 }

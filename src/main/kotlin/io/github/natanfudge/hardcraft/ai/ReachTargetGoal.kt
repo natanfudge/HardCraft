@@ -1,6 +1,5 @@
 package io.github.natanfudge.hardcraft.ai
 
-import io.github.natanfudge.genericutils.MinecraftConstants
 import io.github.natanfudge.genericutils.client.getClient
 import io.github.natanfudge.genericutils.distanceTo
 import io.github.natanfudge.hardcraft.health.damageBlock
@@ -11,7 +10,6 @@ import io.github.natanfudge.hardcraft.utils.*
 import net.minecraft.block.Blocks
 import net.minecraft.entity.ai.goal.Goal
 import net.minecraft.entity.mob.HostileEntity
-import net.minecraft.entity.mob.MobEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
@@ -20,31 +18,6 @@ import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
-/**
- * As long as [tick] is called every tick, tells you whether [mob] is moving with the [moving] property.
- */
-private class Accelerometer(private val mob: MobEntity) {
-    // Tracks ticks so we can tell when 5 ticks have passed
-    private var ticks = 0
-
-    // Keeps track of the positions of the mob in the last 20 ticks, checking every 5 secs.
-    private var positionMemory = arrayOfNulls<Vec3d>(4)
-
-    var moving = true
-
-    fun tick() {
-        ticks++
-        if (ticks >= MinecraftConstants.TicksPerSecond) {
-            ticks = 0
-        }
-        if (ticks % 5 == 0) {
-            val slot = ticks / 5
-            // SUS: apparently this can be abused to stop mobs infinitely but idk what I meant when I wrote that
-            moving = positionMemory.all { it == null || mob.pos.distanceTo(it) >= 0.1 }
-            positionMemory[slot] = mob.pos
-        }
-    }
-}
 
 /**
  * Reaches the target by employing the following tactics:
@@ -55,13 +28,9 @@ private class Accelerometer(private val mob: MobEntity) {
  */
 class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
     private val world = mob.world as ServerWorld
-    private val accelerometer = Accelerometer(mob)
     private val breakThrottler = TickThrottler()
 
-    /**
-     * Track how long the mob has been moving, so we can know if it needs to break blocks
-     */
-    private var nonIdleTicks = 0
+
     override fun canStart(): Boolean {
         return true
     }
@@ -97,8 +66,7 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
 
 
     override fun tick() {
-        accelerometer.tick()
-        if (blockUp.tick()) return
+        //TODO: this is just a debug measure
         val player = getClient().player ?: return
         if (mob.pos.distanceTo(player.pos) > 30) return
 
@@ -109,10 +77,9 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
 //            return
 //        }
 
-
-        // When the mob has just started moving obviously the accelerometer will say he has not moved and the mob will break blocks randomly.
-        // we should only consider the mob not moving when he has not been idle for some time, which signifies he's being blocked.
-        if (mobIsNotIdle() && !accelerometer.moving) {
+        // Only perform special actions to get the target if there's no other way
+        if (mob.target != null && mob.hardcraft_getCantReachTarget()) {
+            if (blockUp.tick()) return
 
             // damageBlock() and getNextLogicalBlockToBreak() are expensive so we don't do it every tick,
             // rather do it batches by multiplying damage by DoDamageToBlockInterval.
@@ -126,15 +93,6 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
                 world.damageBlock(targetBlockPos, delta * mob.demolition)
             }
         }
-    }
-
-    /**
-     * Checks if the mob has not been idle for full second
-     * Must be called every tick to work.
-     */
-    private fun mobIsNotIdle(): Boolean {
-        nonIdleTicks = if (mob.navigation.isIdle) 0 else nonIdleTicks + 1
-        return nonIdleTicks >= MinecraftConstants.TicksPerSecond
     }
 
     override fun shouldContinue(): Boolean {
@@ -162,7 +120,6 @@ class BlockUp(private val mob: HostileEntity, private val world: World) {
         mob.jump()
     }
 
-    //mad rambling: IDK why it won't enter the jump ending condition, and set the block.
     /**
      * Returns true if the mob should not do anything else because it is blocking up
      */
@@ -172,35 +129,27 @@ class BlockUp(private val mob: HostileEntity, private val world: World) {
 
         // Reset jump attempt if enough time has passed
         if (jumpStartTick != null && jumpStartY != null && jumpStartTick!! + 30 < world.time) {
-//            println("Resetting timeout")
             jumpStartY = null
             jumpStartTick = null
         }
 
         val targetIsAbove = mob.isBelowTarget() && jumpStartY == null
         if (targetIsAbove && mob.isOnGround) {
-//            println("Jumping from y = ${mob.y}")
             // If the target is too high, block up to him
             blockUp()
         }
-//        println("StartY: $jumpStartY, Mob y: ${mob.y}")
         if (jumpStartY != null && mob.pos.y >= jumpStartY!! + 0.9) {
             // Once we reached enough height, place the block
             val pos = mob.pos.toBlockPos().down()
             val below = mob.pos.minusY(2.0).blocksAround()
-            if (below.none { world.canSupportOtherBlocks(it) }) {
-                println("No block underneath can support. Vector: ${mob.pos.minusY(2.0)}. Blocks: $below")
-            }
-            if (world.canSupportOtherBlocks(pos)) {
-//                println("Block is already taken at $pos")
-            }
+//            if (below.none { world.canSupportOtherBlocks(it) }) {
+//                println("No block underneath can support. Vector: ${mob.pos.minusY(2.0)}. Blocks: $below")
+//            }
             // Make sure there is something to place on
             if (below.any { world.canSupportOtherBlocks(it) } && !world.canSupportOtherBlocks(pos)) {
-                println("Setting block at $pos")
+//                println("Setting block at $pos")
                 world.setBlock(pos, Blocks.DIRT)
                 mob.swingHand(mob.activeHand)
-            } else {
-//                println("Not setting")
             }
             jumpStartY = null
         }
