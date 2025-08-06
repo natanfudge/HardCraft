@@ -4,58 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a0d436ff-e806-4898-b2e2-cacd578f69ac" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/discord.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/discord.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Client.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Client.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Server.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Server.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Working-Scheduler" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ideas.md" beforeDir="false" afterPath="$PROJECT_DIR$/ideas.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/oldUtils/genericutils/Registry.kt" beforeDir="false" afterPath="$PROJECT_DIR$/oldUtils/genericutils/Registry.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/natanfudge/hardcraft/mixin/HostileEntityMixin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/natanfudge/hardcraft/mixin/HostileEntityMixin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/natanfudge/hardcraft/mixin/client/BlockColorsMixin.java" beforeDir="false" />
+    <list default="true" id="a0d436ff-e806-4898-b2e2-cacd578f69ac" name="Changes" comment="Small cleanup">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/HardCraft.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/HardCraft.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/HardCraftNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/HardCraftNavigation.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/ReachTargetGoal.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/ReachTargetGoal.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/HardCraftClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/HardCraftClient.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/health/CurrentHealthRendering.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/health/CurrentHealthRendering.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/health/CurrentHealthStorage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/health/CurrentHealthStorage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/health/MaxHealth.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/health/MaxHealth.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/mixinhandler/BlockEvents.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/mixinhandler/BlockEvents.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/.obsidian/app.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/.obsidian/appearance.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/.obsidian/core-plugins.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/.obsidian/workspace.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/CompactBlockPos.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/IWorld.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/IndexedTree.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/Support.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/docs/GraphViz Code.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/docs/Minecraft Blocks Example.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/docs/Pasted image 20250202225958.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/docs/Pasted image 20250202235657.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/docs/Pasted image 20250202235747.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/docs/Pasted image 20250202235921.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/docs/Pasted image 20250203000311.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/docs/Pasted image 20250203000410.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/docs/Pasted image 20250203000734.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/docs/Pasted image 20250203000740.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/docs/Pasted image 20250203001631.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/docs/Pasted image 20250203001702.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/docs/Pasted image 20250203001726.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/docs/Pasted image 20250203001853.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/docs/Pasted image 20250203001909.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/support/docs/Support.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/waila/HardCraftWailaPlugin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/waila/HardCraftWailaPlugin.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/hardcraft.mixins.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/hardcraft.mixins.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/mixinhandler/ItemDrop.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/mixinhandler/ItemDrop.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,31 +65,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.Build HardCraft.executor": "Run",
-    "Gradle.Download Sources.executor": "Run",
-    "Gradle.HardCraft [:net.fabricmc.devlaunchinjector.Main.main()].executor": "Debug",
-    "Gradle.HardCraft [configureClientLaunch].executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "1.20.1",
-    "ignore.virus.scanning.warn.message": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Build HardCraft.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.HardCraft [:net.fabricmc.devlaunchinjector.Main.main()].executor&quot;: &quot;Debug&quot;,
+    &quot;Gradle.HardCraft [configureClientLaunch].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;1.20.1&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Application.Minecraft Client">
     <configuration name="HardCraft [configureClientLaunch]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -198,11 +151,28 @@
       <option name="presentableId" value="Default" />
       <updated>1754512856692</updated>
       <workItem from="1754512858547" duration="2001000" />
-      <workItem from="1754515305683" duration="534000" />
+      <workItem from="1754515305683" duration="963000" />
+      <workItem from="1754516293865" duration="461000" />
     </task>
+    <task id="LOCAL-00001" summary="Small cleanup">
+      <option name="closed" value="true" />
+      <created>1754515861184</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1754515861184</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="Small cleanup" />
+    <option name="LAST_COMMIT_MESSAGE" value="Small cleanup" />
+    <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />
   </component>
 </project>

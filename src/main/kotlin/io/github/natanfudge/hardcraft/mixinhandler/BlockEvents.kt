@@ -16,8 +16,7 @@ object BlockEvents {
         if (world.server.isOnThread) {
             world.deleteCurrentBlockHealth(pos)
         } else {
-            HardCraft.Logger.error("Not expecting onBlockReplaced to run on a non-server thread!")
-            // SUS: should we do this?
+            // SUS: don't know if I'm supposed to do this
 //            world.server.execute {
 //                onBlockReplaced(world, pos, oldBlock, newBlock)
 //            }
