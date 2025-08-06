@@ -40,7 +40,6 @@ fun Block.getMaxHealth(): Int? {
 
 fun Block.getMaxHealthOrMinus1(): Int {
     if (hardness <= 0) return -1
-    //TODO: custom health
     return (hardness * 1000).roundToInt()
 }
 

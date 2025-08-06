@@ -39,8 +39,7 @@ private class Accelerometer(private val mob: MobEntity) {
         }
         if (ticks % 5 == 0) {
             val slot = ticks / 5
-            // TODO: experiment how this can be abused to prevent zombies from attacking
-            // I think the solution is to severely limit the ability to push things.
+            // SUS: apparently this can be abused to stop mobs infinitely but idk what I meant when I wrote that
             moving = positionMemory.all { it == null || mob.pos.distanceTo(it) >= 0.1 }
             positionMemory[slot] = mob.pos
         }
@@ -114,9 +113,7 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
         // When the mob has just started moving obviously the accelerometer will say he has not moved and the mob will break blocks randomly.
         // we should only consider the mob not moving when he has not been idle for some time, which signifies he's being blocked.
         if (mobIsNotIdle() && !accelerometer.moving) {
-//            mob.setJumping(true)
 
-            //TODO: restore
             // damageBlock() and getNextLogicalBlockToBreak() are expensive so we don't do it every tick,
             // rather do it batches by multiplying damage by DoDamageToBlockInterval.
             breakThrottler.runThrottled(DoDamageToBlockInterval) { delta ->
@@ -159,16 +156,13 @@ class BlockUp(private val mob: HostileEntity, private val world: World) {
     private var jumpStartY: Double? = null
 
     private var jumpStartTick: Long? = null
-    //TODO: make it so this only happens when the mob can't find any other way to get to you, so it won't just
-    // spam blocks randomly
     fun blockUp() {
         jumpStartY = mob.pos.y
         jumpStartTick = world.time
         mob.jump()
     }
-    //TODO: I need to make the mobs break straight up if their head is getting blocked from jumping
 
-    //TODO: IDK why it won't enter the jump ending condition, and set the block.
+    //mad rambling: IDK why it won't enter the jump ending condition, and set the block.
     /**
      * Returns true if the mob should not do anything else because it is blocking up
      */

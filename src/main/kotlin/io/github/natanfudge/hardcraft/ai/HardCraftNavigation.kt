@@ -62,10 +62,5 @@ private class HardCraftPathNodeNavigator(range: Int) : PathNodeNavigator(LandPat
             positions.map { PathNode(it.x, it.y, it.z) }, positions.last(), true
         )
     }
-
-
-    private fun breakFoundation(start: BlockPos, end: BlockPos): List<PathNode> {
-        TODO("When foundation/support mechanics are implemented, implement this as well.")
-    }
 }
 

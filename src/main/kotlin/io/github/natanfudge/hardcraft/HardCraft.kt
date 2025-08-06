@@ -11,9 +11,10 @@ import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents
 import org.apache.logging.log4j.LogManager
 
 
+
+
 @Serializable
 data class Amar(val x: Int, val y: String)
-//TODO: fix stone -> cobblestone bug (it should remain the same pct)
 
 class HardCraft: ModInitializer {
     abstract class Context : ModContext.Superclass(ModId)
@@ -34,12 +35,12 @@ class HardCraft: ModInitializer {
     }
 }
 
-
-// 6. Implement Support physics (see ideas.md)
-// 7. Implement Support destruction by mobs (see ideas.md)
-// 7.5. Water-resistant mobs
-// 8. Push-resistant mobs (see ideas.md)
-// 10. Implement new items (see ideas.md)
-// 10.5. Add config values:
-//      a. Hard/Easy mode
-// 11. Think what else I need, if nothing, start working on mob wave generation
+//TODO: 1. Round up TODOS and resolve them
+// 1.1: Fix - hitting block with debug damage stick does not make block appear to be damaged
+// 1.2: Fix - when a block is broken, the HP of the dropped item should be set to the percentage of damage that the block had, not
+// 1.3: Fix - Make mob only create blocks when they have no path to the target. We could set mob.hasRealPath in HardCraftPathNodeNavigator
+// 1.4: Fix - Mobs do not attempt to block in the direction they are moving
+// 1.5: Before attempting to block up, the mob should check if it has enough space to jump up, and if so it will break the block first.
+// the absolute amount of health the block had.
+// 2. Ensure we have mob block towering mechanics working well
+// 3. Update ideas.md

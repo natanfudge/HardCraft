@@ -79,11 +79,14 @@ Decided not to do support stuff, instead allow mobs to place blocks.
   ### Blinding bomb
   - Causes mobs to not be effective at getting to you
 
-## Reworked objective (Defence of the Egg)
-- Instead of losing instantly when you die, a more reasonable way would be to allow dying and respawning as normal, but having a certain respawn timer as a penalty. 
+# Defence of the Egg
+## Mob block Damage
+Each mob needs to have an amount of block damage assigned to it. 
+## Reworked objective
+- Instead of losing instantly when you die, a more reasonable way would be to allow dying and respawning as normal, but there is some penalty (not respawn timer, lol)
 - The objective then becomes defending something ("The Ender Dragon Egg" maybe), and if you die it will hinder you instead of ending the game. 
 
-## Leaderboards Site (Defence of the Egg)
+## Leaderboards Site 
 - When you lose, you have the option of uploading your results to a site maintained by me. The results will include the amount of time you survived, as well as the modpack you used (or vanilla). Results will only count as "verified" if you have full recorded footage of your run, and 5 people confirmed the run. The main leaderboard will only show verified results. It's possible to report a run as not genuine to get it removed. 
 
 ## Mob placing improvements

@@ -24,7 +24,6 @@ fun register(vararg registerables: Registerable) {
     }
 }
 
-//TODO: forge registry won't like this, it wants deferred stuff, see  https://docs.architectury.dev/api/registry
 
 /**
  * Will register the block and associated BlockItem and BlockEntityType with the KBlock's ID

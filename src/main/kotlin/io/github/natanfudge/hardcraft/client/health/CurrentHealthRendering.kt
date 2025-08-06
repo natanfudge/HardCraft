@@ -52,8 +52,7 @@ object CurrentHealthRendering {
                 entry3.normalMatrix,
                 1.0f
             )
-            //TODO: restore
-//            client.blockRenderManager.renderDamage(world.getBlockState(blockPos), blockPos, world, matrices, vertexConsumer2)
+            client.blockRenderManager.renderDamage(world.getBlockState(blockPos), blockPos, world, matrices, vertexConsumer2)
             matrices.pop()
         }
     }

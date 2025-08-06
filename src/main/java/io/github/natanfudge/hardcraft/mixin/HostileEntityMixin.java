@@ -33,7 +33,6 @@ public class HostileEntityMixin implements HardCraftHostileEntity {
      */
     @Override
     public int hardcraft_demolition() {
-        //TODO: custom demolition values
         return 5;
     }
 }

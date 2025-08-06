@@ -21,8 +21,6 @@ object HardcraftBlockComponentProvider : IBlockComponentProvider {
         val pos = accessor.position
         val currentHealth = world.getCurrentBlockHealth(pos) ?: return
         val maxHealth = world.getMaxBlockHealth(pos) ?: return
-//        println("According to waila, health at ${pos} is $currentHealth/$maxHealth")
-        //TODO: localization
         if (maxHealth != currentHealth) tooltip.addLine(Text.literal("Health: $currentHealth/$maxHealth"))
     }
 }

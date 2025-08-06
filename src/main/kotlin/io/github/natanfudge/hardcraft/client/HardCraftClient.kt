@@ -16,7 +16,6 @@ class HardCraftClient : ClientModInitializer {
             val maxHealth = stack.getBlockMaxHealth() ?: return@register
 
             if (health != maxHealth) {
-                //TODO: localization
                 lines.add(Text.literal("$health/$maxHealth HP"))
             }
         }
@@ -29,4 +28,3 @@ class HardCraftClient : ClientModInitializer {
 
 }
 
-//BlockPos{x=-30, y=83, z=14}
