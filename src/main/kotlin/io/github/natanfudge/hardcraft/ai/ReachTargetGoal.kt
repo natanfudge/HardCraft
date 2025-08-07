@@ -88,13 +88,14 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
         val target = mob.target
         if (target != null && mob.hardcraft_getCantReachTarget()) {
             // If the target is higher, try to block up.
-            if (blockUp.tick()) return
+            blockUp.tick()
+            // If we are below the target just block up, don't do anything else.
+            if(mob.isBelowTarget()) return
             val path = mob.navigation.currentPath ?: return
             if (path.isFinished) return
 
             val pathTargetPos = path.currentNode.pos
             val belowNextBlockPos = (mob.pos.directionTo(pathTargetPos).withoutY() + mob.pos).minusY(1.0).toBlockPos()
-            println("Mob pos: ${mob.pos}, path target pos: ${pathTargetPos}, belowNextBlockPos: $belowNextBlockPos, block: ${world.getBlock(belowNextBlockPos)}")
             // Next position is dirty and target is not below me - try to place block to bridge over
             if (mob.pos.y <= target.pos.y && world.getBlock(belowNextBlockPos) is AirBlock) {
                 world.setBlock(belowNextBlockPos, Blocks.DIRT)
@@ -151,7 +152,7 @@ class BlockUp(private val mob: HostileEntity, private val world: World) {
             jumpStartTick = null
         }
 
-        val targetIsAbove = mob.isBelowTarget() && jumpStartY == null
+        val targetIsAbove = mob.isBelowTarget()
         if (targetIsAbove && mob.isOnGround) {
             // If the target is too high, block up to him
             blockUp()
@@ -160,12 +161,8 @@ class BlockUp(private val mob: HostileEntity, private val world: World) {
             // Once we reached enough height, place the block
             val pos = mob.pos.toBlockPos().down()
             val below = mob.pos.minusY(2.0).blocksAround()
-//            if (below.none { world.canSupportOtherBlocks(it) }) {
-//                println("No block underneath can support. Vector: ${mob.pos.minusY(2.0)}. Blocks: $below")
-//            }
             // Make sure there is something to place on
             if (below.any { world.canSupportOtherBlocks(it) } && !world.canSupportOtherBlocks(pos)) {
-//                println("Setting block at $pos")
                 world.setBlock(pos, Blocks.DIRT)
                 mob.swingHand(mob.activeHand)
             }

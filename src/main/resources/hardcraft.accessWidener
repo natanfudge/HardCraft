@@ -26,4 +26,5 @@ accessible method net/minecraft/loot/LootPool supplyOnce (Ljava/util/function/Co
 # Used in ItemStackMixin
 accessible field net/minecraft/item/Item maxDamage I
 mutable field net/minecraft/item/Item maxDamage I
+accessible field net/minecraft/entity/ai/goal/TrackTargetGoal mob Lnet/minecraft/entity/mob/MobEntity;
 

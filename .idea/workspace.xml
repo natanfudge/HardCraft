@@ -4,13 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a0d436ff-e806-4898-b2e2-cacd578f69ac" name="Changes" comment="Improve special reach action conditions">
+    <list default="true" id="a0d436ff-e806-4898-b2e2-cacd578f69ac" name="Changes" comment="Blocking sideways and breaking down">
+      <change afterPath="$PROJECT_DIR$/src/main/java/io/github/natanfudge/hardcraft/mixin/ActiveTargetGoalMixin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Client.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Client.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Server.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Server.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/HardCraft.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/HardCraft.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/ReachTargetGoal.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/ReachTargetGoal.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/health/CurrentHealthRendering.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/health/CurrentHealthRendering.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/utils/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/utils/Utils.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/hardcraft.accessWidener" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/hardcraft.accessWidener" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/hardcraft.mixins.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/hardcraft.mixins.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,15 +54,25 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="$PROJECT_DIR$/../../../../gradle-9.0.0" javaHome="$USER_HOME$/.gradle/jdks/eclipse_adoptium-22-amd64-windows/jdk-22.0.2+9" gradleVersion="9.0.0" />
+  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="$USER_HOME$/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0" javaHome="$USER_HOME$/.gradle/jdks/eclipse_adoptium-22-amd64-windows/jdk-22.0.2+9" gradleVersion="9.0.0" />
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 6
 }</component>
   <component name="ProjectId" id="30vfEXADIiGdMvxgfNzneiKtti3" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -117,6 +128,28 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="HardCraft [genSourcesWithVineflower]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="genSourcesWithVineflower" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="HardCraft" />
       <method v="2">
@@ -131,10 +164,12 @@
     <list>
       <item itemvalue="Application.Minecraft Client" />
       <item itemvalue="Application.Minecraft Server" />
+      <item itemvalue="Gradle.HardCraft [genSourcesWithVineflower]" />
       <item itemvalue="Gradle.HardCraft [configureClientLaunch]" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.HardCraft [genSourcesWithVineflower]" />
         <item itemvalue="Gradle.HardCraft [configureClientLaunch]" />
       </list>
     </recent_temporary>
@@ -157,7 +192,7 @@
       <workItem from="1754512858547" duration="2001000" />
       <workItem from="1754515305683" duration="963000" />
       <workItem from="1754516293865" duration="3898000" />
-      <workItem from="1754556673516" duration="3794000" />
+      <workItem from="1754556673516" duration="7976000" />
     </task>
     <task id="LOCAL-00001" summary="Small cleanup">
       <option name="closed" value="true" />
@@ -183,7 +218,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754524184853</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Blocking sideways and breaking down">
+      <option name="closed" value="true" />
+      <created>1754560769016</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1754560769016</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -195,7 +238,8 @@
     <MESSAGE value="Small cleanup" />
     <MESSAGE value="Fix 2 bugs" />
     <MESSAGE value="Improve special reach action conditions" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improve special reach action conditions" />
+    <MESSAGE value="Blocking sideways and breaking down" />
+    <option name="LAST_COMMIT_MESSAGE" value="Blocking sideways and breaking down" />
     <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />
   </component>
   <component name="XDebuggerManager">

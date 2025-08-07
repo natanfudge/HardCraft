@@ -25,7 +25,5 @@ class HardCraft: ModInitializer {
 }
 
 //TODO:
-// 1.6: Increase enemy sight range so they don't just ignore you if you are above them
-// the absolute amount of health the block had.
-// 2. Ensure we have mob block towering mechanics working well
 // 3. Update ideas.md
+// 4. Try to do game tests
