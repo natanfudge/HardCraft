@@ -21,6 +21,8 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 import org.lwjgl.opengl.GL11
+import kotlin.time.Duration
+import kotlin.time.TimeSource
 
 
 @Serializable
@@ -39,6 +41,7 @@ private data class DebugText(
      * Used to identify this specific text so it may be turned off
      */
     val id: DebugTextId,
+    val lifetime: Duration?
 )
 
 object DebugRendering : HardCraft.Context() {
@@ -66,7 +69,7 @@ object DebugRendering : HardCraft.Context() {
         }
         addTextPacket.register { content, context ->
             if (context.world != null) {
-                addText(context.world, content.pos, content.text, content.id)
+                addText(context.world, content.pos, content.text, content.id, content.lifetime)
             }
         }
         removeTextPacket.register { content, context ->
@@ -97,13 +100,16 @@ object DebugRendering : HardCraft.Context() {
         }
     }
 
-    fun addText(world: World, pos: Vec3d, text: String, id: DebugTextId = nextTextId++): TextHandle {
+    /**
+     * @param time If not null, the text will expire and be removed after the specified amount of time.
+     */
+    fun addText(world: World, pos: Vec3d, text: String, id: DebugTextId = nextTextId++, time: Duration? = null): TextHandle {
         if (world is ServerWorld) {
             val handle = TextHandle(id)
-            addTextPacket.sendToWorld(DebugText(text, pos, id), world)
+            addTextPacket.sendToWorld(DebugText(text, pos, id, time), world)
             return handle
         } else {
-            return worldMarkers.computeIfAbsent(world) { WorldDebugMarkers() }.addText(pos, text, id)
+            return worldMarkers.computeIfAbsent(world) { WorldDebugMarkers() }.addText(pos, text, id, time)
         }
     }
 
@@ -122,12 +128,17 @@ typealias DebugTextId = Int
 class TextHandle(val id: DebugTextId)
 
 
+private data class TimestampedDebugText(
+    val addTime:  TimeSource.Monotonic.ValueTimeMark,
+    val debugText: DebugText
+)
+
 class WorldDebugMarkers {
     private val tints = mutableMapOf<BlockPos, McColor>()
-    private val texts = mutableMapOf<DebugTextId, DebugText>()
+    private val texts = mutableMapOf<DebugTextId, TimestampedDebugText>()
 
-    fun addText(pos: Vec3d, text: String, id: DebugTextId): TextHandle {
-        this.texts[id] = DebugText(text, pos, id)
+    fun addText(pos: Vec3d, text: String, id: DebugTextId, lifetime: Duration?): TextHandle {
+        this.texts[id] =TimestampedDebugText(TimeSource.Monotonic.markNow(), DebugText(text, pos, id, lifetime))
         return TextHandle(id)
     }
 
@@ -145,8 +156,9 @@ class WorldDebugMarkers {
 
     fun render(context: WorldRenderContext) {
         tintBlocks(context)
-        for ((text, pos) in texts.values) {
-            drawText(context, text, pos)
+        texts.values.removeIf { it.debugText.lifetime != null  && it.addTime.elapsedNow() >= it.debugText.lifetime }
+        for ((_, debug) in texts.values) {
+            drawText(context, debug.text, debug.pos)
         }
     }
 

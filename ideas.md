@@ -2,8 +2,6 @@
 
 ## 1. Hardcraft mechanics
 
-- Verified for Zombies, Skeletons, and Spiders, and Creepers.
-- Digging down, Climbing up, and breaking towards the target, when there is no path. 
 - Water Resistance, piston resistance, Lava resistance, and APIs to activate/deactivate them
 - API for assigning block break power of mobs
 

@@ -23,7 +23,7 @@ fun World.getMaxBlockHealth(pos: BlockPos): Int? {
  */
 fun World.getMaxBlockHealthOrMinus1(pos: BlockPos): Int {
     val state = getBlockState(pos)
-    if (state.isAir) return -1
+    if (state.isAir || !state.fluidState.isEmpty) return -1
     return state.block.getMaxHealthOrMinus1()
 }
 

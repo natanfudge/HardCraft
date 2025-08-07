@@ -19,6 +19,10 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 import kotlin.math.floor
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.seconds
+
+ var debugAI = false
+
 
 
 /**
@@ -32,16 +36,11 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
     private val world = mob.world as ServerWorld
     private val breakThrottler = TickThrottler()
 
-    //TODO: clean up tints and texts, after zombie dies it leaves behind its text. I think the best way is to add a timer to texts and the renderer removes it itself.
-
     override fun canStart(): Boolean {
         return true
     }
 
     private val debugOnlyWorkOnCloseMobs = false
-
-    //TODO: add command to toggle this on
-    private val debugAI = true
 
 
     /**
@@ -96,7 +95,7 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
             if (textHandle != null) {
                 DebugRendering.removeText(world, textHandle!!)
             }
-            textHandle = DebugRendering.addText(world, mob.pos.plusY(1.0), text)
+            textHandle = DebugRendering.addText(world, mob.pos.plusY(1.0), text, time = 1.seconds)
         }
     }
 
@@ -153,7 +152,7 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
                         setDebugText("No Path")
                         return
                     }
-                    if (path.isFinished){
+                    if (path.isFinished) {
                         setDebugText("Path is finished")
                         return
                     }
