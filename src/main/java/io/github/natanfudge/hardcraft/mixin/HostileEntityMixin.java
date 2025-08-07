@@ -3,6 +3,7 @@ package io.github.natanfudge.hardcraft.mixin;
 import io.github.natanfudge.hardcraft.ai.ReachTargetGoal;
 import io.github.natanfudge.hardcraft.ai.HardCraftNavigation;
 import io.github.natanfudge.hardcraft.injection.HardCraftHostileEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.world.World;
@@ -11,12 +12,17 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(HostileEntity.class)
 public class HostileEntityMixin implements HardCraftHostileEntity {
 
     @Unique
     boolean cantReachTarget = false;
+
+    //TODO: should be true by default, this is just a test
+    @Unique
+    boolean hardcraft_isPushedByFluids = false;
 
     @Unique
     HostileEntity hardCraft$self(){
@@ -50,5 +56,16 @@ public class HostileEntityMixin implements HardCraftHostileEntity {
     @Override
     public boolean hardcraft_getCantReachTarget() {
         return cantReachTarget;
+    }
+
+
+    @Override
+    public void hardcraft_setIsPushedByFluids(boolean value) {
+        this.hardcraft_isPushedByFluids = value;
+    }
+
+    @Override
+    public boolean hardcraft_getIsPushedByFluids() {
+        return this.hardcraft_isPushedByFluids;
     }
 }

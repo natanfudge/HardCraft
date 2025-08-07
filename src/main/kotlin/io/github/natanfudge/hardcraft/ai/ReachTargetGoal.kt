@@ -12,6 +12,8 @@ import io.github.natanfudge.hardcraft.mixinhandler.roundToBlockPos
 import io.github.natanfudge.hardcraft.utils.*
 import net.minecraft.block.Blocks
 import net.minecraft.entity.ai.goal.Goal
+import net.minecraft.entity.ai.pathing.Path
+import net.minecraft.entity.ai.pathing.PathNode
 import net.minecraft.entity.mob.HostileEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
@@ -21,8 +23,7 @@ import kotlin.math.floor
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
 
- var debugAI = false
-
+var debugAI = false
 
 
 /**
@@ -85,12 +86,12 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
             HardcraftAIState.PathingNormally -> "Pathing"
             HardcraftAIState.Unassigned -> "Unassigned"
             HardcraftAIState.BreakingUp -> "Breaking Up"
-            HardcraftAIState.Falling ->  "Falling"
+            HardcraftAIState.Falling -> "Falling"
         }
         setDebugText(text)
     }
 
-     fun setDebugText(text: String) {
+    fun setDebugText(text: String) {
         if (debugAI) {
             if (textHandle != null) {
                 DebugRendering.removeText(world, textHandle!!)
@@ -103,9 +104,9 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
         if (mob.target == null) return HardcraftAIState.NoTarget
         if (!mob.hardcraft_getCantReachTarget()) return HardcraftAIState.PathingNormally
         val below = mob.isBelowTarget()
-        if(below && spaceExistsToBlockUp()) return HardcraftAIState.BlockingUp
-        if(cannotMakeNextStepWithoutFalling()) return HardcraftAIState.Bridging
-        if(below) return HardcraftAIState.BreakingUp
+        if (below && spaceExistsToBlockUp()) return HardcraftAIState.BlockingUp
+        if (cannotMakeNextStepWithoutFalling()) return HardcraftAIState.Bridging
+        if (below) return HardcraftAIState.BreakingUp
         else return HardcraftAIState.BreakingForward
     }
 
@@ -119,8 +120,17 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
      */
     private fun getNextStepPos(): BlockPos? {
         val path = mob.navigation.currentPath ?: return null
-        val pathTargetPos = path.currentNode.pos
+        val pathTargetPos = path.safeGetCurrentNode()?.pos ?: return null
         return (mob.pos.directionTo(pathTargetPos).withoutY() + mob.pos).minusY(1.0).roundToBlockPos()
+    }
+
+    /**
+     * getCurrentNode can IOOB for some reason so we wrap it in a try/catch
+     */
+    private fun Path.safeGetCurrentNode(): PathNode? = try {
+        currentNode
+    } catch (e: IndexOutOfBoundsException) {
+        null
     }
 
     private fun cannotMakeNextStepWithoutFalling(): Boolean {
@@ -156,7 +166,7 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
                         setDebugText("Path is finished")
                         return
                     }
-                    val pathTargetPos = path.currentNode.pos
+                    val pathTargetPos = path.safeGetCurrentNode()?.pos ?: return
                     val targetBlockPos = getNextLogicalBlockToBreak(pathTargetPos) ?: return
                     if (!mob.handSwinging) {
                         mob.swingHand(mob.activeHand)
@@ -196,7 +206,7 @@ sealed interface HardcraftAIState {
     object Bridging : HardcraftAIState
     object BreakingForward : HardcraftAIState
     object BreakingUp : HardcraftAIState
-    object Falling: HardcraftAIState
+    object Falling : HardcraftAIState
 }
 
 /**

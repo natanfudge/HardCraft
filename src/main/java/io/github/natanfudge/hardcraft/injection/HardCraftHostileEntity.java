@@ -1,5 +1,7 @@
 package io.github.natanfudge.hardcraft.injection;
 
+import net.minecraft.entity.Entity;
+
 public interface HardCraftHostileEntity {
     /**
      * Specifies how easily a mob destroys blocks.
@@ -18,5 +20,16 @@ public interface HardCraftHostileEntity {
      * special action to reach its target.
      */
     boolean hardcraft_getCantReachTarget();
+
+    /**
+     * Will set the value returned by {@link Entity#isPushedByFluids()}, (whether the entity is pushed by fluids).
+     * Useful for making mobs resilient to just pushing them with water.
+     */
+    void hardcraft_setIsPushedByFluids(boolean value);
+
+    /**
+     * Getter for {@link HardCraftHostileEntity#hardcraft_setIsPushedByFluids}
+     */
+    boolean hardcraft_getIsPushedByFluids();
 
 }

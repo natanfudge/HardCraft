@@ -11,6 +11,7 @@
     "BlockItemMixin",
     "BlockMixin",
     "DrownedEntityMixin",
+    "EntityMixin",
     "GoalSelectorMixin",
     "HostileEntityMixin",
     "LootPoolMixin",
