@@ -72,6 +72,14 @@ dependencies {
     modRuntimeOnly(libs.wthit.fabric)
 }
 
+fabricApi {
+    configureTests {
+        createSourceSet = true
+        modId = "test-${project.name}"
+        eula = true
+    }
+}
+
 tasks.processResources {
     inputs.property("version", project.version)
     inputs.property("minecraft_version", libs.versions.minecraft.get())

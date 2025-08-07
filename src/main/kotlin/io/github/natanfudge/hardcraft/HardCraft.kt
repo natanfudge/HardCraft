@@ -26,4 +26,3 @@ class HardCraft: ModInitializer {
 
 //TODO:
 // 3. Update ideas.md
-// 4. Try to do game tests

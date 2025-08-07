@@ -2,6 +2,9 @@ package io.github.natanfudge.hardcraft.ai
 
 import io.github.natanfudge.genericutils.client.getClient
 import io.github.natanfudge.genericutils.distanceTo
+import io.github.natanfudge.hardcraft.client.McColor
+import io.github.natanfudge.hardcraft.client.debug.DebugRendering
+import io.github.natanfudge.hardcraft.client.debug.TextHandle
 import io.github.natanfudge.hardcraft.health.damageBlock
 import io.github.natanfudge.hardcraft.health.isDestroyable
 import io.github.natanfudge.hardcraft.mixinhandler.demolition
@@ -31,12 +34,16 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
     private val world = mob.world as ServerWorld
     private val breakThrottler = TickThrottler()
 
+    //TODO: clean up
 
     override fun canStart(): Boolean {
         return true
     }
 
-    private val debugOnlyWorkOnCloseMobs = true
+    private val debugOnlyWorkOnCloseMobs = false
+
+    //TODO: add command to toggle this on
+    private val debugAI = true
 
 
     /**
@@ -70,50 +77,133 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
 
     private val blockUp = BlockUp(mob, world)
 
+    //    private var state: HardcraftAIState = HardcraftAIState.Unassigned
+    private var textHandle: TextHandle? = null
+    private fun setStateDebugText(state: HardcraftAIState) {
+        if (textHandle != null) {
+            DebugRendering.removeText(world, textHandle!!)
+        }
+        val text = when (state) {
+            HardcraftAIState.BlockingUp -> "Blocking Up"
+            HardcraftAIState.BreakingForward -> "Breaking Forward"
+            HardcraftAIState.Bridging -> "Bridging"
+            HardcraftAIState.NoTarget -> "No Target"
+            HardcraftAIState.PathingNormally -> "Pathing"
+            HardcraftAIState.Unassigned -> "Unassigned"
+            HardcraftAIState.BreakingUp -> "Breaking Up"
+        }
+        this.textHandle = DebugRendering.addText(world, mob.pos.plusY(1.0), text)
+    }
+
+    private fun getAiState(): HardcraftAIState {
+        if (mob.target == null) return HardcraftAIState.NoTarget
+        if (!mob.hardcraft_getCantReachTarget()) return HardcraftAIState.PathingNormally
+        if (mob.isBelowTarget()) {
+            if (spaceExistsToBlockUp()) return HardcraftAIState.BlockingUp
+            else return HardcraftAIState.BreakingUp
+        }
+        // No need to make a bridge when the mob is higher
+        if (canMakeNextStepWithoutFalling() && !mob.isAboveTarget()) {
+            return HardcraftAIState.Bridging
+        } else {
+            return HardcraftAIState.BreakingForward
+        }
+    }
+    //TODO: mobs are unable to place blocks down anymore for some reason
+
+    private fun spaceExistsToBlockUp(): Boolean {
+        return overlappingBlockPositions(mob.pos.plusY(mob.height.toDouble())).all { world.getBlockState(it).isAir }
+    }
+
+    private fun overlappingBlockPositions(pos: Vec3d): List<BlockPos> {
+        val y  = floor(pos.y).toInt()
+
+        val x0 = floor(pos.x - 0.5).toInt()
+        val x1 = floor(pos.x + 0.5).toInt()
+        val z0 = floor(pos.z - 0.5).toInt()
+        val z1 = floor(pos.z + 0.5).toInt()
+
+        return when {
+            x0 == x1 && z0 == z1 ->                   // inside a single block
+                listOf(BlockPos(x0, y, z0))
+
+            x0 == x1 ->                               // spans two blocks along Z
+                listOf(
+                    BlockPos(x0, y, z0),
+                    BlockPos(x0, y, z1)
+                )
+
+            z0 == z1 ->                               // spans two blocks along X
+                listOf(
+                    BlockPos(x0, y, z0),
+                    BlockPos(x1, y, z0)
+                )
+
+            else ->                                   // spans four blocks
+                listOf(
+                    BlockPos(x0, y, z0),
+                    BlockPos(x1, y, z0),
+                    BlockPos(x0, y, z1),
+                    BlockPos(x1, y, z1)
+                )
+        }
+    }
+
+    /**
+     * Returns the position of the next block the mob is going to step on
+     */
+    private fun getNextStepPos(): BlockPos? {
+        val path = mob.navigation.currentPath ?: return null
+        val pathTargetPos = path.currentNode.pos
+        return (mob.pos.directionTo(pathTargetPos).withoutY() + mob.pos).minusY(1.0).toBlockPos()
+    }
+
+    private fun canMakeNextStepWithoutFalling(): Boolean {
+        val pos = getNextStepPos() ?: return false
+        return world.getBlockState(pos).isAir
+    }
 
     override fun tick() {
-        //TODO: this is just a debug measure
+        val state = getAiState()
+        if (debugAI) {
+            setStateDebugText(state)
+        }
+
+        val path = mob.navigation.currentPath ?: return
+        if (path.isFinished) return
+        val pathTargetPos = path.currentNode.pos
+
         if (debugOnlyWorkOnCloseMobs) {
             val player = getClient().player ?: return
             if (mob.pos.distanceTo(player.pos) > 30) return
         }
 
-//        if (this !in DoneMobs) {
-//            blockUp.blockUp()
-//            DoneMobs.add(this)
-//            return
-//        }
 
-        // Only perform special actions to get the target if there's no other way
-        val target = mob.target
-        if (target != null && mob.hardcraft_getCantReachTarget()) {
-            // If the target is higher, try to block up.
-            blockUp.tick()
-            // If we are below the target just block up, don't do anything else.
-            if(mob.isBelowTarget()) return
-            val path = mob.navigation.currentPath ?: return
-            if (path.isFinished) return
-
-            val pathTargetPos = path.currentNode.pos
-            val belowNextBlockPos = (mob.pos.directionTo(pathTargetPos).withoutY() + mob.pos).minusY(1.0).toBlockPos()
-            // Next position is dirty and target is not below me - try to place block to bridge over
-            if (mob.pos.y <= target.pos.y && world.getBlock(belowNextBlockPos) is AirBlock) {
-                world.setBlock(belowNextBlockPos, Blocks.DIRT)
-                mob.swingHand(mob.activeHand)
-            } else {
-                val y = 2
+        when (state) {
+            HardcraftAIState.BlockingUp -> {
+                blockUp.tick()
             }
-
-
-            // damageBlock() and getNextLogicalBlockToBreak() are expensive so we don't do it every tick,
-            // rather do it batches by multiplying damage by DoDamageToBlockInterval.
-            breakThrottler.runThrottled(DoDamageToBlockInterval) { delta ->
-                val targetBlockPos = getNextLogicalBlockToBreak(pathTargetPos) ?: return
-                if (!mob.handSwinging) {
-                    mob.swingHand(mob.activeHand)
+            HardcraftAIState.BreakingForward, HardcraftAIState.BreakingUp -> {
+                // damageBlock() and getNextLogicalBlockToBreak() are expensive so we don't do it every tick,
+                // rather do it batches by multiplying damage by DoDamageToBlockInterval.
+                breakThrottler.runThrottled(DoDamageToBlockInterval) { delta ->
+                    val targetBlockPos = getNextLogicalBlockToBreak(pathTargetPos) ?: return
+                    if (!mob.handSwinging) {
+                        mob.swingHand(mob.activeHand)
+                    }
+                    if (debugAI) {
+                        DebugRendering.tintBlock(world, targetBlockPos, McColor.Red)
+                    }
+                    world.damageBlock(targetBlockPos, delta * mob.demolition)
                 }
-                world.damageBlock(targetBlockPos, delta * mob.demolition)
             }
+
+            HardcraftAIState.Bridging -> {
+                val nextStepPos = getNextStepPos() ?: return
+                world.setBlock(nextStepPos, Blocks.DIRT)
+                mob.swingHand(mob.activeHand)
+            }
+            else -> {}
         }
     }
 
@@ -125,6 +215,16 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
     override fun shouldRunEveryTick(): Boolean {
         return true
     }
+}
+
+sealed interface HardcraftAIState {
+    object Unassigned : HardcraftAIState
+    object NoTarget : HardcraftAIState
+    object PathingNormally : HardcraftAIState
+    object BlockingUp : HardcraftAIState
+    object Bridging : HardcraftAIState
+    object BreakingForward : HardcraftAIState
+    object BreakingUp : HardcraftAIState
 }
 
 /**

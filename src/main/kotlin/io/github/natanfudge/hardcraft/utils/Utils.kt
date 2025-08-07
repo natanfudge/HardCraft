@@ -1,5 +1,6 @@
 package io.github.natanfudge.hardcraft.utils
 
+import net.minecraft.block.AirBlock
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.util.math.BlockPos
@@ -22,10 +23,12 @@ fun BlockPos.withZ(z: Int) = BlockPos(x, y, z)
 
 //operator fun Vec3d.plus(other: Vec3d)
 operator fun Vec3d.plus(other: BlockPos) = Vec3d(this.x + other.x, this.y + other.y, this.z + other.z)
+ fun Vec3d.plusY(y: Double) = Vec3d(this.x, this.y + y, this.z)
 operator fun Vec3d.minus(other: BlockPos) = Vec3d(this.x - other.x, this.y - other.y, this.z - other.z)
 operator fun Vec3d.minus(other: Vec3d) = Vec3d(this.x - other.x, this.y - other.y, this.z - other.z)
  fun Vec3d.minusY(y: Double) = Vec3d(this.x, this.y - y, this.z)
  fun BlockPos.minusY(y: Int) = BlockPos(this.x, this.y - y, this.z)
+ fun BlockPos.plusY(y: Int) = BlockPos(this.x, this.y + y, this.z)
 operator fun BlockPos.minus(other: Vec3d) = Vec3d(this.x - other.x, this.y - other.y, this.z - other.z)
 fun Vec3d.toDirection(): DoubleDirection {
     return DoubleDirection(x, y, z)
@@ -47,7 +50,10 @@ fun WorldAccess.setBlock(pos: BlockPos, block: Block): Boolean {
 }
 
 fun Double.ceilToInt() = ceil(this).toInt()
+fun Float.ceilToInt() = ceil(this).toInt()
 fun Double.floorToInt() = floor(this).toInt()
+fun Float.floorToInt() = floor(this).toInt()
+val Block.isAir get() = this is AirBlock
 
 
 private inline fun directionAxis(num: Double) = when {

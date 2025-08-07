@@ -7,12 +7,13 @@ import io.github.natanfudge.hardcraft.HardCraft
 import io.github.natanfudge.hardcraft.client.McColor
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.minecraft.BlockPosSerializer
+import kotlinx.serialization.minecraft.Vec3dSerializer
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
-import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.render.Tessellator
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
+import net.minecraft.client.MinecraftClient
+import net.minecraft.client.font.TextRenderer
+import net.minecraft.client.render.*
+import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
@@ -21,6 +22,7 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 import org.lwjgl.opengl.GL11
 
+
 @Serializable
 private data class Tint(
     val color: McColor?,
@@ -28,25 +30,48 @@ private data class Tint(
     val pos: BlockPos,
 )
 
+@Serializable
+private data class DebugText(
+    val text: String,
+    @Serializable(with = Vec3dSerializer::class)
+    val pos: Vec3d,
+    /**
+     * Used to identify this specific text so it may be turned off
+     */
+    val id: DebugTextId,
+)
 
 object DebugRendering : HardCraft.Context() {
-    private val worldTints = mutableMapOf<World, WorldTints>()
+    private val worldMarkers = mutableMapOf<World, WorldDebugMarkers>()
 
     private val sendTintPacket = s2cPacket<Tint>("debug_tint")
+    private val addTextPacket = s2cPacket<DebugText>("add_debug_text")
+    private val removeTextPacket = s2cPacket<DebugTextId>("remove_debug_text")
+    private var nextTextId = 0
 
     context(ClientInit)
     fun registerClient() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register {
-            worldTints[it.world()]?.render(it)
+            worldMarkers[it.world()]?.render(it)
         }
 
         sendTintPacket.register { content, context ->
             if (context.world != null) {
                 if (content.color != null) {
-                    tint(context.world, content.pos, content.color)
+                    tintBlock(context.world, content.pos, content.color)
                 } else {
-                    untint(context.world, content.pos)
+                    untintBlock(context.world, content.pos)
                 }
+            }
+        }
+        addTextPacket.register { content, context ->
+            if (context.world != null) {
+                addText(context.world, content.pos, content.text, content.id)
+            }
+        }
+        removeTextPacket.register { content, context ->
+            if (context.world != null) {
+                removeText(context.world, TextHandle(content))
             }
         }
     }
@@ -55,26 +80,60 @@ object DebugRendering : HardCraft.Context() {
      * Will tint the block at [pos] with [color].
      * Can be used on the client to tint right away, or on the server to send the tint to the client.
      */
-    fun tint(world: World, pos: BlockPos, color: McColor) {
+    fun tintBlock(world: World, pos: BlockPos, color: McColor) {
         if (world is ServerWorld) {
             sendTintPacket.sendToWorld(Tint(color, pos), world)
         } else {
-            worldTints.computeIfAbsent(world) { WorldTints(world) }.tint(pos, color)
+            worldMarkers.computeIfAbsent(world) { WorldDebugMarkers() }.tint(pos, color)
         }
 
     }
 
-    fun untint(world: World, pos: BlockPos) {
+    fun untintBlock(world: World, pos: BlockPos) {
         if (world is ServerWorld) {
             sendTintPacket.sendToWorld(Tint(null, pos), world)
         } else {
-            worldTints[world]?.untint(pos)
+            worldMarkers[world]?.untint(pos)
         }
     }
+
+    fun addText(world: World, pos: Vec3d, text: String, id: DebugTextId = nextTextId++): TextHandle {
+        if (world is ServerWorld) {
+            val handle = TextHandle(id)
+            addTextPacket.sendToWorld(DebugText(text, pos, id), world)
+            return handle
+        } else {
+            return worldMarkers.computeIfAbsent(world) { WorldDebugMarkers() }.addText(pos, text, id)
+        }
+    }
+
+    fun removeText(world: World, handle: TextHandle) {
+        if (world is ServerWorld) {
+            removeTextPacket.sendToWorld(handle.id, world)
+        } else {
+            worldMarkers[world]?.removeText(handle)
+        }
+    }
+
 }
 
-class WorldTints(world: World) {
+typealias DebugTextId = Int
+
+class TextHandle(val id: DebugTextId)
+
+
+class WorldDebugMarkers {
     private val tints = mutableMapOf<BlockPos, McColor>()
+    private val texts = mutableMapOf<DebugTextId, DebugText>()
+
+    fun addText(pos: Vec3d, text: String, id: DebugTextId): TextHandle {
+        this.texts[id] = DebugText(text, pos, id)
+        return TextHandle(id)
+    }
+
+    fun removeText(handle: TextHandle) {
+        texts.remove(handle.id)
+    }
 
     fun untint(pos: BlockPos) {
         tints.remove(pos)
@@ -85,6 +144,56 @@ class WorldTints(world: World) {
     }
 
     fun render(context: WorldRenderContext) {
+        tintBlocks(context)
+        for ((text, pos) in texts.values) {
+            drawText(context, text, pos)
+        }
+    }
+
+    private fun drawText(ctx: WorldRenderContext, text: String, pos: Vec3d) {
+        val matrices: MatrixStack = ctx.matrixStack()
+        val cam: Camera = ctx.camera()
+        val camPos = cam.getPos()
+
+
+        // Translate from world → camera space
+        matrices.push()
+        matrices.translate(
+            pos.getX() + 0.5 - camPos.x,
+            pos.getY() + 1.5 - camPos.y,
+            pos.getZ() + 0.5 - camPos.z
+        )
+
+
+        // Make the label face the player and scale it down
+        matrices.multiply(cam.getRotation()) // billboard
+        matrices.scale(-0.025f, -0.025f, 0.025f) // 40 px ≈ 1 block
+
+        val tr: TextRenderer = MinecraftClient.getInstance().textRenderer
+        val wHalf: Float = tr.getWidth(text) / 2f
+        matrices.translate(-wHalf, 0f, 0f) // centre horizontally
+
+        val vcp =
+            VertexConsumerProvider.immediate(
+                Tessellator.getInstance().getBuffer()
+            )
+
+        tr.draw(
+            text, 0f, 0f,
+            0xFFFFFFFF.toInt(),  // colour
+            false,  // no shadow
+            matrices.peek().getPositionMatrix(),
+            vcp,
+            TextRenderer.TextLayerType.NORMAL,
+            0,
+            LightmapTextureManager.MAX_LIGHT_COORDINATE
+        )
+
+        vcp.draw() // flush
+        matrices.pop()
+    }
+
+    private fun tintBlocks(context: WorldRenderContext) {
         val matrices = context.matrixStack()
         val camera = context.camera()
         val tessellator = Tessellator.getInstance()
@@ -107,7 +216,7 @@ class WorldTints(world: World) {
 
         for ((pos, color) in tints) {
             val colorValue = color.argb
-//            if (!camera.frustum.isVisible(Box(pos))) continue
+            //            if (!camera.frustum.isVisible(Box(pos))) continue
 
             val alpha = (colorValue shr 24 and 0xFF) / 255f
             val red = (colorValue shr 16 and 0xFF) / 255f

@@ -1,71 +1,43 @@
-# DONE:
-- Give every block a damage value that is persistent. Enemies may damage blocks and finally - destroy them.
-- Mobs will always know how to find players. They will pathfind a way to them, and if they can't, they will break blocks to get where they need.
+# 0.1 Complete Prototype Requirements
 
-## New block mechanics
-### Max health value
-- Every block has a certain amount of initial health that determines how hard it is to destroy.
-- Unless otherwise specified, the max health value directly correlates with the hardness of a block.
-### Current health Value
-- Every block has a current health value that is initialized as the max health value.
-- When a damaged block is harvested by a player, it retains its current health value and will stay damaged when it is placed again.
-- The % of max health remaining is displayed as durability on the block.
-- Blocks will appear cracked when they have taken damage. The more damage - the more cracked
-- WAILA displays the exact amount of currentHealth/maxHealth.
-### Support
-- Blocks (other than bedrock) must be supported by another block - it must have a support path to bedrock.
-- This means that there are no restrictions to *placing* blocks, but *breaking or destroying* blocks can have serious consequences.
-- When a block is broken, blocks (efficiently) check if they lost their support. If so, they will fall down like gravel.
+## 1. Hardcraft mechanics
 
-## New mob mechanics
-  - All mobs actively try to fuck up the player at all times. 
-  - Mobs, unfairly, find the closest player, with no respect to distance or vision, and try to kill him.
-  - If a reasonable path is found, the mob will use the path and attack the player as usual.
-  - If no path exists and the mob is on the same level or higher than the play - mobs will break blocks along the way to get to the player.
+- Verified for Zombies, Skeletons, and Spiders.
+- Digging down, Climbing up, and breaking towards the target, when there is no path. 
+- Water Resistance, piston resistance, Lava resistance, and APIs to activate/deactivate them
+- API for assigning block break power of mobs
 
-## New Itemstack Mechanics
+## 2. Revenge of the Mobs mechanics
 
-- When blocks are broken, they retain their health value as an ItemStack.
-- Health value is shown as damage on the item
+- 10 Waves of mobs spawn at night, each increasing in difficulty:
+  - Scaling health
+  - Scaling count
+  - Scaling damage
+  - Scaling speed
+  - Scaling block break power
+  - Wave 2 - Water Resistance
+  - Wave 4 - Lava Resistance
+  - Wave 6 - Piston Resistance
+- You die you lose
+- GUI shows countdown for when the spawning starts, and the current wave/max wave. 
 
+#  Ideas
 
+## Rogue-like mechanics
 
-# Investigate
-- How well do mobs pathfind to their target?
-
-# TODO:
-Decided not to do support stuff, instead allow mobs to place blocks. 
-
-
-
-## New block mechanics
-  ### Support / Climbing
-  -  **It might make sense to allow mobs to climb instead of having this support mechanism which could potentially lag on block breaks
-  - I think the most fun way would be to both have the support thing, and have climbing mobs that just say fuck you. 
-  - Blocks (other than bedrock) must be supported by another block - it must have a support path to bedrock. 
-  - This means that there are no restrictions to *placing* blocks, but *breaking or destroying* blocks can have serious consequences. 
-  - When a block is broken, blocks (efficiently) check if they lost their support. If so, they will fall down like gravel. 
-  
-
-## New Itemstack mechanics
-- When blocks are broken, they retain their health value as an ItemStack.
-- Health value is shown as damage on the item
-- When blocks are placed they have the item's damage value
+Upon completing a wave, get loot that allows you to choose between different upgrades. 
 
 
 ## New mob mechanics
-  - Mobs may be dumb - and destroy anything no matter how strong the block is - or be smart and find the weakest blocks to destroy to get to the player. 
   - Mobs may have a bigger step height.
   - It makes sense for mobs to have a set of capabilities, and then unlock them as the game progresses, for example:
-	  - Level 1: Vanilla Mobs
-	  - Level 2: Unlock breaking blocks
-	  - Level 3: Unlock Climbing
-	  - Level 4: Water resistance
-	  - Level 5: Lava Resistance
-	  - Level 6: Push resistance
+      - Level 1: Vanilla Mobs
+        - Level 2: Unlock breaking blocks
+        - Level 3: Unlock Climbing
+        - Level 4: Water resistance
+        - Level 5: Lava Resistance
+        - Level 6: Push resistance
 
-
-# Secondary TODO
 ## New items
   ### Repair kit.
   - May be used on a damaged block to repair it.
@@ -79,7 +51,8 @@ Decided not to do support stuff, instead allow mobs to place blocks.
   ### Blinding bomb
   - Causes mobs to not be effective at getting to you
 
-# Defence of the Egg
+
+
 ## Mob block Damage
 Each mob needs to have an amount of block damage assigned to it. 
 ## Reworked objective
@@ -91,3 +64,43 @@ Each mob needs to have an amount of block damage assigned to it.
 
 ## Mob placing improvements
 - Perhaps we can make the mobs gather blocks and only then they can place them.
+
+
+
+# DONE:
+
+- Give every block a damage value that is persistent. Enemies may damage blocks and finally - destroy them.
+- Mobs will always know how to find players. They will pathfind a way to them, and if they can't, they will break blocks to get where they need.
+
+## New block mechanics
+
+### Max health value
+
+- Every block has a certain amount of initial health that determines how hard it is to destroy.
+- Unless otherwise specified, the max health value directly correlates with the hardness of a block.
+
+### Current health Value
+
+- Every block has a current health value that is initialized as the max health value.
+- When a damaged block is harvested by a player, it retains its current health value and will stay damaged when it is placed again.
+- The % of max health remaining is displayed as durability on the block.
+- Blocks will appear cracked when they have taken damage. The more damage - the more cracked
+- WAILA displays the exact amount of currentHealth/maxHealth.
+
+### Support
+
+- Blocks (other than bedrock) must be supported by another block - it must have a support path to bedrock.
+- This means that there are no restrictions to *placing* blocks, but *breaking or destroying* blocks can have serious consequences.
+- When a block is broken, blocks (efficiently) check if they lost their support. If so, they will fall down like gravel.
+
+## New mob mechanics
+
+  - All mobs actively try to fuck up the player at all times. 
+  - Mobs, unfairly, find the closest player, with no respect to distance or vision, and try to kill him.
+  - If a reasonable path is found, the mob will use the path and attack the player as usual.
+  - If no path exists and the mob is on the same level or higher than the play - mobs will break blocks along the way to get to the player.
+
+## New Itemstack Mechanics
+
+- When blocks are broken, they retain their health value as an ItemStack.
+- Health value is shown as damage on the item

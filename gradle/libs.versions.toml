@@ -35,7 +35,7 @@ wthit_fabric="fabric-8.16.1"
 # Mods & Libraries
 yarn_mappings = "1.20.1+build.10"
 fabric_loader = "0.16.10"
-fabric_api = "0.92.3+1.20.1"
+fabric_api = "0.92.6+1.20.1"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
