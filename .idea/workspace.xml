@@ -4,20 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a0d436ff-e806-4898-b2e2-cacd578f69ac" name="Changes" comment="Infinite y search">
-      <change afterPath="$PROJECT_DIR$/src/gametest/kotlin/com/example/docs/FabricDocsGameTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gametest/resources/fabric.mod.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Server.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Server.xml" afterDir="false" />
+    <list default="true" id="a0d436ff-e806-4898-b2e2-cacd578f69ac" name="Changes" comment="pathing issues">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ideas.md" beforeDir="false" afterPath="$PROJECT_DIR$/ideas.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/HardCraft.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/HardCraft.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/HardCraftNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/HardCraftNavigation.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/ReachTargetGoal.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/ReachTargetGoal.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/debug/DebugRendering.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/debug/DebugRendering.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/utils/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/utils/Utils.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/mixinhandler/ItemDrop.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/mixinhandler/ItemDrop.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/io/github/natanfudge/hardcraft/test/SupportDfsTest.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/io/github/natanfudge/hardcraft/test/WorldSupportCacheFloatingBlocksTest.kt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,35 +79,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Minecraft Client.executor&quot;: &quot;HotSwap Debug Executor&quot;,
-    &quot;Gradle.Build HardCraft.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.HardCraft [:net.fabricmc.devlaunchinjector.Main.main()].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.HardCraft [configureClientLaunch].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.HardCraft [genSourcesWithVineflower].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.HardCraft [runClientGameTest].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.HardCraft [runGameTest].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;1.20.1&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Minecraft Client.executor": "HotSwap Debug Executor",
+    "Gradle.Build HardCraft.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.HardCraft [:net.fabricmc.devlaunchinjector.Main.main()].executor": "Debug",
+    "Gradle.HardCraft [configureClientLaunch].executor": "Run",
+    "Gradle.HardCraft [genSourcesWithVineflower].executor": "Run",
+    "Gradle.HardCraft [runClientGameTest].executor": "Debug",
+    "Gradle.HardCraft [runGameTest].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "1.20.1",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "junie.application.models",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Application.Minecraft Client">
     <configuration name="HardCraft [configureClientLaunch]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -251,7 +245,8 @@
       <workItem from="1754512858547" duration="2001000" />
       <workItem from="1754515305683" duration="963000" />
       <workItem from="1754516293865" duration="3898000" />
-      <workItem from="1754556673516" duration="17318000" />
+      <workItem from="1754556673516" duration="18691000" />
+      <workItem from="1754594885435" duration="4262000" />
     </task>
     <task id="LOCAL-00001" summary="Small cleanup">
       <option name="closed" value="true" />
@@ -293,7 +288,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754571034923</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="pathing issues">
+      <option name="closed" value="true" />
+      <created>1754593155448</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1754593155448</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -307,7 +310,8 @@
     <MESSAGE value="Improve special reach action conditions" />
     <MESSAGE value="Blocking sideways and breaking down" />
     <MESSAGE value="Infinite y search" />
-    <option name="LAST_COMMIT_MESSAGE" value="Infinite y search" />
+    <MESSAGE value="pathing issues" />
+    <option name="LAST_COMMIT_MESSAGE" value="pathing issues" />
     <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />
   </component>
   <component name="XDebuggerManager">
@@ -315,7 +319,12 @@
       <configuration name="GradleRunConfiguration">
         <watch expression="mob.pos" language="kotlin" />
         <watch expression="world.isClient" language="kotlin" />
+        <watch expression="mob.target.pos" language="kotlin" />
       </configuration>
     </watches-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

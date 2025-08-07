@@ -2,7 +2,7 @@
 
 ## 1. Hardcraft mechanics
 
-- Verified for Zombies, Skeletons, and Spiders.
+- Verified for Zombies, Skeletons, and Spiders, and Creepers.
 - Digging down, Climbing up, and breaking towards the target, when there is no path. 
 - Water Resistance, piston resistance, Lava resistance, and APIs to activate/deactivate them
 - API for assigning block break power of mobs
@@ -26,6 +26,10 @@
 ## Rogue-like mechanics
 
 Upon completing a wave, get loot that allows you to choose between different upgrades. 
+
+## Reworked Creepers
+
+It doesn't make much sense that creeps can dig since they have no hands. Instead, they should act as "wall breakers", and will explode as soon as they reach a wall when they can't find a path. Creepers have increased blast radius and only deal a set of amount of damage to blocks, only outright destroying them if the blocks can't withstand the damage. 
 
 
 ## New mob mechanics

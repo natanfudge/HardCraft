@@ -3,11 +3,9 @@ package io.github.natanfudge.hardcraft.mixinhandler
 import io.github.natanfudge.hardcraft.health.CurrentHealthStorage.Companion.setBlockCurrentHealth
 import io.github.natanfudge.hardcraft.health.getBlockMaxHealth
 import io.github.natanfudge.hardcraft.health.getCurrentBlockHealth
-import io.github.natanfudge.hardcraft.health.getMaxBlockHealth
 import io.github.natanfudge.hardcraft.health.getMaxHealth
 import net.minecraft.item.ItemStack
 import net.minecraft.loot.context.LootContext
-import net.minecraft.loot.context.LootContextParameter
 import net.minecraft.loot.context.LootContextParameters
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
@@ -20,7 +18,7 @@ object ItemDrop {
         val destroyedBlock = context[LootContextParameters.BLOCK_STATE]
         // If there's no origin we can't determine if the block is damaged (this shouldn't happen for regular cases)
         if (destroyedBlock != null) {
-            val blockPos = origin.toBlockPos()
+            val blockPos = origin.floorToBlockPos()
             val blockCurrentHealth = world.getCurrentBlockHealth(blockPos) ?: return
             val blockMaxHealth = destroyedBlock.block.getMaxHealth() ?: return
             val stackMaxHealth = stack.getBlockMaxHealth() ?: return
@@ -38,6 +36,7 @@ object ItemDrop {
 }
 
 
-fun Vec3d.toBlockPos() = BlockPos.ofFloored(this)
+fun Vec3d.floorToBlockPos() = BlockPos.ofFloored(this)
+fun Vec3d.roundToBlockPos() = BlockPos(x.roundToInt(), y.roundToInt(), z.roundToInt())
 fun LootContext.origin(): Vec3d? = get(LootContextParameters.ORIGIN)
 fun LootContext.isBlockDrop(): Boolean = hasParameter(LootContextParameters.BLOCK_STATE)

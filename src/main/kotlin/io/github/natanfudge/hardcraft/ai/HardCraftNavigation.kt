@@ -64,7 +64,9 @@ private class HardCraftPathNodeNavigator(range: Int) : PathNodeNavigator(LandPat
         }
 
         // positions shouldn't be empty but check anyway
-        if (positions.isEmpty()) return null
+        if (positions.isEmpty()){
+            return null
+        }
         // If normal means don't suffice, break right through.
         // Specifying simply the destination position will make the mob go in a straight line to the target.
         return Path(

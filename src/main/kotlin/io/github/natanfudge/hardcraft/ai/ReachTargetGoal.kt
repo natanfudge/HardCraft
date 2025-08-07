@@ -2,15 +2,14 @@ package io.github.natanfudge.hardcraft.ai
 
 import io.github.natanfudge.genericutils.client.getClient
 import io.github.natanfudge.genericutils.distanceTo
-import io.github.natanfudge.hardcraft.client.McColor
 import io.github.natanfudge.hardcraft.client.debug.DebugRendering
 import io.github.natanfudge.hardcraft.client.debug.TextHandle
 import io.github.natanfudge.hardcraft.health.damageBlock
 import io.github.natanfudge.hardcraft.health.isDestroyable
 import io.github.natanfudge.hardcraft.mixinhandler.demolition
-import io.github.natanfudge.hardcraft.mixinhandler.toBlockPos
+import io.github.natanfudge.hardcraft.mixinhandler.floorToBlockPos
+import io.github.natanfudge.hardcraft.mixinhandler.roundToBlockPos
 import io.github.natanfudge.hardcraft.utils.*
-import net.minecraft.block.AirBlock
 import net.minecraft.block.Blocks
 import net.minecraft.entity.ai.goal.Goal
 import net.minecraft.entity.mob.HostileEntity
@@ -18,7 +17,6 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
-import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
@@ -34,7 +32,7 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
     private val world = mob.world as ServerWorld
     private val breakThrottler = TickThrottler()
 
-    //TODO: clean up
+    //TODO: clean up tints and texts, after zombie dies it leaves behind its text. I think the best way is to add a timer to texts and the renderer removes it itself.
 
     override fun canStart(): Boolean {
         return true
@@ -75,14 +73,11 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
             .minByOrNull { mob.distanceTo(it) }
     }
 
-    private val blockUp = BlockUp(mob, world)
+    private val blockUp = BlockUp(mob, world, this)
 
     //    private var state: HardcraftAIState = HardcraftAIState.Unassigned
     private var textHandle: TextHandle? = null
     private fun setStateDebugText(state: HardcraftAIState) {
-        if (textHandle != null) {
-            DebugRendering.removeText(world, textHandle!!)
-        }
         val text = when (state) {
             HardcraftAIState.BlockingUp -> "Blocking Up"
             HardcraftAIState.BreakingForward -> "Breaking Forward"
@@ -91,63 +86,34 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
             HardcraftAIState.PathingNormally -> "Pathing"
             HardcraftAIState.Unassigned -> "Unassigned"
             HardcraftAIState.BreakingUp -> "Breaking Up"
+            HardcraftAIState.Falling ->  "Falling"
         }
-        this.textHandle = DebugRendering.addText(world, mob.pos.plusY(1.0), text)
+        setDebugText(text)
+    }
+
+     fun setDebugText(text: String) {
+        if (debugAI) {
+            if (textHandle != null) {
+                DebugRendering.removeText(world, textHandle!!)
+            }
+            textHandle = DebugRendering.addText(world, mob.pos.plusY(1.0), text)
+        }
     }
 
     private fun getAiState(): HardcraftAIState {
         if (mob.target == null) return HardcraftAIState.NoTarget
         if (!mob.hardcraft_getCantReachTarget()) return HardcraftAIState.PathingNormally
-        if (mob.isBelowTarget()) {
-            if (spaceExistsToBlockUp()) return HardcraftAIState.BlockingUp
-            else return HardcraftAIState.BreakingUp
-        }
-        // No need to make a bridge when the mob is higher
-        if (canMakeNextStepWithoutFalling() && !mob.isAboveTarget()) {
-            return HardcraftAIState.Bridging
-        } else {
-            return HardcraftAIState.BreakingForward
-        }
+        val below = mob.isBelowTarget()
+        if(below && spaceExistsToBlockUp()) return HardcraftAIState.BlockingUp
+        if(cannotMakeNextStepWithoutFalling()) return HardcraftAIState.Bridging
+        if(below) return HardcraftAIState.BreakingUp
+        else return HardcraftAIState.BreakingForward
     }
-    //TODO: mobs are unable to place blocks down anymore for some reason
 
     private fun spaceExistsToBlockUp(): Boolean {
-        return overlappingBlockPositions(mob.pos.plusY(mob.height.toDouble())).all { world.getBlockState(it).isAir }
+        return overlappingBlockPositions(mob.pos.plusY(mob.height.toDouble() + 1)).all { world.getBlockState(it).isAir }
     }
 
-    private fun overlappingBlockPositions(pos: Vec3d): List<BlockPos> {
-        val y  = floor(pos.y).toInt()
-
-        val x0 = floor(pos.x - 0.5).toInt()
-        val x1 = floor(pos.x + 0.5).toInt()
-        val z0 = floor(pos.z - 0.5).toInt()
-        val z1 = floor(pos.z + 0.5).toInt()
-
-        return when {
-            x0 == x1 && z0 == z1 ->                   // inside a single block
-                listOf(BlockPos(x0, y, z0))
-
-            x0 == x1 ->                               // spans two blocks along Z
-                listOf(
-                    BlockPos(x0, y, z0),
-                    BlockPos(x0, y, z1)
-                )
-
-            z0 == z1 ->                               // spans two blocks along X
-                listOf(
-                    BlockPos(x0, y, z0),
-                    BlockPos(x1, y, z0)
-                )
-
-            else ->                                   // spans four blocks
-                listOf(
-                    BlockPos(x0, y, z0),
-                    BlockPos(x1, y, z0),
-                    BlockPos(x0, y, z1),
-                    BlockPos(x1, y, z1)
-                )
-        }
-    }
 
     /**
      * Returns the position of the next block the mob is going to step on
@@ -155,23 +121,18 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
     private fun getNextStepPos(): BlockPos? {
         val path = mob.navigation.currentPath ?: return null
         val pathTargetPos = path.currentNode.pos
-        return (mob.pos.directionTo(pathTargetPos).withoutY() + mob.pos).minusY(1.0).toBlockPos()
+        return (mob.pos.directionTo(pathTargetPos).withoutY() + mob.pos).minusY(1.0).roundToBlockPos()
     }
 
-    private fun canMakeNextStepWithoutFalling(): Boolean {
+    private fun cannotMakeNextStepWithoutFalling(): Boolean {
         val pos = getNextStepPos() ?: return false
         return world.getBlockState(pos).isAir
     }
 
     override fun tick() {
         val state = getAiState()
-        if (debugAI) {
-            setStateDebugText(state)
-        }
+        setStateDebugText(state)
 
-        val path = mob.navigation.currentPath ?: return
-        if (path.isFinished) return
-        val pathTargetPos = path.currentNode.pos
 
         if (debugOnlyWorkOnCloseMobs) {
             val player = getClient().player ?: return
@@ -183,16 +144,26 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
             HardcraftAIState.BlockingUp -> {
                 blockUp.tick()
             }
+
             HardcraftAIState.BreakingForward, HardcraftAIState.BreakingUp -> {
                 // damageBlock() and getNextLogicalBlockToBreak() are expensive so we don't do it every tick,
                 // rather do it batches by multiplying damage by DoDamageToBlockInterval.
                 breakThrottler.runThrottled(DoDamageToBlockInterval) { delta ->
+                    val path = mob.navigation.currentPath ?: run {
+                        setDebugText("No Path")
+                        return
+                    }
+                    if (path.isFinished){
+                        setDebugText("Path is finished")
+                        return
+                    }
+                    val pathTargetPos = path.currentNode.pos
                     val targetBlockPos = getNextLogicalBlockToBreak(pathTargetPos) ?: return
                     if (!mob.handSwinging) {
                         mob.swingHand(mob.activeHand)
                     }
                     if (debugAI) {
-                        DebugRendering.tintBlock(world, targetBlockPos, McColor.Red)
+//                        DebugRendering.tintBlock(world, targetBlockPos, McColor.Red)
                     }
                     world.damageBlock(targetBlockPos, delta * mob.demolition)
                 }
@@ -203,6 +174,7 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
                 world.setBlock(nextStepPos, Blocks.DIRT)
                 mob.swingHand(mob.activeHand)
             }
+
             else -> {}
         }
     }
@@ -225,13 +197,14 @@ sealed interface HardcraftAIState {
     object Bridging : HardcraftAIState
     object BreakingForward : HardcraftAIState
     object BreakingUp : HardcraftAIState
+    object Falling: HardcraftAIState
 }
 
 /**
  * Allows the mob to 'block up' - jump and then place a block.
  * [tick] must be called every tick.
  */
-class BlockUp(private val mob: HostileEntity, private val world: World) {
+class BlockUp(private val mob: HostileEntity, private val world: World, private val goal: ReachTargetGoal) {
     // Technically this should be stored in NBT but not storing it is fine, just jump again.
     private var jumpStartY: Double? = null
 
@@ -256,17 +229,23 @@ class BlockUp(private val mob: HostileEntity, private val world: World) {
         if (targetIsAbove && mob.isOnGround) {
             // If the target is too high, block up to him
             blockUp()
+            goal.setDebugText("Jumping Up")
         }
         if (jumpStartY != null && mob.pos.y >= jumpStartY!! + 0.9) {
             // Once we reached enough height, place the block
-            val pos = mob.pos.toBlockPos().down()
-            val below = mob.pos.minusY(2.0).blocksAround()
+            val pos = mob.pos.floorToBlockPos().down()
+            val below = overlappingBlockPositions(mob.pos.minusY(2.0))
             // Make sure there is something to place on
             if (below.any { world.canSupportOtherBlocks(it) } && !world.canSupportOtherBlocks(pos)) {
                 world.setBlock(pos, Blocks.DIRT)
                 mob.swingHand(mob.activeHand)
+                goal.setDebugText("Placing Block")
+            } else {
+                goal.setDebugText("Falling")
             }
             jumpStartY = null
+        } else {
+            goal.setDebugText("Going up after jump, startY=$jumpStartY, currentY = ${mob.pos.y}")
         }
         if (targetIsAbove) {
             mob.navigation.stop()
@@ -284,21 +263,42 @@ private fun HostileEntity.isAboveTarget(): Boolean {
     return target != null && y > target!!.y + target!!.height
 }
 
-/**
- * Returns all 4 blocks closest to the specified exact position.
- */
-fun Vec3d.blocksAround(): List<BlockPos> {
-    val y = floor(y).roundToInt()
-    val xUp = ceil(x).roundToInt()
-    val xDown = floor(x).roundToInt()
-    val zUp = ceil(z).roundToInt()
-    val zDown = floor(z).roundToInt()
-    return listOf(
-        BlockPos(xUp, y, zUp),
-        BlockPos(xUp, y, zDown),
-        BlockPos(xDown, y, zUp),
-        BlockPos(xDown, y, zDown),
-    )
-}
 
 private const val DoDamageToBlockInterval = 5
+
+/**
+ * Gets the up to 4 block positions that intersect with the 1x1 area around [pos]
+ */
+private fun overlappingBlockPositions(pos: Vec3d): List<BlockPos> {
+    val y = floor(pos.y).toInt()
+
+    val x0 = floor(pos.x - 0.5).toInt()
+    val x1 = floor(pos.x + 0.5).toInt()
+    val z0 = floor(pos.z - 0.5).toInt()
+    val z1 = floor(pos.z + 0.5).toInt()
+
+    return when {
+        x0 == x1 && z0 == z1 ->                   // inside a single block
+            listOf(BlockPos(x0, y, z0))
+
+        x0 == x1 ->                               // spans two blocks along Z
+            listOf(
+                BlockPos(x0, y, z0),
+                BlockPos(x0, y, z1)
+            )
+
+        z0 == z1 ->                               // spans two blocks along X
+            listOf(
+                BlockPos(x0, y, z0),
+                BlockPos(x1, y, z0)
+            )
+
+        else ->                                   // spans four blocks
+            listOf(
+                BlockPos(x0, y, z0),
+                BlockPos(x1, y, z0),
+                BlockPos(x0, y, z1),
+                BlockPos(x1, y, z1)
+            )
+    }
+}
