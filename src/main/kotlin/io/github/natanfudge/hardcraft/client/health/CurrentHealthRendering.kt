@@ -37,13 +37,12 @@ object CurrentHealthRendering {
             if (distanceOfBlockFromCamera > 1024.0) continue
 
             // Custom logic
-            val health = currentHealthEntry.intValue
             val maxHealth: Int = world.getMaxBlockHealthOrMinus1(blockPos)
             if (maxHealth == -1) continue
-
+            val health = currentHealthEntry.intValue.coerceAtMost(maxHealth)
 
             val stage = (10 - health.toFloat() / maxHealth * 10).toInt() /*6*/
-            if(stage == -1) {
+            if (stage == -1) {
                 HardCraft.Logger.error("Unexpected stage = -1, bad health value")
                 continue
             }

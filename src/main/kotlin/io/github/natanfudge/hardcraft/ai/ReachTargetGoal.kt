@@ -7,6 +7,7 @@ import io.github.natanfudge.hardcraft.health.isDestroyable
 import io.github.natanfudge.hardcraft.mixinhandler.demolition
 import io.github.natanfudge.hardcraft.mixinhandler.toBlockPos
 import io.github.natanfudge.hardcraft.utils.*
+import net.minecraft.block.AirBlock
 import net.minecraft.block.Blocks
 import net.minecraft.entity.ai.goal.Goal
 import net.minecraft.entity.mob.HostileEntity
@@ -35,29 +36,34 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
         return true
     }
 
+    private val debugOnlyWorkOnCloseMobs = true
+
 
     /**
      *  Find any block that does not allow the mob to pass with its height
      *  This method only takes into account the immediately adjacent blocks
      */
-    private fun getNextLogicalBlockToBreak(nextPathPos: BlockPos): BlockPos? {
+    private fun getNextLogicalBlockToBreak(nextPathPos: Vec3d): BlockPos? {
         val direction = mob.pos.directionTo(nextPathPos)
-        val xValues = valuesBetween(0, direction.x)
-//        val yValues = valuesBetween(direction.y, (mob.height.roundUp() - 1))
+        val xValues = valuesBetween(0, direction.x.roundToInt())
         val yValues = valuesBetween(0, mob.height.roundUp() - 1)
-        val zValues = valuesBetween(0, direction.z)
+        val zValues = valuesBetween(0, direction.z.roundToInt())
         val blocksInDirection = cartesianProduct(xValues, yValues, zValues) { x, y, z ->
             BlockPos(mob.blockX + x, mob.blockY + y, mob.blockZ + z)
-        }
-        val allTargets = if (mob.isBelowTarget()) {
+        }.toMutableList()
+        if (mob.isBelowTarget()) {
             // Try straight up as well, in case a ceiling is preventing this mob from blocking-up
-            blocksInDirection + BlockPos(mob.blockX, mob.blockY + mob.height.roundUp(), mob.blockZ)
-        } else blocksInDirection
+            blocksInDirection.add(BlockPos(mob.blockX, mob.blockY + mob.height.roundUp(), mob.blockZ))
+        }
+        if (mob.isAboveTarget()) {
+            // Try digging straight down
+            blocksInDirection.add(BlockPos(mob.blockX, mob.blockY - 1, mob.blockZ))
+        }
 
 //        for (block in blocksInDirection) {
 //            DebugRendering.tint(world, block, McColor.Red.withAlpha(128))
 //        }
-        return allTargets
+        return blocksInDirection
             .filter { world.isDestroyable(it) }
             .minByOrNull { mob.distanceTo(it) }
     }
@@ -67,9 +73,10 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
 
     override fun tick() {
         //TODO: this is just a debug measure
-        val player = getClient().player ?: return
-        if (mob.pos.distanceTo(player.pos) > 30) return
-
+        if (debugOnlyWorkOnCloseMobs) {
+            val player = getClient().player ?: return
+            if (mob.pos.distanceTo(player.pos) > 30) return
+        }
 
 //        if (this !in DoneMobs) {
 //            blockUp.blockUp()
@@ -78,15 +85,29 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
 //        }
 
         // Only perform special actions to get the target if there's no other way
-        if (mob.target != null && mob.hardcraft_getCantReachTarget()) {
+        val target = mob.target
+        if (target != null && mob.hardcraft_getCantReachTarget()) {
+            // If the target is higher, try to block up.
             if (blockUp.tick()) return
+            val path = mob.navigation.currentPath ?: return
+            if (path.isFinished) return
+
+            val pathTargetPos = path.currentNode.pos
+            val belowNextBlockPos = (mob.pos.directionTo(pathTargetPos).withoutY() + mob.pos).minusY(1.0).toBlockPos()
+            println("Mob pos: ${mob.pos}, path target pos: ${pathTargetPos}, belowNextBlockPos: $belowNextBlockPos, block: ${world.getBlock(belowNextBlockPos)}")
+            // Next position is dirty and target is not below me - try to place block to bridge over
+            if (mob.pos.y <= target.pos.y && world.getBlock(belowNextBlockPos) is AirBlock) {
+                world.setBlock(belowNextBlockPos, Blocks.DIRT)
+                mob.swingHand(mob.activeHand)
+            } else {
+                val y = 2
+            }
+
 
             // damageBlock() and getNextLogicalBlockToBreak() are expensive so we don't do it every tick,
             // rather do it batches by multiplying damage by DoDamageToBlockInterval.
             breakThrottler.runThrottled(DoDamageToBlockInterval) { delta ->
-                val path = mob.navigation.currentPath ?: return
-                if (path.isFinished) return
-                val targetBlockPos = getNextLogicalBlockToBreak(path.currentNodePos) ?: return
+                val targetBlockPos = getNextLogicalBlockToBreak(pathTargetPos) ?: return
                 if (!mob.handSwinging) {
                     mob.swingHand(mob.activeHand)
                 }
@@ -124,9 +145,6 @@ class BlockUp(private val mob: HostileEntity, private val world: World) {
      * Returns true if the mob should not do anything else because it is blocking up
      */
     fun tick(): Boolean {
-        val player = getClient().player ?: return false
-        if (mob.pos.distanceTo(player.pos) > 30) return false
-
         // Reset jump attempt if enough time has passed
         if (jumpStartTick != null && jumpStartY != null && jumpStartTick!! + 30 < world.time) {
             jumpStartY = null
@@ -162,7 +180,11 @@ class BlockUp(private val mob: HostileEntity, private val world: World) {
 
 
 private fun HostileEntity.isBelowTarget(): Boolean {
-    return target != null && y + 1 < target!!.y
+    return target != null && y + height < target!!.y
+}
+
+private fun HostileEntity.isAboveTarget(): Boolean {
+    return target != null && y > target!!.y + target!!.height
 }
 
 /**

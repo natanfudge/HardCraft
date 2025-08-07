@@ -4,15 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a0d436ff-e806-4898-b2e2-cacd578f69ac" name="Changes" comment="Fix 2 bugs">
+    <list default="true" id="a0d436ff-e806-4898-b2e2-cacd578f69ac" name="Changes" comment="Improve special reach action conditions">
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Client.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Client.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/natanfudge/hardcraft/injection/HardCraftHostileEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/natanfudge/hardcraft/injection/HardCraftHostileEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/natanfudge/hardcraft/mixin/DrownedEntityMixin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/natanfudge/hardcraft/mixin/DrownedEntityMixin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/natanfudge/hardcraft/mixin/HostileEntityMixin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/natanfudge/hardcraft/mixin/HostileEntityMixin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/HardCraft.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/HardCraft.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/HardCraftNavigation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/HardCraftNavigation.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/ReachTargetGoal.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/ReachTargetGoal.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/health/CurrentHealthRendering.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/health/CurrentHealthRendering.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/utils/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/utils/Utils.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +69,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.Minecraft Client.executor": "HotSwap Debug Executor",
     "Gradle.Build HardCraft.executor": "Run",
     "Gradle.Download Sources.executor": "Run",
     "Gradle.HardCraft [:net.fabricmc.devlaunchinjector.Main.main()].executor": "Debug",
@@ -157,7 +156,8 @@
       <updated>1754512856692</updated>
       <workItem from="1754512858547" duration="2001000" />
       <workItem from="1754515305683" duration="963000" />
-      <workItem from="1754516293865" duration="3876000" />
+      <workItem from="1754516293865" duration="3898000" />
+      <workItem from="1754556673516" duration="3794000" />
     </task>
     <task id="LOCAL-00001" summary="Small cleanup">
       <option name="closed" value="true" />
@@ -175,7 +175,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754516891052</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Improve special reach action conditions">
+      <option name="closed" value="true" />
+      <created>1754524184853</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1754524184853</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -186,7 +194,15 @@
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="Small cleanup" />
     <MESSAGE value="Fix 2 bugs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix 2 bugs" />
+    <MESSAGE value="Improve special reach action conditions" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improve special reach action conditions" />
     <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="GradleRunConfiguration">
+        <watch expression="mob.pos" language="kotlin" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
