@@ -46,19 +46,19 @@ fun <T> C2SPacketType<T>.send(value: T) {
 //
 //    class Server(override val world: ServerWorld) : PacketContext<ServerWorld>
 //}
-context (ModContext)
+context (ctx: ModContext)
 inline fun <reified T> c2sPacket(path: String, format: Buf = Buf) =
     C2SPacketType<T>(modId(path), format.serializersModule.serializer(), format)
 
-context (ModContext)
+context (ctx: ModContext)
 inline fun <reified T> s2cPacket(path: String, format: Buf = Buf) =
     s2cPacket<T>(path, AutomaticPacketSerializer(format.serializersModule.serializer(), format))
 
-context (ModContext)
+context (ctx: ModContext)
 inline fun <reified T> s2cPacket(path: String, serializer: PacketSerializer<T>) = S2CPacketType(modId(path), serializer)
 
 class C2SPacketType<T>(val id: Identifier, val serializer: KSerializer<T>, val format: Buf) {
-    context(CommonInit)
+    context(ctx: CommonInit)
     fun register(receiveOnServer: (content: T, context: ServerPacketContext) -> Unit) {
         ServerPlayNetworking.registerGlobalReceiver(id) { server, player, handler, buf, responseSender ->
             val content = format.decodeFromByteBuf(serializer, buf)
@@ -110,7 +110,7 @@ class S2CPacketType<T>(val id: Identifier, val serializer: PacketSerializer<T>) 
 
     private fun encode(value: T) = createBytebuf().also { serializer.write(value, it) }
 
-    context(ClientInit)
+    context(ctx: ClientInit)
     @Environment(EnvType.CLIENT)
     fun register(receiveOnClient: (content: T, context: ClientPacketContext) -> Unit) {
         ClientPlayNetworking.registerGlobalReceiver(fabricType) { packet, player, response ->

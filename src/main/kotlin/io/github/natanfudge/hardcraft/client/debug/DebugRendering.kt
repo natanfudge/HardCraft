@@ -52,7 +52,7 @@ object DebugRendering : HardCraft.Context() {
     private val removeTextPacket = s2cPacket<DebugTextId>("remove_debug_text")
     private var nextTextId = 0
 
-    context(ClientInit)
+    context(ctx: ClientInit)
     fun registerClient() {
         WorldRenderEvents.AFTER_TRANSLUCENT.register {
             worldMarkers[it.world()]?.render(it)

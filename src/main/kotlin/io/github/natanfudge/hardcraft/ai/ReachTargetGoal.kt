@@ -8,7 +8,6 @@ import io.github.natanfudge.hardcraft.health.damageBlock
 import io.github.natanfudge.hardcraft.health.isDestroyable
 import io.github.natanfudge.hardcraft.mixinhandler.demolition
 import io.github.natanfudge.hardcraft.mixinhandler.floorToBlockPos
-import io.github.natanfudge.hardcraft.mixinhandler.roundToBlockPos
 import io.github.natanfudge.hardcraft.utils.*
 import net.minecraft.block.Blocks
 import net.minecraft.entity.ai.goal.Goal
@@ -18,7 +17,7 @@ import net.minecraft.entity.mob.HostileEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
-import net.minecraft.world.World
+import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
@@ -73,13 +72,13 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
             .minByOrNull { mob.distanceTo(it) }
     }
 
-    private val blockUp = BlockUp(mob, world, this)
+//    private val blockUp = BlockUp(mob, world, this)
 
     //    private var state: HardcraftAIState = HardcraftAIState.Unassigned
     private var textHandle: TextHandle? = null
     private fun setStateDebugText(state: HardcraftAIState) {
         val text = when (state) {
-            HardcraftAIState.BlockingUp -> "Blocking Up"
+//            HardcraftAIState.BlockingUp -> "Blocking Up"
             HardcraftAIState.BreakingForward -> "Breaking Forward"
             HardcraftAIState.Bridging -> "Bridging"
             HardcraftAIState.NoTarget -> "No Target"
@@ -87,6 +86,8 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
             HardcraftAIState.Unassigned -> "Unassigned"
             HardcraftAIState.BreakingUp -> "Breaking Up"
             HardcraftAIState.Falling -> "Falling"
+            is HardcraftAIState.JumpingToPlaceBlockBelow -> "Jumping to Place"
+            HardcraftAIState.PlacingBlockBelow -> "Placing Below"
         }
         setDebugText(text)
     }
@@ -101,11 +102,30 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
     }
 
     private fun getAiState(): HardcraftAIState {
+        // After we jump up, we don't want to forget we want to place a block
+        if (prevState is HardcraftAIState.JumpingToPlaceBlockBelow) {
+            val (startY, startTick) = prevState as HardcraftAIState.JumpingToPlaceBlockBelow
+
+            if (world.time < startTick + 30) {
+                if (mob.pos.y >= startY + 0.9) {
+                    println("Placing block")
+                    // Got high enough - place block
+                    return HardcraftAIState.PlacingBlockBelow
+                } else {
+                    // Not high enough - wait
+                    return prevState
+                }
+            }
+            // Else - too much time has passed and we will try to do something else
+        }
         if (mob.target == null) return HardcraftAIState.NoTarget
         if (!mob.hardcraft_getCantReachTarget()) return HardcraftAIState.PathingNormally
         val below = mob.isBelowTarget()
-        if (below && spaceExistsToBlockUp()) return HardcraftAIState.BlockingUp
-        if (cannotMakeNextStepWithoutFalling()) return HardcraftAIState.Bridging
+        if (below && spaceExistsToBlockUp() && mob.isOnGround) {
+            return HardcraftAIState.JumpingToPlaceBlockBelow(mob.pos.y, world.time)
+        }
+        // If on the same level, start bridging
+        if (mob.pos.y.floorToInt() == mob.target!!.pos.y.roundToInt() && cannotMakeNextStepWithoutFalling()) return HardcraftAIState.Bridging
         if (below) return HardcraftAIState.BreakingUp
         else return HardcraftAIState.BreakingForward
     }
@@ -118,10 +138,74 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
     /**
      * Returns the position of the next block the mob is going to step on
      */
+    private val DIAGONAL_SLOPE_TOL = 0.2   // 0.0 = only perfect 45°, 0.2 = ±~11°
+    private val CORNER_T_TOL = 0.02        // tX and tZ within 2%
+    private val EDGE_TOL = 0.20            // within 0.20 of a grid line counts as "on the edge"
+
     private fun getNextStepPos(): BlockPos? {
         val path = mob.navigation.currentPath ?: return null
-        val pathTargetPos = path.safeGetCurrentNode()?.pos ?: return null
-        return (mob.pos.directionTo(pathTargetPos).withoutY() + mob.pos).minusY(1.0).roundToBlockPos()
+        val target = path.safeGetCurrentNode()?.pos ?: return null
+
+        val start = mob.pos
+        val dx = target.x - start.x
+        val dz = target.z - start.z
+        if (dx == 0.0 && dz == 0.0) return null
+
+        val cx = floor(start.x).toInt()
+        val cz = floor(start.z).toInt()
+        val y = mob.blockPos.y - 1 // keep your original Y choice
+
+        // --- edge check: return current cell if sufficiently centered ---
+        val fracX = start.x - floor(start.x)      // [0,1)
+        val fracZ = start.z - floor(start.z)      // [0,1)
+        val nearEdgeX = fracX < EDGE_TOL || fracX > 1.0 - EDGE_TOL
+        val nearEdgeZ = fracZ < EDGE_TOL || fracZ > 1.0 - EDGE_TOL
+        if (!nearEdgeX && !nearEdgeZ) {
+            return BlockPos(cx, y, cz)
+        }
+        // ---------------------------------------------------------------
+
+        val stepX = when {
+            dx > 0.0 -> 1
+            dx < 0.0 -> -1
+            else -> 0
+        }
+        val stepZ = when {
+            dz > 0.0 -> 1
+            dz < 0.0 -> -1
+            else -> 0
+        }
+        if (stepX == 0 && stepZ == 0) return BlockPos(cx, y, cz)
+
+        // Next grid lines in the direction of travel
+        val nextGridX = if (stepX > 0) cx + 1.0 else cx.toDouble()
+        val nextGridZ = if (stepZ > 0) cz + 1.0 else cz.toDouble()
+
+        // Parametric t to those lines along the ray start + t*(dx, dz)
+        val tX = if (stepX != 0) (nextGridX - start.x) / dx else Double.POSITIVE_INFINITY
+        val tZ = if (stepZ != 0) (nextGridZ - start.z) / dz else Double.POSITIVE_INFINITY
+
+        // Prefer diagonal if heading is roughly 45° or the boundary times are nearly equal
+        if (stepX != 0 && stepZ != 0) {
+            val adx = abs(dx)
+            val adz = abs(dz)
+            val maxd = maxOf(adx, adz)
+            val slopeClose = maxd > 0 && abs(adx - adz) <= DIAGONAL_SLOPE_TOL * maxd
+            val tClose = (tX.isFinite() && tZ.isFinite() &&
+                    abs(tX - tZ) <= CORNER_T_TOL * maxOf(tX, tZ))
+            if (slopeClose || tClose) {
+                return BlockPos(cx + stepX, y, cz + stepZ)
+            }
+        }
+
+        return when {
+            tX < tZ -> BlockPos(cx + stepX, y, cz)
+            tZ < tX -> BlockPos(cx, y, cz + stepZ)
+            else -> { // exact corner: deterministic tie-breaker
+                if (abs(dx) >= abs(dz)) BlockPos(cx + stepX, y, cz)
+                else BlockPos(cx, y, cz + stepZ)
+            }
+        }
     }
 
     /**
@@ -138,8 +222,11 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
         return world.getBlockState(pos).isAir
     }
 
+    private var prevState: HardcraftAIState = HardcraftAIState.Unassigned
+
     override fun tick() {
         val state = getAiState()
+        this.prevState = state
         setStateDebugText(state)
 
 
@@ -150,9 +237,9 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
 
 
         when (state) {
-            HardcraftAIState.BlockingUp -> {
-                blockUp.tick()
-            }
+//            HardcraftAIState.BlockingUp -> {
+//                blockUp.tick()
+//            }
 
             HardcraftAIState.BreakingForward, HardcraftAIState.BreakingUp -> {
                 // damageBlock() and getNextLogicalBlockToBreak() are expensive so we don't do it every tick,
@@ -184,6 +271,26 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
                 mob.swingHand(mob.activeHand)
             }
 
+            is HardcraftAIState.JumpingToPlaceBlockBelow -> {
+                if (mob.isOnGround) {
+                    mob.jump()
+                }
+                mob.navigation.stop()
+                println("Jumping, startY=${state.startY}, currentY=${mob.pos.y}")
+                setDebugText("Jumping, startY=${state.startY}, currentY=${mob.pos.y}")
+            }
+
+            HardcraftAIState.PlacingBlockBelow -> {
+                val pos = mob.pos.floorToBlockPos().down()
+                val below = overlappingBlockPositions(mob.pos.minusY(2.0))
+                // Make sure there is something to place on
+                if (below.any { world.canSupportOtherBlocks(it) } && !world.canSupportOtherBlocks(pos)) {
+                    world.setBlock(pos, Blocks.DIRT)
+                    mob.swingHand(mob.activeHand)
+                }
+            }
+
+
             else -> {}
         }
     }
@@ -202,70 +309,63 @@ sealed interface HardcraftAIState {
     object Unassigned : HardcraftAIState
     object NoTarget : HardcraftAIState
     object PathingNormally : HardcraftAIState
-    object BlockingUp : HardcraftAIState
+
+    //    object BlockingUp : HardcraftAIState
     object Bridging : HardcraftAIState
     object BreakingForward : HardcraftAIState
     object BreakingUp : HardcraftAIState
     object Falling : HardcraftAIState
+    data class JumpingToPlaceBlockBelow(val startY: Double, val startTick: Long) : HardcraftAIState
+    object PlacingBlockBelow : HardcraftAIState
 }
 
-/**
- * Allows the mob to 'block up' - jump and then place a block.
- * [tick] must be called every tick.
- */
-class BlockUp(private val mob: HostileEntity, private val world: World, private val goal: ReachTargetGoal) {
-    // Technically this should be stored in NBT but not storing it is fine, just jump again.
-    private var jumpStartY: Double? = null
-
-    private var jumpStartTick: Long? = null
-    fun blockUp() {
-        jumpStartY = mob.pos.y
-        jumpStartTick = world.time
-        mob.jump()
-    }
-
-    /**
-     * Returns true if the mob should not do anything else because it is blocking up
-     */
-    fun tick(): Boolean {
-        // Reset jump attempt if enough time has passed
-        if (jumpStartTick != null && jumpStartY != null && jumpStartTick!! + 30 < world.time) {
-            jumpStartY = null
-            jumpStartTick = null
-        }
-
-        val targetIsAbove = mob.isBelowTarget()
-        if (targetIsAbove && mob.isOnGround) {
-            // If the target is too high, block up to him
-            blockUp()
-            goal.setDebugText("Jumping Up")
-        }
-        if (jumpStartY != null && mob.pos.y >= jumpStartY!! + 0.9) {
-            // Once we reached enough height, place the block
-            val pos = mob.pos.floorToBlockPos().down()
-            val below = overlappingBlockPositions(mob.pos.minusY(2.0))
-            // Make sure there is something to place on
-            if (below.any { world.canSupportOtherBlocks(it) } && !world.canSupportOtherBlocks(pos)) {
-                world.setBlock(pos, Blocks.DIRT)
-                mob.swingHand(mob.activeHand)
-                goal.setDebugText("Placing Block")
-            } else {
-                goal.setDebugText("Falling")
-            }
-            jumpStartY = null
-        } else {
-            goal.setDebugText("Going up after jump, startY=$jumpStartY, currentY = ${mob.pos.y}")
-        }
-        if (targetIsAbove) {
-            mob.navigation.stop()
-        }
-        return targetIsAbove
-    }
-}
+///**
+// * Allows the mob to 'block up' - jump and then place a block.
+// * [tick] must be called every tick.
+// */
+//class BlockUp(private val mob: HostileEntity, private val world: World, private val goal: ReachTargetGoal) {
+//    // Technically this should be stored in NBT but not storing it is fine, just jump again.
+//    private var jumpStartY: Double? = null
+//
+//    private var jumpStartTick: Long? = null
+//    fun blockUp() {
+//        jumpStartY = mob.pos.y
+//        jumpStartTick = world.time
+//        mob.jump()
+//    }
+//
+//    /**
+//     * Returns true if the mob should not do anything else because it is blocking up
+//     */
+//    fun tick(): Boolean {
+//        // Reset jump attempt if enough time has passed
+//        if (jumpStartTick != null && jumpStartY != null && jumpStartTick!! + 30 < world.time) {
+//            jumpStartY = null
+//            jumpStartTick = null
+//        }
+//
+//        val targetIsAbove = mob.isBelowTarget()
+//        if (targetIsAbove && mob.isOnGround) {
+//            // If the target is too high, block up to him
+//            blockUp()
+//            goal.setDebugText("Jumping Up")
+//        }
+//        if (jumpStartY != null && mob.pos.y >= jumpStartY!! + 0.9) {
+//            // Once we reached enough height, place the block
+//
+//        } else {
+//            goal.setDebugText("Going up after jump, startY=$jumpStartY, currentY = ${mob.pos.y}")
+//        }
+//        if (targetIsAbove) {
+//            mob.navigation.stop()
+//        }
+//        return targetIsAbove
+//    }
+//}
 
 
 private fun HostileEntity.isBelowTarget(): Boolean {
-    return target != null && y + height < target!!.y
+    return target != null && y  < target!!.y
 }
 
 private fun HostileEntity.isAboveTarget(): Boolean {

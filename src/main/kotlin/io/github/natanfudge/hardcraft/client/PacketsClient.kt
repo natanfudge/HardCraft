@@ -7,7 +7,7 @@ import io.github.natanfudge.hardcraft.client.health.load
 import io.github.natanfudge.hardcraft.health.CurrentHealthStorage
 
 object PacketsClient {
-    context(ClientInit)
+    context(ctx: ClientInit)
     fun init() {
         updateBlockHealth.register { content, context ->
             CurrentHealthStorage.set(context.world!!, content.pos, content.newHealth){}

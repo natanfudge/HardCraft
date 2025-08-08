@@ -1,13 +1,12 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-docs-reference-test",
+  "id": "test-hardcraft",
   "version": "1.0.0",
   "name": "Fabric docs reference",
-  "icon": "assets/fabric-docs-reference/icon.png",
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
-      "com.example.docs.FabricDocsGameTest"
+      "io.github.natanfudge.hardcraft.gametest.HardCraftGameTest"
     ]
   }
 }

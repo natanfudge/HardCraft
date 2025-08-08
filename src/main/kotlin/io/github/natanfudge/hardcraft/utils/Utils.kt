@@ -29,6 +29,8 @@ operator fun Vec3d.minus(other: Vec3d) = Vec3d(this.x - other.x, this.y - other.
  fun Vec3d.minusY(y: Double) = Vec3d(this.x, this.y - y, this.z)
  fun BlockPos.minusY(y: Int) = BlockPos(this.x, this.y - y, this.z)
  fun BlockPos.plusY(y: Int) = BlockPos(this.x, this.y + y, this.z)
+ fun BlockPos.plusX(x: Int) = BlockPos(this.x + x, this.y , this.z)
+ fun BlockPos.plus(x: Int = 0, y: Int = 0, z: Int = 0) = BlockPos(this.x + x, this.y + y , this.z + z)
 operator fun BlockPos.minus(other: Vec3d) = Vec3d(this.x - other.x, this.y - other.y, this.z - other.z)
 fun Vec3d.toDirection(): DoubleDirection {
     return DoubleDirection(x, y, z)

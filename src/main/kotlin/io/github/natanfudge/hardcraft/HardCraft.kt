@@ -4,6 +4,7 @@ import io.github.natanfudge.genericutils.ModContext
 import io.github.natanfudge.genericutils.commonInit
 import io.github.natanfudge.genericutils.register
 import io.github.natanfudge.hardcraft.ai.debugAI
+import io.github.natanfudge.hardcraft.block.EnclosureBlock
 import io.github.natanfudge.hardcraft.item.HardCraftItemGroup
 import io.github.natanfudge.hardcraft.item.HardCraftItems
 import net.fabricmc.api.ModInitializer
@@ -25,6 +26,7 @@ class HardCraft: ModInitializer {
         println("HardCraft initializing")
         register(HardCraftItems.All)
         register(HardCraftItemGroup.Instance)
+        register(EnclosureBlock)
 
         CommandRegistrationCallback.EVENT.register(CommandRegistrationCallback { dispatcher, _, _ ->
             dispatcher.register(

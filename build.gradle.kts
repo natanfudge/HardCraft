@@ -30,8 +30,8 @@ kotlin {
         vendor = JvmVendorSpec.JETBRAINS
     }
     compilerOptions {
-        freeCompilerArgs.add("-Xcontext-receivers")
         freeCompilerArgs.add("-Xnon-local-break-continue")
+        freeCompilerArgs.add("-Xcontext-parameters")
     }
 }
 
@@ -125,4 +125,3 @@ publishing {
         // retrieving dependencies.
     }
 }
-

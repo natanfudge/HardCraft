@@ -12,12 +12,12 @@ interface Registerable<T> {
     val component: T
 }
 
-context (CommonInit)
+context (common: CommonInit)
 fun register(vararg registerables: Registerable<*>) {
     register(registerables.toList())
 }
 
-context (CommonInit)
+context (common: CommonInit)
 fun register(registerables: List<Registerable<*>>) {
     for (registerable in registerables) {
         val registry = registerable.registry as Registry<Any?>

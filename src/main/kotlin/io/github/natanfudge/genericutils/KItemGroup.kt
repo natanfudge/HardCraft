@@ -17,11 +17,11 @@ class KItemGroup(val group: ItemGroup, val name: String): Registerable<ItemGroup
         get() = group
 
     companion object {
-        context(ModContext)
+        context(ctx: ModContext)
         fun create(name: String, icon: Item,  items: List<Item>): KItemGroup {
             val group = FabricItemGroup.builder()
                 .icon { ItemStack(icon) }
-                .displayName(Text.translatable("itemGroup.$modId.$name"))
+                .displayName(Text.translatable("itemGroup.${ctx.modId}.$name"))
                 .entries { context, entries ->
                     for (item in items) {
                         entries.add { item }

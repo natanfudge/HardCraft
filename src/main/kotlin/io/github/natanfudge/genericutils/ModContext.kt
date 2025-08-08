@@ -15,5 +15,5 @@ interface ModContext {
     override val modId: String = modId
 }
 
-context (ModContext)
-fun modId(path: String) = Identifier(modId, path)
+context (ctx: ModContext)
+fun modId(path: String) = Identifier(ctx.modId, path)

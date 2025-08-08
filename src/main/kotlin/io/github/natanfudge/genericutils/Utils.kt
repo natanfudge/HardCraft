@@ -1,6 +1,7 @@
 package io.github.natanfudge.genericutils
 
 import io.github.natanfudge.hardcraft.HardCraft
+import io.github.natanfudge.hardcraft.utils.setBlock
 import io.netty.buffer.Unpooled
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
@@ -38,10 +39,14 @@ fun World.destroyBlock(pos: BlockPos) {
 }
 
 
-inline fun World.inServer(action: context(ServerWorld)() -> Unit) {
+inline fun World.inServer(action: ServerWorld.() -> Unit) {
     if (isServer) action(this as ServerWorld)
 }
 
 fun Entity.distanceTo(pos: BlockPos) = squaredDistanceTo(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
 
 fun createBytebuf() = PacketByteBuf(Unpooled.buffer())
+
+
+context(world: World)
+fun BlockPos.place(block: Block) = world.setBlock(this, block)
