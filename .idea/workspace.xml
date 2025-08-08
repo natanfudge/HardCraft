@@ -4,27 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a0d436ff-e806-4898-b2e2-cacd578f69ac" name="Changes" comment="water resistance + understanding game test">
-      <change afterPath="$PROJECT_DIR$/src/gametest/kotlin/io/github/natanfudge/hardcraft/gametest/GameTestUtil.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/kotlinc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Gametest_Minecraft_Client_Game_Test.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Gametest_Minecraft_Client_Game_Test.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Gametest_Minecraft_Game_Test.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Gametest_Minecraft_Game_Test.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Server.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Server.xml" afterDir="false" />
+    <list default="true" id="a0d436ff-e806-4898-b2e2-cacd578f69ac" name="Changes" comment="working tests">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gametest/kotlin/com/example/docs/FabricDocsGameTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/gametest/kotlin/io/github/natanfudge/hardcraft/gametest/HardCraftGameTest.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gametest/resources/fabric.mod.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/gametest/resources/fabric.mod.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/genericutils/KItemGroup.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/genericutils/KItemGroup.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/genericutils/ModContext.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/genericutils/ModContext.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/genericutils/Registry.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/genericutils/Registry.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/genericutils/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/genericutils/Utils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/genericutils/network/PacketType.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/genericutils/network/PacketType.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/HardCraft.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/HardCraft.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gametest/kotlin/io/github/natanfudge/hardcraft/gametest/GameTestUtil.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/gametest/kotlin/io/github/natanfudge/hardcraft/gametest/GameTestUtil.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gametest/kotlin/io/github/natanfudge/hardcraft/gametest/HardCraftGameTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/gametest/kotlin/io/github/natanfudge/hardcraft/gametest/HardCraftGameTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/natanfudge/hardcraft/mixin/HostileEntityMixin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/natanfudge/hardcraft/mixin/HostileEntityMixin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/ReachTargetGoal.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/ReachTargetGoal.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/PacketsClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/PacketsClient.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/debug/DebugRendering.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/debug/DebugRendering.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/utils/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/utils/Utils.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -266,7 +252,7 @@
       <workItem from="1754516293865" duration="3898000" />
       <workItem from="1754556673516" duration="18691000" />
       <workItem from="1754594885435" duration="8775000" />
-      <workItem from="1754643040333" duration="9410000" />
+      <workItem from="1754643040333" duration="16315000" />
     </task>
     <task id="LOCAL-00001" summary="Small cleanup">
       <option name="closed" value="true" />
@@ -340,7 +326,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754608044137</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="working tests">
+      <option name="closed" value="true" />
+      <created>1754658637203</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1754658637203</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -358,10 +352,28 @@
     <MESSAGE value="Should be all navigation issues fixed" />
     <MESSAGE value="visual improvements" />
     <MESSAGE value="water resistance + understanding game test" />
-    <option name="LAST_COMMIT_MESSAGE" value="water resistance + understanding game test" />
+    <MESSAGE value="working tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="working tests" />
     <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/item/DebugCurrentHealthItem.kt</url>
+          <line>61</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/item/DebugCurrentHealthItem.kt</url>
+          <line>54</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="GradleRunConfiguration">
         <watch expression="mob.pos" language="kotlin" />

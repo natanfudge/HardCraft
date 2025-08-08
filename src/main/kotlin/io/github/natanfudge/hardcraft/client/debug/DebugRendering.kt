@@ -30,6 +30,7 @@ private data class Tint(
     val color: McColor?,
     @Serializable(with = BlockPosSerializer::class)
     val pos: BlockPos,
+    val lifetime: Duration?
 )
 
 @Serializable
@@ -61,7 +62,7 @@ object DebugRendering : HardCraft.Context() {
         sendTintPacket.register { content, context ->
             if (context.world != null) {
                 if (content.color != null) {
-                    tintBlock(context.world, content.pos, content.color)
+                    tintBlock(context.world, content.pos, content.color, content.lifetime)
                 } else {
                     untintBlock(context.world, content.pos)
                 }
@@ -83,18 +84,18 @@ object DebugRendering : HardCraft.Context() {
      * Will tint the block at [pos] with [color].
      * Can be used on the client to tint right away, or on the server to send the tint to the client.
      */
-    fun tintBlock(world: World, pos: BlockPos, color: McColor) {
+    fun tintBlock(world: World, pos: BlockPos, color: McColor, time: Duration?) {
         if (world is ServerWorld) {
-            sendTintPacket.sendToWorld(Tint(color, pos), world)
+            sendTintPacket.sendToWorld(Tint(color, pos, time), world)
         } else {
-            worldMarkers.computeIfAbsent(world) { WorldDebugMarkers() }.tint(pos, color)
+            worldMarkers.computeIfAbsent(world) { WorldDebugMarkers() }.tint(pos, color, time)
         }
 
     }
 
     fun untintBlock(world: World, pos: BlockPos) {
         if (world is ServerWorld) {
-            sendTintPacket.sendToWorld(Tint(null, pos), world)
+            sendTintPacket.sendToWorld(Tint(null, pos, null), world)
         } else {
             worldMarkers[world]?.untint(pos)
         }
@@ -133,8 +134,13 @@ private data class TimestampedDebugText(
     val debugText: DebugText
 )
 
+private data class TimestampedTint(
+    val addTime: TimeSource.Monotonic.ValueTimeMark,
+    val tint: Tint
+)
+
 class WorldDebugMarkers {
-    private val tints = mutableMapOf<BlockPos, McColor>()
+    private val tints = mutableMapOf<BlockPos, TimestampedTint>()
     private val texts = mutableMapOf<DebugTextId, TimestampedDebugText>()
 
     fun addText(pos: Vec3d, text: String, id: DebugTextId, lifetime: Duration?): TextHandle {
@@ -150,13 +156,15 @@ class WorldDebugMarkers {
         tints.remove(pos)
     }
 
-    fun tint(pos: BlockPos, color: McColor) {
-        tints[pos] = color
+    fun tint(pos: BlockPos, color: McColor, lifetime: Duration?) {
+        tints[pos] = TimestampedTint(TimeSource.Monotonic.markNow(), Tint(color, pos, lifetime))
     }
 
     fun render(context: WorldRenderContext) {
-        tintBlocks(context)
+        // Remove expired debug markers
+        tints.values.removeIf { it.tint.lifetime != null  && it.addTime.elapsedNow() >= it.tint.lifetime }
         texts.values.removeIf { it.debugText.lifetime != null  && it.addTime.elapsedNow() >= it.debugText.lifetime }
+        tintBlocks(context)
         for ((_, debug) in texts.values) {
             drawText(context, debug.text, debug.pos)
         }
@@ -227,6 +235,7 @@ class WorldDebugMarkers {
         RenderSystem.depthFunc(GL11.GL_LEQUAL)
 
         for ((pos, color) in tints) {
+            val color = color.tint.color!!
             val colorValue = color.argb
             //            if (!camera.frustum.isVisible(Box(pos))) continue
 

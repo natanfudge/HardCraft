@@ -2,6 +2,7 @@ package io.github.natanfudge.hardcraft.ai
 
 import io.github.natanfudge.genericutils.client.getClient
 import io.github.natanfudge.genericutils.distanceTo
+import io.github.natanfudge.hardcraft.client.McColor
 import io.github.natanfudge.hardcraft.client.debug.DebugRendering
 import io.github.natanfudge.hardcraft.client.debug.TextHandle
 import io.github.natanfudge.hardcraft.health.damageBlock
@@ -19,6 +20,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 import kotlin.math.abs
 import kotlin.math.floor
+import kotlin.math.nextTowards
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
 
@@ -40,36 +42,125 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
         return true
     }
 
+    //TODO: make tints disappear the same way texts do
+
     private val debugOnlyWorkOnCloseMobs = false
 
+    //TODO: also getting next block placement is not working well either, zombies still fall sometimes.
 
     /**
      *  Find any block that does not allow the mob to pass with its height
      *  This method only takes into account the immediately adjacent blocks
      */
     private fun getNextLogicalBlockToBreak(nextPathPos: Vec3d): BlockPos? {
-        val direction = mob.pos.directionTo(nextPathPos)
-        val xValues = valuesBetween(0, direction.x.roundToInt())
-        val yValues = valuesBetween(0, mob.height.roundUp() - 1)
-        val zValues = valuesBetween(0, direction.z.roundToInt())
-        val blocksInDirection = cartesianProduct(xValues, yValues, zValues) { x, y, z ->
-            BlockPos(mob.blockX + x, mob.blockY + y, mob.blockZ + z)
-        }.toMutableList()
-        if (mob.isBelowTarget()) {
-            // Try straight up as well, in case a ceiling is preventing this mob from blocking-up
-            blocksInDirection.add(BlockPos(mob.blockX, mob.blockY + mob.height.roundUp(), mob.blockZ))
-        }
-        if (mob.isAboveTarget()) {
-            // Try digging straight down
-            blocksInDirection.add(BlockPos(mob.blockX, mob.blockY - 1, mob.blockZ))
-        }
+//        val direction = mob.pos.directionTo(nextPathPos)
+//        val xValues = valuesBetween(0, direction.x.roundToInt())
+//        val yValues = valuesBetween(0, mob.height.roundUp() - 1)
+//        val zValues = valuesBetween(0, direction.z.roundToInt())
+//        val blocksInDirection = cartesianProduct(xValues, yValues, zValues) { x, y, z ->
+//            BlockPos(mob.blockX + x, mob.blockY + y, mob.blockZ + z)
+//        }.toMutableSet()
+//        if (mob.isBelowTarget()) {
+//            // Try straight up as well, in case a ceiling is preventing this mob from blocking-up
+//            blocksInDirection.add(BlockPos(mob.blockX, mob.blockY + mob.height.roundUp(), mob.blockZ))
+//        }
+//        if (mob.isAboveTarget()) {
+//            // Try digging straight down
+//            blocksInDirection.add(BlockPos(mob.blockX, mob.blockY - 1, mob.blockZ))
+//        }
+//
+//        // Sometimes wide mobs like spiders get stuck, this gives them another option to break blocks that are stopping them
+//        blocksInDirection.addAll(overlappingBlockPositions(mob.pos))
+
+        val blocking = blocksBlocking(nextPathPos)
 
 //        for (block in blocksInDirection) {
 //            DebugRendering.tint(world, block, McColor.Red.withAlpha(128))
 //        }
-        return blocksInDirection
+        return blocking
             .filter { world.isDestroyable(it) }
             .minByOrNull { mob.distanceTo(it) }
+    }
+
+    /**
+     * Given a mob with a certain position mob.position and bounding box mob.boundingBox,
+     * and a target position target, return the list of block positions that come between the mob and the target position,
+     * and that are directly adjacent to the mob.
+     */
+    private fun blocksBlocking(target: Vec3d): List<BlockPos> {
+        val bb = mob.boundingBox
+        val start = mob.pos
+        val dir = target.subtract(start)
+        val lenSq = dir.lengthSquared()
+        if (lenSq == 0.0) return emptyList()
+
+        // Which directions are we going?
+        val stepX = dir.x.compareTo(0.0)  // -1, 0, or 1
+        val stepY = dir.y.compareTo(0.0)
+        val stepZ = dir.z.compareTo(0.0)
+
+        // Blocks overlapped by the mob's AABB
+        val minX = floor(bb.minX).toInt()
+        val maxX = floor(nextDown(bb.maxX)).toInt()
+        val minY = floor(bb.minY).toInt()
+        val maxY = floor(nextDown(bb.maxY)).toInt()
+        val minZ = floor(bb.minZ).toInt()
+        val maxZ = floor(nextDown(bb.maxZ)).toInt()
+
+        // Neighbor layer coordinates (the first layer "outside" the box on each axis)
+        val faceX = if (stepX > 0) maxX + 1 else if (stepX < 0) minX - 1 else null
+        val faceY = if (stepY > 0) maxY + 1 else if (stepY < 0) minY - 1 else null
+        val faceZ = if (stepZ > 0) maxZ + 1 else if (stepZ < 0) minZ - 1 else null
+
+        // Collect adjacent blocks from the faces that are actually towards the target
+        val candidates = LinkedHashSet<BlockPos>()
+
+        // X-facing layer
+        faceX?.let { fx ->
+            for (y in minY..maxY) {
+                for (z in minZ..maxZ) {
+                    candidates.add(BlockPos(fx, y, z))
+                }
+            }
+        }
+        // Y-facing layer
+        faceY?.let { fy ->
+            for (x in minX..maxX) {
+                for (z in minZ..maxZ) {
+                    candidates.add(BlockPos(x, fy, z))
+                }
+            }
+        }
+        // Z-facing layer
+        faceZ?.let { fz ->
+            for (x in minX..maxX) {
+                for (y in minY..maxY) {
+                    candidates.add(BlockPos(x, y, fz))
+                }
+            }
+        }
+
+        if (candidates.isEmpty()) return emptyList()
+
+        // Keep only blocks that are actually "between": in front of the mob (0<=t<=1)
+        // using the projection t = dot((blockCenter - start), dir) / |dir|^2
+        val filtered = candidates.mapNotNull { bp ->
+            val center = Vec3d(bp.x + 0.5, bp.y + 0.5, bp.z + 0.5)
+            val t = center.subtract(start).dotProduct(dir) / lenSq
+            if (t in 0.0..1.0) bp to t else null
+        }
+
+        // Sort by progression along the ray (nearest first)
+        return filtered.sortedBy { it.second }.map { it.first }
+    }
+
+    /**
+     * Like Math.nextDown but for doubles on older mappings; you can also use java.lang.Math.nextDown
+     * if available. This prevents treating exact integer-aligned maxX/maxY/maxZ as spilling into the
+     * next block above.
+     */
+    private fun nextDown(x: Double): Double {
+        return x.nextTowards(Double.NEGATIVE_INFINITY)
     }
 
 //    private val blockUp = BlockUp(mob, world, this)
@@ -108,7 +199,6 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
 
             if (world.time < startTick + 30) {
                 if (mob.pos.y >= startY + 0.9) {
-                    println("Placing block")
                     // Got high enough - place block
                     return HardcraftAIState.PlacingBlockBelow
                 } else {
@@ -225,6 +315,7 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
     private var prevState: HardcraftAIState = HardcraftAIState.Unassigned
 
     override fun tick() {
+//        println("Pos:" + MinecraftClient.getInstance().player!!.pos + " BlockPos: " + MinecraftClient.getInstance().player!!.blockPos)
         val state = getAiState()
         this.prevState = state
         setStateDebugText(state)
@@ -259,9 +350,14 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
                         mob.swingHand(mob.activeHand)
                     }
                     if (debugAI) {
-//                        DebugRendering.tintBlock(world, targetBlockPos, McColor.Red)
+                        if(previouslyTargetedBlock != null && previouslyTargetedBlock != targetBlockPos) {
+                            DebugRendering.untintBlock(world, previouslyTargetedBlock!!)
+                        }
+                        DebugRendering.tintBlock(world, targetBlockPos, McColor.Red, 0.3.seconds)
+                        this.previouslyTargetedBlock = targetBlockPos
                     }
                     world.damageBlock(targetBlockPos, delta * mob.demolition)
+                    println("Dealt ${delta * mob.demolition} damage at $targetBlockPos")
                 }
             }
 
@@ -276,7 +372,6 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
                     mob.jump()
                 }
                 mob.navigation.stop()
-                println("Jumping, startY=${state.startY}, currentY=${mob.pos.y}")
                 setDebugText("Jumping, startY=${state.startY}, currentY=${mob.pos.y}")
             }
 
@@ -294,6 +389,8 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
             else -> {}
         }
     }
+
+    private var previouslyTargetedBlock : BlockPos? = null
 
     override fun shouldContinue(): Boolean {
         return true
@@ -369,7 +466,7 @@ private fun HostileEntity.isBelowTarget(): Boolean {
 }
 
 private fun HostileEntity.isAboveTarget(): Boolean {
-    return target != null && y > target!!.y + target!!.height
+    return target != null && y > target!!.y
 }
 
 

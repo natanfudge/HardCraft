@@ -5,7 +5,9 @@ import io.github.natanfudge.hardcraft.ai.HardCraftNavigation;
 import io.github.natanfudge.hardcraft.injection.HardCraftHostileEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -24,20 +26,19 @@ public class HostileEntityMixin implements HardCraftHostileEntity {
     @Unique
     boolean hardcraft_isPushedByFluids = false;
 
-    @Unique
-    HostileEntity hardCraft$self(){
-        return (HostileEntity) ((Object) this);
-    }
 
     /**
      * @reason Make mobs more threatening by allowing them to break blocks that block their way
      */
     @Inject(method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V", at = @At("TAIL"))
     public void constructorHookAfterGoalSelectorInitialized(EntityType<?> entityType, World world, CallbackInfo ci) {
+        HostileEntity self = (HostileEntity)(Object)this;
         if (world != null && !world.isClient) {
-            hardCraft$self().goalSelector.add(0, new ReachTargetGoal(hardCraft$self()));
+            self.goalSelector.add(0, new ReachTargetGoal(self));
+            //TODO: make this optional via API
+            self.goalSelector.add(3, new ActiveTargetGoal<>(self, VillagerEntity.class, true));
         }
-        hardCraft$self().navigation = new HardCraftNavigation(hardCraft$self(), world, hardCraft$self().navigation);
+        self.navigation = new HardCraftNavigation(self, world, self.navigation);
     }
 
     /**
