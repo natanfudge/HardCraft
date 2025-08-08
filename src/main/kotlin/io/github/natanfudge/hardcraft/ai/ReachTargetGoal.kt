@@ -42,41 +42,17 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
         return true
     }
 
-    //TODO: make tints disappear the same way texts do
 
     private val debugOnlyWorkOnCloseMobs = false
 
-    //TODO: also getting next block placement is not working well either, zombies still fall sometimes.
 
     /**
      *  Find any block that does not allow the mob to pass with its height
      *  This method only takes into account the immediately adjacent blocks
      */
     private fun getNextLogicalBlockToBreak(nextPathPos: Vec3d): BlockPos? {
-//        val direction = mob.pos.directionTo(nextPathPos)
-//        val xValues = valuesBetween(0, direction.x.roundToInt())
-//        val yValues = valuesBetween(0, mob.height.roundUp() - 1)
-//        val zValues = valuesBetween(0, direction.z.roundToInt())
-//        val blocksInDirection = cartesianProduct(xValues, yValues, zValues) { x, y, z ->
-//            BlockPos(mob.blockX + x, mob.blockY + y, mob.blockZ + z)
-//        }.toMutableSet()
-//        if (mob.isBelowTarget()) {
-//            // Try straight up as well, in case a ceiling is preventing this mob from blocking-up
-//            blocksInDirection.add(BlockPos(mob.blockX, mob.blockY + mob.height.roundUp(), mob.blockZ))
-//        }
-//        if (mob.isAboveTarget()) {
-//            // Try digging straight down
-//            blocksInDirection.add(BlockPos(mob.blockX, mob.blockY - 1, mob.blockZ))
-//        }
-//
-//        // Sometimes wide mobs like spiders get stuck, this gives them another option to break blocks that are stopping them
-//        blocksInDirection.addAll(overlappingBlockPositions(mob.pos))
-
         val blocking = blocksBlocking(nextPathPos)
 
-//        for (block in blocksInDirection) {
-//            DebugRendering.tint(world, block, McColor.Red.withAlpha(128))
-//        }
         return blocking
             .filter { world.isDestroyable(it) }
             .minByOrNull { mob.distanceTo(it) }
@@ -357,7 +333,6 @@ class ReachTargetGoal(private val mob: HostileEntity) : Goal() {
                         this.previouslyTargetedBlock = targetBlockPos
                     }
                     world.damageBlock(targetBlockPos, delta * mob.demolition)
-                    println("Dealt ${delta * mob.demolition} damage at $targetBlockPos")
                 }
             }
 

@@ -1,9 +1,9 @@
 package io.github.natanfudge.hardcraft.mixin;
 
-import io.github.natanfudge.hardcraft.ai.ReachTargetGoal;
 import io.github.natanfudge.hardcraft.ai.HardCraftNavigation;
+import io.github.natanfudge.hardcraft.ai.ReachTargetGoal;
 import io.github.natanfudge.hardcraft.injection.HardCraftHostileEntity;
-import net.minecraft.entity.Entity;
+import io.github.natanfudge.hardcraft.mixinhandler.MobHooks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.mob.HostileEntity;
@@ -14,17 +14,19 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(HostileEntity.class)
 public class HostileEntityMixin implements HardCraftHostileEntity {
 
+
     @Unique
     boolean cantReachTarget = false;
 
-    //TODO: should be true by default, this is just a test
     @Unique
-    boolean hardcraft_isPushedByFluids = false;
+    boolean hardcraft_isPushedByFluids = true;
+
+    @Unique
+    int hardcraft_demolition = 5;
 
 
     /**
@@ -32,11 +34,13 @@ public class HostileEntityMixin implements HardCraftHostileEntity {
      */
     @Inject(method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V", at = @At("TAIL"))
     public void constructorHookAfterGoalSelectorInitialized(EntityType<?> entityType, World world, CallbackInfo ci) {
-        HostileEntity self = (HostileEntity)(Object)this;
+        HostileEntity self = (HostileEntity) (Object) this;
         if (world != null && !world.isClient) {
             self.goalSelector.add(0, new ReachTargetGoal(self));
-            //TODO: make this optional via API
-            self.goalSelector.add(3, new ActiveTargetGoal<>(self, VillagerEntity.class, true));
+            if (MobHooks.INSTANCE.getHateVillagers()) {
+                // It's often useful for testing to make mobs attack villagers, so we have a flag that makes them attack villagers.
+                self.goalSelector.add(3, new ActiveTargetGoal<>(self, VillagerEntity.class, true));
+            }
         }
         self.navigation = new HardCraftNavigation(self, world, self.navigation);
     }
@@ -45,8 +49,13 @@ public class HostileEntityMixin implements HardCraftHostileEntity {
      * Allow individual mobs to specify at what rate they destroy blocks
      */
     @Override
-    public int hardcraft_demolition() {
-        return 5;
+    public int hardcraft_getDemolition() {
+        return hardcraft_demolition;
+    }
+
+    @Override
+    public void hardcraft_setDemolition(int damagePerTick) {
+        this.hardcraft_demolition = damagePerTick;
     }
 
     @Override

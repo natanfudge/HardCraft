@@ -7,7 +7,8 @@ public interface HardCraftHostileEntity {
      * Specifies how easily a mob destroys blocks.
      * Demolition is interpreted as damage per tick. So 2 demolition is doing 40 damage per second.
      */
-    int hardcraft_demolition();
+    int hardcraft_getDemolition();
+    void hardcraft_setDemolition(int damagePerTick);
 
     /**
      * Used by navigation to mark the mob as having/not having a normal path (not needing breaking or placing blocks)

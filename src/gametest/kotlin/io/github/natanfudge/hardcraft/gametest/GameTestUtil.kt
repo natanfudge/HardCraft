@@ -2,6 +2,7 @@ package io.github.natanfudge.hardcraft.gametest
 
 import io.github.natanfudge.genericutils.place
 import io.github.natanfudge.hardcraft.block.EnclosureBlock
+import io.github.natanfudge.hardcraft.mixinhandler.MobHooks
 import io.github.natanfudge.hardcraft.utils.plus
 import io.github.natanfudge.hardcraft.utils.plusY
 import kotlinx.coroutines.CoroutineDispatcher
@@ -9,8 +10,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks.AIR
+import net.minecraft.enchantment.Enchantments
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
+import net.minecraft.entity.EquipmentSlot
+import net.minecraft.entity.attribute.EntityAttributes
+import net.minecraft.entity.mob.HostileEntity
+import net.minecraft.entity.mob.SkeletonEntity
+import net.minecraft.entity.passive.VillagerEntity
+import net.minecraft.item.ItemStack
+import net.minecraft.item.Items
 import net.minecraft.test.TestContext
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
@@ -21,6 +30,8 @@ import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
 
 fun gameTest(context: TestContext, code: suspend TestContext.() -> Unit) {
+    MobHooks.hateVillagers = true
+
     val server = context.world.server
     val dispatcher = ServerDispatcher(server) // MinecraftServer implements Executor via #execute
 
@@ -28,9 +39,13 @@ fun gameTest(context: TestContext, code: suspend TestContext.() -> Unit) {
     val scope = CoroutineScope(dispatcher)
 
     scope.launch {
-        context.buildEnclosure()
-        context.code()
-        context.complete()
+        try {
+            context.buildEnclosure()
+            context.code()
+            context.complete()
+        } catch (e: Throwable) {
+            context.test.fail(e)
+        }
     }
 }
 
@@ -57,6 +72,19 @@ fun <T : Entity> EntityType<T>.spawn(pos: Vec3d): T {
     val entity = create(ctx.world) ?: error("Could not create entity $this")
     entity.setPosition(ctx.getAbsolute(pos))
     ctx.world.spawnEntity(entity)
+    if (entity is SkeletonEntity) {
+        val bow = ItemStack(Items.BOW).apply {
+            addEnchantment(Enchantments.POWER, 50)  // Give them a lot of damage so they won't take forever to kill their target in the test
+        }
+        // Skeletons are supposed to have bows
+        entity.equipStack(EquipmentSlot.MAINHAND, bow)
+    } else if (entity is VillagerEntity) {
+        // Don't move. Just let it happen
+        entity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)?.baseValue = 0.0;
+    } else if (entity is HostileEntity) {
+        entity.hardcraft_setDemolition(100) // Destroy blocks fast
+        entity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)?.baseValue = 40.0; // Increase enemy damage to make tests go faster
+    }
     return entity
 }
 

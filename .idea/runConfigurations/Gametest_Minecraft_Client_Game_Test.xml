@@ -1,15 +1,15 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Gametest Minecraft Client Game Test" type="Application" factoryName="Application">
-    <option name="ALTERNATIVE_JRE_PATH" value="jbr-21" />
-    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-    <option name="MAIN_CLASS_NAME" value="net.fabricmc.devlaunchinjector.Main" />
-    <module name="HardCraft.gametest" />
-    <option name="PROGRAM_PARAMETERS" value="--username Player0" />
-    <shortenClasspath name="ARGS_FILE" />
-    <option name="VM_PARAMETERS" value="-XX:+AllowEnhancedClassRedefinition -Dfabric.dli.config=C:\Users\natan\Desktop\HardCraft\.gradle\loom-cache\launch.cfg -Dfabric.dli.env=client -Dfabric.client.gametest -Dfabric.client.gametest.testModResourcesPath=C:\Users\natan\Desktop\HardCraft\src\gametest\resources -Dfabric.dli.main=net.fabricmc.loader.impl.launch.knot.KnotClient" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/build/run/clientGameTest/" />
+  <configuration default="false" factoryName="Application" name="Gametest Minecraft Client Game Test" type="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="jbr-21"/>
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true"/>
+    <option name="MAIN_CLASS_NAME" value="net.fabricmc.devlaunchinjector.Main"/>
+    <module name="HardCraft.gametest"/>
+    <option name="PROGRAM_PARAMETERS" value="--username Player0"/>
+    <shortenClasspath name="ARGS_FILE"/>
+    <option name="VM_PARAMETERS" value="-XX:+AllowEnhancedClassRedefinition -Dfabric.dli.config=C:\Users\natan\Desktop\HardCraft\.gradle\loom-cache\launch.cfg -Dfabric.dli.env=client -Dfabric.client.gametest -Dfabric.client.gametest.testModResourcesPath=C:\Users\natan\Desktop\HardCraft\src\gametest\resources -Dfabric.dli.main=net.fabricmc.loader.impl.launch.knot.KnotClient"/>
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/build/run/clientGameTest/"/>
     <method v="2">
-      <option name="Make" enabled="true" />
+      <option enabled="true" name="Make"/>
     </method>
-  </configuration>
+  <classpathModifications/></configuration>
 </component>
