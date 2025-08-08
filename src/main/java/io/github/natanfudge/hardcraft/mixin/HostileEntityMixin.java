@@ -26,6 +26,11 @@ public class HostileEntityMixin implements HardCraftHostileEntity {
     boolean hardcraft_isPushedByFluids = true;
 
     @Unique
+    boolean hardcraft_isFireImmune = false;
+    @Unique
+    boolean hardcraft_isPistonImmune = false;
+
+    @Unique
     int hardcraft_demolition = 5;
 
 
@@ -68,7 +73,6 @@ public class HostileEntityMixin implements HardCraftHostileEntity {
         return cantReachTarget;
     }
 
-
     @Override
     public void hardcraft_setIsPushedByFluids(boolean value) {
         this.hardcraft_isPushedByFluids = value;
@@ -77,5 +81,24 @@ public class HostileEntityMixin implements HardCraftHostileEntity {
     @Override
     public boolean hardcraft_getIsPushedByFluids() {
         return this.hardcraft_isPushedByFluids;
+    }
+
+    @Override
+    public void hardcraft_setIsFireImmune(boolean value) {
+        this.hardcraft_isFireImmune = value;
+    }
+
+    @Override
+    public boolean hardcraft_getIsFireImmune() {
+        return this.hardcraft_isFireImmune;
+    }
+    @Override
+    public void hardcraft_setIsPistonImmune(boolean hardcraft_isPistonImmune) {
+        this.hardcraft_isPistonImmune = hardcraft_isPistonImmune;
+    }
+
+    @Override
+    public boolean hardcraft_getIsPistonImmune() {
+        return this.hardcraft_isPistonImmune;
     }
 }

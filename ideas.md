@@ -1,8 +1,7 @@
 # 0.1 Complete Prototype Requirements
 
 ## 1. Hardcraft mechanics
-
-- Water Resistance, piston resistance, Lava resistance, and APIs to activate/deactivate them
+-  piston resistance
 - API for assigning block break power of mobs
 
 ## 2. Revenge of the Mobs mechanics

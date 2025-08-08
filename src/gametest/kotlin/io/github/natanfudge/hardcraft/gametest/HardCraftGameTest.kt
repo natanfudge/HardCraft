@@ -56,21 +56,57 @@ class HardCraftGameTest : FabricGameTest {
     }
 
     @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = Int.MAX_VALUE, requiredSuccesses = 3)
-    fun noWaterResistance(context: TestContext) = waterResistanceTest(context, resistanceEnabled = false)
+    fun noWaterResistance(context: TestContext) = resistanceTest(context, resistanceEnabled = false, water = true)
 
     @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = Int.MAX_VALUE, requiredSuccesses = 3)
-    fun yesWaterResistance(context: TestContext) = waterResistanceTest(context, resistanceEnabled = true)
+    fun yesWaterResistance(context: TestContext) = resistanceTest(context, resistanceEnabled = true, water = true)
+
+    @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = Int.MAX_VALUE, requiredSuccesses = 3)
+    fun noLavaResistance(context: TestContext) = resistanceTest(context, resistanceEnabled = false, water = false)
+
+    @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = Int.MAX_VALUE, requiredSuccesses = 3)
+    fun yesLavaResistance(context: TestContext) = resistanceTest(context, resistanceEnabled = true, water = false)
+
+    @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = Int.MAX_VALUE, requiredSuccesses = 3)
+    fun noPistonResistance(context: TestContext) = pistonTest(context, resistanceEnabled = false)
+
+    @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = Int.MAX_VALUE, requiredSuccesses = 3)
+    fun yesPistonResistance(context: TestContext) = pistonTest(context, resistanceEnabled = true)
 }
 
-private fun waterResistanceTest(context: TestContext, resistanceEnabled: Boolean) = gameTest(context) {
+private fun pistonTest(context: TestContext, resistanceEnabled: Boolean) = gameTest(context) {
     val villagerPos = BlockPos(2, 2, 1)
     addCagedEntity(villagerPos, EntityType.VILLAGER)
     val zombie = EntityType.ZOMBIE.spawn(Vec3d(6.0, 2.0, 5.0))
-    zombie.hardcraft_setIsPushedByFluids(!resistanceEnabled)
-    villagerPos.up(3).place(Blocks.WATER)
-    villagerPos.up(3).south() .place(Blocks.WATER)
-    villagerPos.up(3).east().place(Blocks.WATER)
-    villagerPos.up(3).south().east().place(Blocks.WATER)
+    zombie.hardcraft_setIsPistonImmune(resistanceEnabled)
+    // TODO: proper automatic piston setup for test
+}
+
+private fun resistanceTest(context: TestContext, resistanceEnabled: Boolean, water: Boolean) = gameTest(context) {
+    val villagerPos = BlockPos(2, 2, 1)
+    addCagedEntity(villagerPos, EntityType.VILLAGER)
+
+
+    val fluid = if (water) Blocks.WATER else Blocks.LAVA
+    villagerPos.up(3).place(fluid)
+    villagerPos.up(3).south().place(fluid)
+    villagerPos.up(3).east().place(fluid)
+    villagerPos.up(3).south().east().place(fluid)
+
+    if (!water) {
+        // Lava is slow
+        wait(7.seconds)
+    }
+
+    val zombie = EntityType.ZOMBIE.spawn(Vec3d(6.0, 2.0, 5.0))
+    if (water) {
+        zombie.hardcraft_setIsPushedByFluids(!resistanceEnabled)
+    } else {
+        // For lava tests, give push resistance for the non-resistant case as well, so we know the fire damage is what stops the mob and not the push of fluid
+        zombie.hardcraft_setIsPushedByFluids(false)
+        zombie.hardcraft_setIsFireImmune(resistanceEnabled)
+    }
+
 
     wait(15.seconds)
     if (resistanceEnabled) {

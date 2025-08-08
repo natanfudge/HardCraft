@@ -33,4 +33,10 @@ public interface HardCraftHostileEntity {
      */
     boolean hardcraft_getIsPushedByFluids();
 
+    void hardcraft_setIsFireImmune(boolean value);
+    boolean hardcraft_getIsFireImmune();
+
+    void hardcraft_setIsPistonImmune(boolean value);
+    boolean hardcraft_getIsPistonImmune();
+
 }

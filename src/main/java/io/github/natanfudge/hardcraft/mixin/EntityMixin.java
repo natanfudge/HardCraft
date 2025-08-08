@@ -1,5 +1,6 @@
 package io.github.natanfudge.hardcraft.mixin;
 
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.HostileEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,4 +21,29 @@ public class EntityMixin {
             cir.setReturnValue(hostileEntity.hardcraft_getIsPushedByFluids());
         }
     }
+
+    /**
+     * @reason Implements {@link io.github.natanfudge.hardcraft.injection.HardCraftHostileEntity#hardcraft_setIsFireImmune(boolean)}
+     * So we can make mobs resilient to fire
+     */
+    @Inject(method = "isFireImmune", at = @At("HEAD"), cancellable = true)
+    private void allowGivingFireImmunity(CallbackInfoReturnable<Boolean> cir) {
+        Entity self = (Entity) (Object) this;
+        if (self instanceof HostileEntity hostileEntity && hostileEntity.hardcraft_getIsFireImmune()) {
+            cir.setReturnValue(true);
+        }
+
+    }
+    /**
+     * @reason Implements {@link io.github.natanfudge.hardcraft.injection.HardCraftHostileEntity#hardcraft_getIsPistonImmune(boolean)}
+     * So we can make mobs resilient to fire
+     */
+    @Inject(method = "getPistonBehavior", at = @At("HEAD"), cancellable = true)
+    private void allowGivingPistonImmunity(CallbackInfoReturnable<PistonBehavior> cir) {
+        Entity self = (Entity) (Object) this;
+        if (self instanceof HostileEntity hostileEntity && hostileEntity.hardcraft_getIsPistonImmune()) {
+            cir.setReturnValue(PistonBehavior.IGNORE);
+        }
+    }
 }
+
