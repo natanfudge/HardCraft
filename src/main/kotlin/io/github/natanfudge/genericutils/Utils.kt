@@ -50,3 +50,5 @@ fun createBytebuf() = PacketByteBuf(Unpooled.buffer())
 
 context(world: World)
 fun BlockPos.place(block: Block) = world.setBlock(this, block)
+context(world: World)
+fun BlockPos.place(block: BlockState) = world.setBlockState(this, block)

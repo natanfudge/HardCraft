@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import net.minecraft.block.Block
+import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks.AIR
 import net.minecraft.enchantment.Enchantments
 import net.minecraft.entity.Entity
@@ -92,7 +93,7 @@ fun TestContext.build(origin: BlockPos, builder: BuildContext.() -> Unit) {
     BuildContext(origin, this).builder()
 }
 
-fun TestContext.buildEnclosure(origin: BlockPos = BlockPos(0, 1, 0), size: Int = 8) {
+fun TestContext.buildEnclosure(origin: BlockPos = BlockPos(-1, 1, -1), size: Int = 10) {
     build(origin) {
         // Floor
         layer {
@@ -109,7 +110,7 @@ fun TestContext.buildEnclosure(origin: BlockPos = BlockPos(0, 1, 0), size: Int =
                         row(List(size) { EnclosureBlock })
                     } else {
                         row(
-                            buildList {
+                            buildList<Block> {
                                 // Wall
                                 add(EnclosureBlock)
                                 // Empty space (inside)
@@ -147,17 +148,30 @@ class BuildContext(val origin: BlockPos, val ctx: TestContext) {
 @BuildDSL
 class LayerContext(val origin: BlockPos, val ctx: TestContext) {
     private var zShift = 0
-    fun row(vararg blocks: Block) = row(blocks.toList())
-    fun row(blocks: List<Block>) = with(ctx) {
+    fun row(vararg blocks: Block): List<BlockPos> = row(blocks.toList())
+    fun row(blocks: List<Block>): List<BlockPos> = stateRow(blocks.map { it.defaultState })
+    fun row(vararg blocks: BlockState): List<BlockPos> = stateRow(blocks.toList())
+    fun stateRow(blocks: List<BlockState>): List<BlockPos> = with(ctx) {
+        val positions = mutableListOf<BlockPos>()
         var xShift = 0
         for (block in blocks) {
-            origin.plus(x = xShift, z = zShift).place(block)
+            val pos = origin.plus(x = xShift, z = zShift)
+            pos.place(block)
+            positions.add(pos)
             xShift++
         }
         zShift++
+        positions
     }
 }
 
+
+context(ctx: TestContext)
+fun BlockPos.place(block: BlockState) {
+    with(ctx.world) {
+        ctx.getAbsolutePos(this@place).place(block)
+    }
+}
 
 context(ctx: TestContext)
 fun BlockPos.place(block: Block) {

@@ -3,7 +3,9 @@ package io.github.natanfudge.hardcraft.utils
 import net.minecraft.block.AirBlock
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
+import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.World
@@ -52,6 +54,8 @@ fun WorldAccess.getBlock(pos: BlockPos): Block {
 fun WorldAccess.setBlock(pos: BlockPos, block: Block): Boolean {
     return setBlockState(pos, block.defaultState, Block.NOTIFY_ALL)
 }
+
+fun BlockState.facing(direction: Direction): BlockState = with(Properties.FACING,direction)
 
 fun Double.ceilToInt() = ceil(this).toInt()
 fun Float.ceilToInt() = ceil(this).toInt()

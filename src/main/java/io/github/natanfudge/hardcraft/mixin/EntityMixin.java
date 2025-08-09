@@ -34,8 +34,8 @@ public class EntityMixin {
         }
 
     }
-    /**
-     * @reason Implements {@link io.github.natanfudge.hardcraft.injection.HardCraftHostileEntity#hardcraft_getIsPistonImmune(boolean)}
+    /**et
+     * @reason Implements {@link io.github.natanfudge.hardcraft.injection.HardCraftHostileEntity#hardcraft_setIsPistonImmune(boolean)}
      * So we can make mobs resilient to fire
      */
     @Inject(method = "getPistonBehavior", at = @At("HEAD"), cancellable = true)

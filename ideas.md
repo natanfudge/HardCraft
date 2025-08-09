@@ -1,9 +1,5 @@
 # 0.1 Complete Prototype Requirements
 
-## 1. Hardcraft mechanics
--  piston resistance
-- API for assigning block break power of mobs
-
 ## 2. Revenge of the Mobs mechanics
 
 - 10 Waves of mobs spawn at night, each increasing in difficulty:
