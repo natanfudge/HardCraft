@@ -1,6 +1,18 @@
 # 0.1 Complete Prototype Requirements
 
 ## 2. Revenge of the Mobs mechanics
+Technical description: 
+
+Add to RevengeOfTheMobs an init() method that does the following things:
+1. Disables natural mob spawning
+2. Every night, spawns a certain (configurable) amount of zombies, creepers, spiders and skeletons
+   2.5 There are 10 nights (configurable), each with a different amount of spawns (configurable)
+3. The interval between spawns is random in a configurable way
+4. The distance of spawn from the player is selected randomly from a configured range
+5. A HUD shows information about this wave-based spawning
+- A. Show time remaining until night (And start of wave)
+- B. Show time remaining until sunrise (And end of wave)
+- C. Show  Current wave number out of total amount of waves
 
 - 10 Waves of mobs spawn at night, each increasing in difficulty:
   - Scaling health

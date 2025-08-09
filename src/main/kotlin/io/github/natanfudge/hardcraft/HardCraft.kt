@@ -28,6 +28,9 @@ class HardCraft: ModInitializer {
         register(HardCraftItemGroup.Instance)
         register(EnclosureBlock)
 
+        // Initialize wave-based spawning feature
+        RevengeOfTheMobs.init()
+
         CommandRegistrationCallback.EVENT.register(CommandRegistrationCallback { dispatcher, _, _ ->
             dispatcher.register(
                 CommandManager.literal("hcdebugai")
