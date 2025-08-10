@@ -1,6 +1,7 @@
 package io.github.natanfudge.hardcraft.gametest
 
 import io.github.natanfudge.genericutils.place
+import io.github.natanfudge.hardcraft.ai.makeSmart
 import io.github.natanfudge.hardcraft.block.EnclosureBlock
 import io.github.natanfudge.hardcraft.mixinhandler.MobHooks
 import io.github.natanfudge.hardcraft.utils.plus
@@ -69,7 +70,7 @@ suspend fun TestContext.wait(time: Duration) = wait(time.inWholeMilliseconds / 1
 
 
 context(ctx: TestContext)
-fun <T : Entity> EntityType<T>.spawn(pos: Vec3d): T {
+fun <T : Entity> EntityType<T>.spawn(pos: Vec3d, smartEnemy: Boolean = true): T {
     val entity = create(ctx.world) ?: error("Could not create entity $this")
     entity.setPosition(ctx.getAbsolute(pos))
     ctx.world.spawnEntity(entity)
@@ -83,9 +84,14 @@ fun <T : Entity> EntityType<T>.spawn(pos: Vec3d): T {
         // Don't move. Just let it happen
         entity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)?.baseValue = 0.0;
     } else if (entity is HostileEntity) {
-        entity.hardcraft_setDemolition(100) // Destroy blocks fast
         entity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)?.baseValue = 40.0; // Increase enemy damage to make tests go faster
     }
+
+    if (smartEnemy && entity is HostileEntity) {
+        entity.makeSmart()
+        entity.hardcraft_setDemolition(100) // Destroy blocks fast
+    }
+
     return entity
 }
 

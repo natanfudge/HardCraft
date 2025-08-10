@@ -1,0 +1,1 @@
+- When you want to run a test, use a gradle command like `gradlew :test --tests "io.github.xxxx""`

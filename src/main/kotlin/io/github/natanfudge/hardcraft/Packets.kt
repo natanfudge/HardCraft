@@ -18,8 +18,14 @@ object Packets: HardCraft.Context() {
     @Serializable
     data class LoadBlockHealth( val healthValues: CHSData)
 
+    @Serializable
+    data class RotmCounts(val leftover: Int, val total: Int)
+
     /** Updates the current health of a single block */
     val updateBlockHealth = s2cPacket<UpdateBlockHealth>("update_block_health")
+
+    /** ROTM HUD counts update */
+    val rotmCounts = s2cPacket<RotmCounts>("rotm_counts")
 
     /**
      * Provides all block health value of a world to a player who loaded a world

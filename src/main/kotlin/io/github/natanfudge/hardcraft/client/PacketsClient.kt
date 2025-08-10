@@ -2,9 +2,11 @@ package io.github.natanfudge.hardcraft.client
 
 import io.github.natanfudge.genericutils.client.ClientInit
 import io.github.natanfudge.hardcraft.Packets.loadBlockHealth
+import io.github.natanfudge.hardcraft.Packets.rotmCounts
 import io.github.natanfudge.hardcraft.Packets.updateBlockHealth
 import io.github.natanfudge.hardcraft.client.health.load
 import io.github.natanfudge.hardcraft.health.CurrentHealthStorage
+import io.github.natanfudge.hardcraft.rotm.RotmHud
 
 object PacketsClient {
     context(ctx: ClientInit)
@@ -17,5 +19,8 @@ object PacketsClient {
             CurrentHealthStorage.load(context.world!!, content.healthValues)
         }
 
+        rotmCounts.register { content, _ ->
+            RotmHud.setCounts(content.leftover, content.total)
+        }
     }
 }

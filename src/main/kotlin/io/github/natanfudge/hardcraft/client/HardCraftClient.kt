@@ -1,7 +1,7 @@
 package io.github.natanfudge.hardcraft.client
 
 import io.github.natanfudge.genericutils.client.ClientInit
-import io.github.natanfudge.hardcraft.RevengeOfTheMobs
+import io.github.natanfudge.hardcraft.rotm.RevengeOfTheMobs
 import io.github.natanfudge.hardcraft.client.debug.DebugRendering
 import io.github.natanfudge.hardcraft.health.CurrentHealthStorage.Companion.getBlockCurrentHealth
 import io.github.natanfudge.hardcraft.health.getBlockMaxHealth

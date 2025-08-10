@@ -38,5 +38,4 @@ public interface HardCraftHostileEntity {
 
     void hardcraft_setIsPistonImmune(boolean value);
     boolean hardcraft_getIsPistonImmune();
-
 }

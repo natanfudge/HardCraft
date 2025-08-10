@@ -4,12 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a0d436ff-e806-4898-b2e2-cacd578f69ac" name="Changes" comment="Finish hardcraft base mechanics">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/RevengeOfTheMobs.kt" afterDir="false" />
+    <list default="true" id="a0d436ff-e806-4898-b2e2-cacd578f69ac" name="Changes" comment="Nice AI ROTM work">
+      <change afterPath="$PROJECT_DIR$/.junie/guidelines.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/ai/MakeSmart.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Gametest_Minecraft_Game_Test.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Gametest_Minecraft_Game_Test.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Server.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Minecraft_Server.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ideas.md" beforeDir="false" afterPath="$PROJECT_DIR$/ideas.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gametest/kotlin/io/github/natanfudge/hardcraft/gametest/GameTestUtil.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/gametest/kotlin/io/github/natanfudge/hardcraft/gametest/GameTestUtil.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gametest/kotlin/io/github/natanfudge/hardcraft/gametest/HardCraftGameTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/gametest/kotlin/io/github/natanfudge/hardcraft/gametest/HardCraftGameTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/natanfudge/hardcraft/injection/HardCraftHostileEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/natanfudge/hardcraft/injection/HardCraftHostileEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/natanfudge/hardcraft/mixin/HostileEntityMixin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/natanfudge/hardcraft/mixin/HostileEntityMixin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/HardCraft.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/HardCraft.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/Packets.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/Packets.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/RevengeOfTheMobs.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/HardCraftClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/HardCraftClient.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/PacketsClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/natanfudge/hardcraft/client/PacketsClient.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +56,36 @@
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="fabric" type="c8890929:TasksNode$1" />
               </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="HardCraft" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="help" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="HardCraft" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="ide" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="HardCraft" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="other" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="HardCraft" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="publishing" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="HardCraft" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="verification" type="c8890929:TasksNode$1" />
+              </path>
             </expand>
             <select />
           </tree_state>
@@ -78,63 +119,45 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Minecraft Client.executor&quot;: &quot;HotSwap Debug Executor&quot;,
-    &quot;Gradle.Build HardCraft.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.HardCraft [:net.fabricmc.devlaunchinjector.Main.main()].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.HardCraft [configureClientLaunch].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.HardCraft [genSourcesWithVineflower].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.HardCraft [runClientGameTest].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.HardCraft [runGameTest].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;1.20.1&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;junie.application.models&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Minecraft Client.executor": "HotSwap Debug Executor",
+    "Gradle.Build HardCraft.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.HardCraft [:net.fabricmc.devlaunchinjector.Main.main()].executor": "Debug",
+    "Gradle.HardCraft [configureClientLaunch].executor": "Run",
+    "Gradle.HardCraft [genSourcesWithVineflower].executor": "Run",
+    "Gradle.HardCraft [runClientGameTest].executor": "Debug",
+    "Gradle.HardCraft [runGameTest].executor": "Run",
+    "Gradle.Junie gradle test: io.github.natanfudge.hardcraft.test.RotmSpawnAlgoTest.executor": "Run",
+    "Gradle.Junie gradle test: io.github.natanfudge.hardcraft.test.RotmSpawnAlgoTest.naiveInterval_noCatchup_noClamp.executor": "Run",
+    "Gradle.RotmSpawnAlgoTest.naiveInterval_noCatchup_noClamp.executor": "Run",
+    "Gradle.RotmSpawnAlgoTest.totalSpawns_overNight_deterministic.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "1.20.1",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "junie.mcp",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="K2MoveDeclarationsDialog.RECENT_PACKAGE_KEY">
       <recent name="io.github.natanfudge.hardcraft.gametest" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Gametest Minecraft Client Game Test">
-    <configuration name="HardCraft [configureClientLaunch]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="configureClientLaunch" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Application.Minecraft Client">
     <configuration name="HardCraft [genSourcesWithVineflower]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -201,6 +224,54 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="RotmSpawnAlgoTest.naiveInterval_noCatchup_noClamp" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;io.github.natanfudge.hardcraft.test.RotmSpawnAlgoTest.naiveInterval_noCatchup_noClamp&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="RotmSpawnAlgoTest.totalSpawns_overNight_deterministic" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;io.github.natanfudge.hardcraft.test.RotmSpawnAlgoTest.totalSpawns_overNight_deterministic&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="HardCraft" />
       <method v="2">
@@ -217,17 +288,19 @@
       <item itemvalue="Application.Gametest Minecraft Game Test" />
       <item itemvalue="Application.Minecraft Client" />
       <item itemvalue="Application.Minecraft Server" />
-      <item itemvalue="Gradle.HardCraft [configureClientLaunch]" />
+      <item itemvalue="Gradle.RotmSpawnAlgoTest.naiveInterval_noCatchup_noClamp" />
+      <item itemvalue="Gradle.RotmSpawnAlgoTest.totalSpawns_overNight_deterministic" />
       <item itemvalue="Gradle.HardCraft [genSourcesWithVineflower]" />
       <item itemvalue="Gradle.HardCraft [runClientGameTest]" />
       <item itemvalue="Gradle.HardCraft [runGameTest]" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.RotmSpawnAlgoTest.totalSpawns_overNight_deterministic" />
+        <item itemvalue="Gradle.RotmSpawnAlgoTest.naiveInterval_noCatchup_noClamp" />
         <item itemvalue="Gradle.HardCraft [genSourcesWithVineflower]" />
         <item itemvalue="Gradle.HardCraft [runClientGameTest]" />
         <item itemvalue="Gradle.HardCraft [runGameTest]" />
-        <item itemvalue="Gradle.HardCraft [configureClientLaunch]" />
       </list>
     </recent_temporary>
   </component>
@@ -253,7 +326,9 @@
       <workItem from="1754594885435" duration="8775000" />
       <workItem from="1754643040333" duration="24500000" />
       <workItem from="1754735016230" duration="2640000" />
-      <workItem from="1754745275431" duration="1322000" />
+      <workItem from="1754745275431" duration="2147000" />
+      <workItem from="1754773903424" duration="4994000" />
+      <workItem from="1754818053037" duration="5649000" />
     </task>
     <task id="LOCAL-00001" summary="Small cleanup">
       <option name="closed" value="true" />
@@ -367,7 +442,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754737872409</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Nice AI ROTM work">
+      <option name="closed" value="true" />
+      <created>1754746923708</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1754746923708</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -390,7 +473,8 @@
     <MESSAGE value="Improve testing, and test everything" />
     <MESSAGE value="Lava resistance + test, piston resistance without test" />
     <MESSAGE value="Finish hardcraft base mechanics" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finish hardcraft base mechanics" />
+    <MESSAGE value="Nice AI ROTM work" />
+    <option name="LAST_COMMIT_MESSAGE" value="Nice AI ROTM work" />
     <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />
   </component>
   <component name="XDebuggerManager">

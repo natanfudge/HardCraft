@@ -34,21 +34,23 @@ public class HostileEntityMixin implements HardCraftHostileEntity {
     int hardcraft_demolition = 5;
 
 
-    /**
-     * @reason Make mobs more threatening by allowing them to break blocks that block their way
-     */
-    @Inject(method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V", at = @At("TAIL"))
-    public void constructorHookAfterGoalSelectorInitialized(EntityType<?> entityType, World world, CallbackInfo ci) {
-        HostileEntity self = (HostileEntity) (Object) this;
-        if (world != null && !world.isClient) {
-            self.goalSelector.add(0, new ReachTargetGoal(self));
-            if (MobHooks.INSTANCE.getHateVillagers()) {
-                // It's often useful for testing to make mobs attack villagers, so we have a flag that makes them attack villagers.
-                self.goalSelector.add(3, new ActiveTargetGoal<>(self, VillagerEntity.class, true));
-            }
-        }
-        self.navigation = new HardCraftNavigation(self, world, self.navigation);
-    }
+//    /**
+//     * @reason Make mobs more threatening by allowing them to break blocks that block their way
+//     */
+//    @Inject(method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V", at = @At("TAIL"))
+//    public void constructorHookAfterGoalSelectorInitialized(EntityType<?> entityType, World world, CallbackInfo ci) {
+//        HostileEntity self = (HostileEntity) (Object) this;
+//        if (world != null && !world.isClient) {
+//            self.goalSelector.add(0, new ReachTargetGoal(self));
+//            if (MobHooks.INSTANCE.getHateVillagers()) {
+//                // It's often useful for testing to make mobs attack villagers, so we have a flag that makes them attack villagers.
+//                self.goalSelector.add(3, new ActiveTargetGoal<>(self, VillagerEntity.class, true));
+//            }
+//        }
+//        self.navigation = new HardCraftNavigation(self, world, self.navigation);
+//    }
+//
+
 
     /**
      * Allow individual mobs to specify at what rate they destroy blocks

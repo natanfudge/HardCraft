@@ -18,6 +18,8 @@ import kotlin.time.Duration.Companion.seconds
 class HardCraftGameTest : FabricGameTest {
     @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = Int.MAX_VALUE, requiredSuccesses = 3)
     fun zombieClimbBridgeBreak(context: TestContext) = climbBridgeBreak(context, enemyType = EntityType.ZOMBIE)
+    @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = Int.MAX_VALUE, requiredSuccesses = 3)
+    fun dumbZombie(context: TestContext) = climbBridgeBreak(context, enemyType = EntityType.ZOMBIE, smartEnemy = false)
 
     @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = Int.MAX_VALUE, requiredSuccesses = 3)
     fun skeletonClimbBridgeBreak(context: TestContext) = climbBridgeBreak(context, enemyType = EntityType.SKELETON)
@@ -161,18 +163,23 @@ private fun lavaResistanceTest(context: TestContext, resistanceEnabled: Boolean)
 }
 
 
-fun climbBridgeBreak(context: TestContext, enemyType: EntityType<out HostileEntity>, time: Duration = 15.seconds) = gameTest(context) {
+fun climbBridgeBreak(context: TestContext, enemyType: EntityType<out HostileEntity>, time: Duration = 15.seconds, smartEnemy: Boolean = true) = gameTest(context) {
     buildGlassCage(BlockPos(4, 4, 0))
 
     val villagerPos = BlockPos(5, 5, 1)
     addCagedEntity(villagerPos, EntityType.VILLAGER)
 
-    enemyType.spawn(Vec3d(2.0, 2.0, 5.0))
+    enemyType.spawn(Vec3d(2.0, 2.0, 5.0), smartEnemy = smartEnemy)
 
     wait(time)
 
-    // Villager should be dead
-    dontExpectEntityAt(EntityType.VILLAGER, villagerPos)
+    if(smartEnemy) {
+        // Villager should be dead
+        dontExpectEntityAt(EntityType.VILLAGER, villagerPos)
+    } else {
+        expectEntityAt(EntityType.VILLAGER, villagerPos)
+    }
+
 }
 
 context(ctx: TestContext)
